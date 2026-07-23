@@ -15,6 +15,7 @@
 
     <title>Packaged Comfort | Move Your Package with Comfort</title>
 
+    <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -24,10 +25,18 @@
     <header class="site-header">
         <div class="container nav-container">
 
-            <a href="#home" class="brand" aria-label="Packaged Comfort home">
-                <span class="brand-icon">PC</span>
+            <a
+                href="#home"
+                class="brand logo-link"
+                aria-label="Packaged Comfort home"
+            >
+                <img
+                    src="logo.png"
+                    alt="Packaged Comfort Private Hauling and Courier Service"
+                    class="site-logo"
+                >
 
-                <span class="brand-text">
+                <span class="header-brand-name">
                     <strong>Packaged</strong>
                     <span>Comfort</span>
                 </span>
@@ -98,11 +107,17 @@
                     </p>
 
                     <div class="hero-buttons">
-                        <a href="#quote" class="button button-primary button-large">
+                        <a
+                            href="#quote"
+                            class="button button-primary button-large"
+                        >
                             Request a Quote
                         </a>
 
-                        <a href="#services" class="button button-secondary button-large">
+                        <a
+                            href="#services"
+                            class="button button-secondary button-large"
+                        >
                             View Services
                         </a>
                     </div>
@@ -127,29 +142,16 @@
 
                 <div class="hero-card">
                     <div class="hero-card-top">
-                        <span>Start your request</span>
-                        <span class="status-badge">Simple Process</span>
+                        <span>Packaged Comfort</span>
+                        <span class="status-badge">Henderson, Nevada</span>
                     </div>
 
                     <div class="moving-illustration">
-                        <div class="moving-box box-one">
-                            <span>PC</span>
-                        </div>
-
-                        <div class="moving-box box-two"></div>
-                        <div class="moving-box box-three"></div>
-
-                        <div class="moving-truck">
-                            <div class="truck-cargo">
-                                <span>PACKAGED COMFORT</span>
-                            </div>
-
-                            <div class="truck-front"></div>
-                            <div class="truck-window"></div>
-
-                            <div class="wheel wheel-left"></div>
-                            <div class="wheel wheel-right"></div>
-                        </div>
+                        <img
+                            src="logo.png"
+                            alt="Packaged Comfort Private Hauling and Courier Service"
+                            class="hero-logo-image"
+                        >
                     </div>
 
                     <div class="hero-card-steps">
@@ -243,7 +245,7 @@
                         <h3>Courier Service</h3>
 
                         <p>
-                            Private pickup and delivery service for packages,
+                            Private pickup and delivery for packages,
                             important items, supplies, and local deliveries.
                         </p>
 
@@ -270,7 +272,7 @@
 
                         <p>
                             Pickup and delivery for furniture, appliances,
-                            large purchases, and items that will not fit in
+                            large purchases, and items that will not fit inside
                             a regular vehicle.
                         </p>
 
@@ -297,9 +299,8 @@
                         <h3>Loading and Unloading</h3>
 
                         <p>
-                            Professional assistance with loading, unloading,
-                            furniture placement, trailers, trucks, and moving
-                            containers.
+                            Assistance with loading, unloading, furniture
+                            placement, trailers, trucks, and moving containers.
                         </p>
 
                         <a href="#quote">Request a quote →</a>
@@ -475,7 +476,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="moveDate">Preferred service date *</label>
+                            <label for="moveDate">
+                                Preferred service date *
+                            </label>
 
                             <input
                                 type="date"
@@ -486,7 +489,9 @@
                         </div>
 
                         <div class="form-group form-group-full">
-                            <label for="pickupAddress">Pickup location *</label>
+                            <label for="pickupAddress">
+                                Pickup location *
+                            </label>
 
                             <input
                                 type="text"
@@ -512,7 +517,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="propertySize">Amount being transported *</label>
+                            <label for="propertySize">
+                                Amount being transported *
+                            </label>
 
                             <select
                                 id="propertySize"
@@ -520,30 +527,39 @@
                                 required
                             >
                                 <option value="">Select an amount</option>
+
                                 <option value="single-package">
                                     Single package
                                 </option>
+
                                 <option value="few-items">
                                     A few items
                                 </option>
+
                                 <option value="furniture">
                                     Furniture or appliances
                                 </option>
+
                                 <option value="small-room">
                                     Small room
                                 </option>
+
                                 <option value="one-bedroom">
                                     One-bedroom move
                                 </option>
+
                                 <option value="two-bedroom">
                                     Two-bedroom move
                                 </option>
+
                                 <option value="three-bedroom">
                                     Three-bedroom move
                                 </option>
+
                                 <option value="business">
                                     Business or office items
                                 </option>
+
                                 <option value="other">
                                     Other
                                 </option>
@@ -551,7 +567,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="serviceType">Service needed *</label>
+                            <label for="serviceType">
+                                Service needed *
+                            </label>
 
                             <select
                                 id="serviceType"
@@ -672,7 +690,7 @@
         </section>
 
 
-        <!-- Account CTA -->
+        <!-- Customer Account -->
         <section class="section account-section">
             <div class="container account-card">
 
@@ -736,7 +754,9 @@
 
                         <h3>Call Us</h3>
 
-                        <p>725-724-0012</p>
+                        <a href="tel:7257240012">
+                            725-724-0012
+                        </a>
                     </article>
 
                     <article class="contact-card">
@@ -767,13 +787,16 @@
         <div class="container footer-grid">
 
             <div>
-                <a href="#home" class="brand footer-brand">
-                    <span class="brand-icon">PC</span>
-
-                    <span class="brand-text">
-                        <strong>Packaged</strong>
-                        <span>Comfort</span>
-                    </span>
+                <a
+                    href="#home"
+                    class="brand footer-brand logo-link"
+                    aria-label="Packaged Comfort home"
+                >
+                    <img
+                        src="logo.png"
+                        alt="Packaged Comfort Private Hauling and Courier Service"
+                        class="footer-logo"
+                    >
                 </a>
 
                 <p>
@@ -836,7 +859,11 @@
             </button>
 
             <div class="modal-header">
-                <span class="modal-icon">PC</span>
+                <img
+                    src="logo.png"
+                    alt="Packaged Comfort"
+                    class="modal-logo"
+                >
 
                 <h2 id="loginTitle">Welcome back</h2>
 
@@ -915,7 +942,11 @@
             </button>
 
             <div class="modal-header">
-                <span class="modal-icon">PC</span>
+                <img
+                    src="logo.png"
+                    alt="Packaged Comfort"
+                    class="modal-logo"
+                >
 
                 <h2 id="signupTitle">Create your account</h2>
 
@@ -987,7 +1018,6 @@
     <div class="toast" id="toast">
         <span id="toastMessage"></span>
     </div>
-
 
     <script src="script.js"></script>
 </body>
