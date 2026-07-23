@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Packaged Comfort owner dashboard.">
+    <title>Admin Dashboard | Packaged Comfort</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+    <div class="container nav-wrap">
+        <a href="index.html" class="brand" aria-label="Packaged Comfort home">
+            <img src="logo.png" alt="Packaged Comfort logo">
+            <span class="brand-text">
+                <strong>Packaged</strong>
+                <span>Comfort</span>
+            </span>
+        </a>
+
+        <button class="menu-button" id="menuButton" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+
+        <nav class="main-nav" id="mainNav">
+            <a href="index.html">Home</a>
+            <a href="services.html">Services</a>
+            <a href="quote.html">Request a Quote</a>
+            <a href="contact.html">Contact</a>
+
+            <div class="nav-actions">
+                <a href="login.html" class="button button-secondary">Log In</a>
+                <a href="signup.html" class="button button-primary">Sign Up</a>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<main>
+
+<section class="page-hero">
+    <div class="container">
+        <span class="section-label">Owner dashboard</span>
+        <h1>Packaged Comfort admin</h1>
+        <p>This private page will later display customers, quote requests, photos, prices, and service statuses.</p>
+    </div>
+</section>
+
+<section class="section alt">
+    <div class="container dashboard-grid">
+        <article class="stat-card">
+            <strong>0</strong>
+            <span>New requests</span>
+        </article>
+
+        <article class="stat-card">
+            <strong>0</strong>
+            <span>Quotes awaiting response</span>
+        </article>
+
+        <article class="stat-card">
+            <strong>0</strong>
+            <span>Scheduled jobs</span>
+        </article>
+    </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+    <div class="container footer-grid">
+        <div>
+            <img src="logo.png" alt="Packaged Comfort logo" class="footer-logo">
+            <p>Private hauling, courier, delivery, and moving assistance designed to move your package with comfort.</p>
+        </div>
+
+        <div class="footer-links">
+            <strong>Website</strong>
+            <a href="index.html">Home</a>
+            <a href="services.html">Services</a>
+            <a href="quote.html">Request a Quote</a>
+            <a href="contact.html">Contact</a>
+        </div>
+
+        <div class="footer-links">
+            <strong>Account</strong>
+            <a href="login.html">Log In</a>
+            <a href="signup.html">Sign Up</a>
+            <a href="dashboard.html">Customer Dashboard</a>
+        </div>
+    </div>
+
+    <div class="container footer-bottom">
+        © <span data-current-year></span> Packaged Comfort. All rights reserved.
+    </div>
+</footer>
+
+<div class="toast" id="toast"><span id="toastMessage"></span></div>
+<script src="script.js"></script>
+
+</body>
+</html>
