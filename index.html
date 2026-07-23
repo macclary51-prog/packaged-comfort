@@ -1,102 +1,953 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Packaged Confort</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Packaged Confort provides dependable residential and commercial moving services."
+    >
+
+    <title>Packaged Confort | Moving Made Comfortable</title>
+
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-  <header>
-    <h1>Packaged Confort</h1>
-    <p>Moving Made Comfortable</p>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container nav-container">
 
-    <nav>
-      <a href="#home">Home</a>
-      <a href="#services">Services</a>
-      <a href="#quote">Request a Quote</a>
-      <a href="#contact">Contact</a>
-      <a href="login.html">Login</a>
-    </nav>
-  </header>
+            <a href="#home" class="brand" aria-label="Packaged Confort home">
+                <span class="brand-icon">PC</span>
 
-  <main>
-    <section id="home">
-      <h2>Comfortable Moving Starts Here</h2>
-      <p>
-        Reliable residential and commercial moving services designed around
-        your needs.
-      </p>
-      <a href="#quote">Request a Quote</a>
-    </section>
+                <span class="brand-text">
+                    <strong>Packaged</strong>
+                    <span>Confort</span>
+                </span>
+            </a>
 
-    <section id="services">
-      <h2>Our Services</h2>
+            <button
+                class="menu-button"
+                id="menuButton"
+                type="button"
+                aria-label="Open navigation menu"
+                aria-expanded="false"
+            >
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
 
-      <div>
-        <h3>Residential Moving</h3>
-        <p>Professional moving help for homes, apartments, and condos.</p>
-      </div>
+            <nav class="main-nav" id="mainNav">
+                <a href="#home">Home</a>
+                <a href="#services">Services</a>
+                <a href="#process">How It Works</a>
+                <a href="#quote">Request a Quote</a>
+                <a href="#contact">Contact</a>
 
-      <div>
-        <h3>Commercial Moving</h3>
-        <p>Careful and organized moving services for businesses and offices.</p>
-      </div>
+                <div class="nav-account-buttons">
+                    <button
+                        class="button button-ghost"
+                        id="openLoginButton"
+                        type="button"
+                    >
+                        Log In
+                    </button>
 
-      <div>
-        <h3>Packing Services</h3>
-        <p>Help packing furniture, appliances, boxes, and fragile belongings.</p>
-      </div>
-    </section>
+                    <button
+                        class="button button-primary"
+                        id="openSignupButton"
+                        type="button"
+                    >
+                        Sign Up
+                    </button>
+                </div>
+            </nav>
 
-    <section id="quote">
-      <h2>Request a Quote</h2>
+        </div>
+    </header>
 
-      <form>
-        <label for="name">Full Name</label>
-        <input id="name" type="text" required />
 
-        <label for="phone">Phone Number</label>
-        <input id="phone" type="tel" required />
+    <main>
 
-        <label for="email">Email Address</label>
-        <input id="email" type="email" required />
+        <!-- Hero -->
+        <section class="hero" id="home">
+            <div class="container hero-grid">
 
-        <label for="date">Moving Date</label>
-        <input id="date" type="date" />
+                <div class="hero-content">
+                    <div class="eyebrow">
+                        Reliable moving assistance
+                    </div>
 
-        <label for="pickup">Pickup Location</label>
-        <input id="pickup" type="text" required />
+                    <h1>
+                        Moving made more
+                        <span>comfortable.</span>
+                    </h1>
 
-        <label for="destination">Destination</label>
-        <input id="destination" type="text" required />
+                    <p class="hero-description">
+                        Packaged Confort helps make residential, apartment,
+                        office, and long-distance moves easier from beginning
+                        to end.
+                    </p>
 
-        <label for="photos">Upload Moving Photos</label>
-        <input
-          id="photos"
-          type="file"
-          accept="image/*"
-          capture="environment"
-          multiple
-        />
+                    <div class="hero-buttons">
+                        <a href="#quote" class="button button-primary button-large">
+                            Request a Quote
+                        </a>
 
-        <label for="details">Additional Details</label>
-        <textarea id="details" rows="5"></textarea>
+                        <a href="#services" class="button button-secondary button-large">
+                            View Services
+                        </a>
+                    </div>
 
-        <button type="submit">Submit Quote Request</button>
-      </form>
-    </section>
+                    <div class="hero-features">
+                        <div class="hero-feature">
+                            <span class="check-icon">✓</span>
+                            <span>Personalized quotes</span>
+                        </div>
 
-    <section id="contact">
-      <h2>Contact Packaged Confort</h2>
-      <p>Contact information will be added soon.</p>
-    </section>
-  </main>
+                        <div class="hero-feature">
+                            <span class="check-icon">✓</span>
+                            <span>Photo-based estimates</span>
+                        </div>
 
-  <footer>
-    <p>&copy; 2026 Packaged Confort. All rights reserved.</p>
-  </footer>
+                        <div class="hero-feature">
+                            <span class="check-icon">✓</span>
+                            <span>Customer accounts</span>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="hero-card">
+                    <div class="hero-card-top">
+                        <span>Start your move</span>
+                        <span class="status-badge">Simple Process</span>
+                    </div>
+
+                    <div class="moving-illustration">
+                        <div class="moving-box box-one">
+                            <span>PC</span>
+                        </div>
+
+                        <div class="moving-box box-two"></div>
+                        <div class="moving-box box-three"></div>
+
+                        <div class="moving-truck">
+                            <div class="truck-cargo">
+                                <span>PACKAGED CONFORT</span>
+                            </div>
+
+                            <div class="truck-front"></div>
+                            <div class="truck-window"></div>
+
+                            <div class="wheel wheel-left"></div>
+                            <div class="wheel wheel-right"></div>
+                        </div>
+                    </div>
+
+                    <div class="hero-card-steps">
+                        <div>
+                            <strong>1</strong>
+                            <span>Create an account</span>
+                        </div>
+
+                        <div>
+                            <strong>2</strong>
+                            <span>Upload moving photos</span>
+                        </div>
+
+                        <div>
+                            <strong>3</strong>
+                            <span>Receive your quote</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- Highlights -->
+        <section class="highlights">
+            <div class="container highlight-grid">
+
+                <div class="highlight-item">
+                    <strong>Easy</strong>
+                    <span>Online quote requests</span>
+                </div>
+
+                <div class="highlight-item">
+                    <strong>Secure</strong>
+                    <span>Customer account access</span>
+                </div>
+
+                <div class="highlight-item">
+                    <strong>Convenient</strong>
+                    <span>Upload photos from your phone</span>
+                </div>
+
+                <div class="highlight-item">
+                    <strong>Personal</strong>
+                    <span>Quotes based on your move</span>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- Services -->
+        <section class="section" id="services">
+            <div class="container">
+
+                <div class="section-heading">
+                    <div>
+                        <span class="section-label">Our services</span>
+
+                        <h2>
+                            Moving help built around your needs
+                        </h2>
+                    </div>
+
+                    <p>
+                        Every move is different. Choose the service that best
+                        matches your situation and request a personalized quote.
+                    </p>
+                </div>
+
+                <div class="service-grid">
+
+                    <article class="service-card">
+                        <div class="service-icon">🏠</div>
+
+                        <h3>Residential Moving</h3>
+
+                        <p>
+                            Moving assistance for houses, townhomes, condos,
+                            and other residential properties.
+                        </p>
+
+                        <a href="#quote">Request a quote →</a>
+                    </article>
+
+                    <article class="service-card">
+                        <div class="service-icon">🏢</div>
+
+                        <h3>Apartment Moving</h3>
+
+                        <p>
+                            Help with apartment moves, elevators, stairways,
+                            loading areas, and limited parking.
+                        </p>
+
+                        <a href="#quote">Request a quote →</a>
+                    </article>
+
+                    <article class="service-card">
+                        <div class="service-icon">📦</div>
+
+                        <h3>Packing Services</h3>
+
+                        <p>
+                            Packing support for furniture, clothing,
+                            electronics, kitchen items, and fragile belongings.
+                        </p>
+
+                        <a href="#quote">Request a quote →</a>
+                    </article>
+
+                    <article class="service-card">
+                        <div class="service-icon">🚚</div>
+
+                        <h3>Long-Distance Moving</h3>
+
+                        <p>
+                            Moving assistance for customers relocating outside
+                            their local service area.
+                        </p>
+
+                        <a href="#quote">Request a quote →</a>
+                    </article>
+
+                    <article class="service-card">
+                        <div class="service-icon">💼</div>
+
+                        <h3>Commercial Moving</h3>
+
+                        <p>
+                            Moving solutions for offices, small businesses,
+                            equipment, furniture, and workplace supplies.
+                        </p>
+
+                        <a href="#quote">Request a quote →</a>
+                    </article>
+
+                    <article class="service-card">
+                        <div class="service-icon">💪</div>
+
+                        <h3>Labor-Only Help</h3>
+
+                        <p>
+                            Professional moving labor for loading, unloading,
+                            furniture placement, and moving containers.
+                        </p>
+
+                        <a href="#quote">Request a quote →</a>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+
+        <!-- How It Works -->
+        <section class="section process-section" id="process">
+            <div class="container">
+
+                <div class="center-heading">
+                    <span class="section-label">How it works</span>
+
+                    <h2>
+                        Get your moving quote in four steps
+                    </h2>
+
+                    <p>
+                        Provide the details once, upload useful pictures, and
+                        let the moving company review your request.
+                    </p>
+                </div>
+
+                <div class="process-grid">
+
+                    <article class="process-card">
+                        <div class="process-number">01</div>
+
+                        <h3>Create your account</h3>
+
+                        <p>
+                            Sign up so your quote requests, uploaded photos,
+                            updates, and moving details stay together.
+                        </p>
+                    </article>
+
+                    <article class="process-card">
+                        <div class="process-number">02</div>
+
+                        <h3>Describe your move</h3>
+
+                        <p>
+                            Enter the moving date, pickup location,
+                            destination, property size, and services needed.
+                        </p>
+                    </article>
+
+                    <article class="process-card">
+                        <div class="process-number">03</div>
+
+                        <h3>Upload photos</h3>
+
+                        <p>
+                            Take or select pictures of rooms, furniture,
+                            stairs, appliances, and specialty items.
+                        </p>
+                    </article>
+
+                    <article class="process-card">
+                        <div class="process-number">04</div>
+
+                        <h3>Receive your quote</h3>
+
+                        <p>
+                            The moving company reviews your request and sends
+                            a personalized quote through your account.
+                        </p>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Quote Form -->
+        <section class="section quote-section" id="quote">
+            <div class="container quote-layout">
+
+                <div class="quote-information">
+                    <span class="section-label light-label">
+                        Request a quote
+                    </span>
+
+                    <h2>
+                        Tell us about your move
+                    </h2>
+
+                    <p>
+                        Complete the form and upload photos that help show the
+                        amount and type of belongings being moved.
+                    </p>
+
+                    <div class="quote-benefits">
+                        <div>
+                            <span>✓</span>
+                            <p>
+                                <strong>No fixed package required</strong>
+                                Your quote is based on your actual move.
+                            </p>
+                        </div>
+
+                        <div>
+                            <span>✓</span>
+                            <p>
+                                <strong>Upload from your phone</strong>
+                                Take new pictures or select existing photos.
+                            </p>
+                        </div>
+
+                        <div>
+                            <span>✓</span>
+                            <p>
+                                <strong>Save your request</strong>
+                                Customer accounts will store quote history.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <form class="quote-form" id="quoteForm">
+
+                    <div class="form-heading">
+                        <h3>Moving Quote Request</h3>
+
+                        <p>
+                            Fields marked with * are required.
+                        </p>
+                    </div>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label for="fullName">Full name *</label>
+
+                            <input
+                                type="text"
+                                id="fullName"
+                                name="fullName"
+                                placeholder="Your full name"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Phone number *</label>
+
+                            <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                placeholder="(000) 000-0000"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email address *</label>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="name@example.com"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="moveDate">Preferred moving date *</label>
+
+                            <input
+                                type="date"
+                                id="moveDate"
+                                name="moveDate"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group form-group-full">
+                            <label for="pickupAddress">Pickup location *</label>
+
+                            <input
+                                type="text"
+                                id="pickupAddress"
+                                name="pickupAddress"
+                                placeholder="Pickup address or ZIP code"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group form-group-full">
+                            <label for="destinationAddress">
+                                Destination location *
+                            </label>
+
+                            <input
+                                type="text"
+                                id="destinationAddress"
+                                name="destinationAddress"
+                                placeholder="Destination address or ZIP code"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="propertySize">Property size *</label>
+
+                            <select
+                                id="propertySize"
+                                name="propertySize"
+                                required
+                            >
+                                <option value="">Select a size</option>
+                                <option value="studio">Studio</option>
+                                <option value="1-bedroom">1 bedroom</option>
+                                <option value="2-bedroom">2 bedrooms</option>
+                                <option value="3-bedroom">3 bedrooms</option>
+                                <option value="4-bedroom">4 bedrooms</option>
+                                <option value="5-plus-bedroom">
+                                    5+ bedrooms
+                                </option>
+                                <option value="office">Office or business</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="serviceType">Service needed *</label>
+
+                            <select
+                                id="serviceType"
+                                name="serviceType"
+                                required
+                            >
+                                <option value="">Select a service</option>
+                                <option value="residential">
+                                    Residential moving
+                                </option>
+                                <option value="apartment">
+                                    Apartment moving
+                                </option>
+                                <option value="commercial">
+                                    Commercial moving
+                                </option>
+                                <option value="long-distance">
+                                    Long-distance moving
+                                </option>
+                                <option value="packing">
+                                    Packing services
+                                </option>
+                                <option value="labor-only">
+                                    Labor-only help
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="form-group form-group-full">
+                            <label for="moveDetails">
+                                Additional moving details
+                            </label>
+
+                            <textarea
+                                id="moveDetails"
+                                name="moveDetails"
+                                rows="5"
+                                placeholder="Tell us about stairs, elevators, large furniture, appliances, fragile items, parking, or special instructions."
+                            ></textarea>
+                        </div>
+
+                        <div class="form-group form-group-full">
+                            <label for="movingPhotos">
+                                Moving photos
+                            </label>
+
+                            <label
+                                class="upload-area"
+                                for="movingPhotos"
+                                id="uploadArea"
+                            >
+                                <span class="upload-icon">＋</span>
+
+                                <strong>Take or upload photos</strong>
+
+                                <small>
+                                    Select multiple JPG, PNG, WEBP, or HEIC images
+                                </small>
+                            </label>
+
+                            <input
+                                class="hidden-file-input"
+                                type="file"
+                                id="movingPhotos"
+                                name="movingPhotos"
+                                accept="image/*"
+                                capture="environment"
+                                multiple
+                            >
+
+                            <div
+                                class="photo-preview"
+                                id="photoPreview"
+                            ></div>
+                        </div>
+
+                    </div>
+
+                    <label class="checkbox-row">
+                        <input
+                            type="checkbox"
+                            id="permission"
+                            required
+                        >
+
+                        <span>
+                            I confirm the information is accurate and give
+                            Packaged Confort permission to contact me about
+                            this quote request.
+                        </span>
+                    </label>
+
+                    <button
+                        type="submit"
+                        class="button button-primary submit-button"
+                    >
+                        Submit Quote Request
+                    </button>
+
+                    <p class="form-notice">
+                        This starter version displays the form but does not
+                        send information until Firebase is connected.
+                    </p>
+
+                </form>
+
+            </div>
+        </section>
+
+
+        <!-- Account CTA -->
+        <section class="section account-section">
+            <div class="container account-card">
+
+                <div>
+                    <span class="section-label">Customer account</span>
+
+                    <h2>
+                        Keep your move organized in one place
+                    </h2>
+
+                    <p>
+                        Sign in to view quote requests, uploaded photos,
+                        moving dates, pricing updates, and job status.
+                    </p>
+                </div>
+
+                <div class="account-buttons">
+                    <button
+                        class="button button-secondary button-large"
+                        id="accountLoginButton"
+                        type="button"
+                    >
+                        Log In
+                    </button>
+
+                    <button
+                        class="button button-primary button-large"
+                        id="accountSignupButton"
+                        type="button"
+                    >
+                        Create Account
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- Contact -->
+        <section class="section contact-section" id="contact">
+            <div class="container">
+
+                <div class="center-heading">
+                    <span class="section-label">Contact</span>
+
+                    <h2>
+                        Questions before requesting a quote?
+                    </h2>
+
+                    <p>
+                        Contact Packaged Confort for information about moving
+                        services, availability, and service areas.
+                    </p>
+                </div>
+
+                <div class="contact-grid">
+
+                    <article class="contact-card">
+                        <span>☎</span>
+                        <h3>Call Us</h3>
+                        <p>Phone number coming soon</p>
+                    </article>
+
+                    <article class="contact-card">
+                        <span>✉</span>
+                        <h3>Email Us</h3>
+                        <p>Email address coming soon</p>
+                    </article>
+
+                    <article class="contact-card">
+                        <span>⌖</span>
+                        <h3>Service Area</h3>
+                        <p>Service area information coming soon</p>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-grid">
+
+            <div>
+                <a href="#home" class="brand footer-brand">
+                    <span class="brand-icon">PC</span>
+
+                    <span class="brand-text">
+                        <strong>Packaged</strong>
+                        <span>Confort</span>
+                    </span>
+                </a>
+
+                <p>
+                    Reliable moving assistance designed to make every move
+                    more comfortable.
+                </p>
+            </div>
+
+            <div class="footer-links">
+                <strong>Website</strong>
+
+                <a href="#home">Home</a>
+                <a href="#services">Services</a>
+                <a href="#process">How It Works</a>
+                <a href="#quote">Request a Quote</a>
+            </div>
+
+            <div class="footer-links">
+                <strong>Account</strong>
+
+                <button type="button" id="footerLoginButton">
+                    Log In
+                </button>
+
+                <button type="button" id="footerSignupButton">
+                    Sign Up
+                </button>
+            </div>
+
+        </div>
+
+        <div class="container footer-bottom">
+            <p>
+                © <span id="currentYear"></span> Packaged Confort.
+                All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+
+    <!-- Login Modal -->
+    <div
+        class="modal-overlay"
+        id="loginModal"
+        aria-hidden="true"
+    >
+        <div
+            class="modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="loginTitle"
+        >
+            <button
+                class="modal-close"
+                type="button"
+                data-close-modal
+                aria-label="Close login window"
+            >
+                ×
+            </button>
+
+            <div class="modal-header">
+                <span class="modal-icon">PC</span>
+
+                <h2 id="loginTitle">Welcome back</h2>
+
+                <p>
+                    Log in to view and manage your moving quote requests.
+                </p>
+            </div>
+
+            <form id="loginForm">
+
+                <div class="form-group">
+                    <label for="loginEmail">Email address</label>
+
+                    <input
+                        type="email"
+                        id="loginEmail"
+                        placeholder="name@example.com"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+
+                    <input
+                        type="password"
+                        id="loginPassword"
+                        placeholder="Enter your password"
+                        minlength="6"
+                        required
+                    >
+                </div>
+
+                <button
+                    type="submit"
+                    class="button button-primary modal-submit"
+                >
+                    Log In
+                </button>
+
+            </form>
+
+            <p class="modal-switch">
+                Do not have an account?
+
+                <button
+                    type="button"
+                    id="switchToSignup"
+                >
+                    Create one
+                </button>
+            </p>
+        </div>
+    </div>
+
+
+    <!-- Signup Modal -->
+    <div
+        class="modal-overlay"
+        id="signupModal"
+        aria-hidden="true"
+    >
+        <div
+            class="modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="signupTitle"
+        >
+            <button
+                class="modal-close"
+                type="button"
+                data-close-modal
+                aria-label="Close signup window"
+            >
+                ×
+            </button>
+
+            <div class="modal-header">
+                <span class="modal-icon">PC</span>
+
+                <h2 id="signupTitle">Create your account</h2>
+
+                <p>
+                    Save quote requests, photos, updates, and moving details.
+                </p>
+            </div>
+
+            <form id="signupForm">
+
+                <div class="form-group">
+                    <label for="signupName">Full name</label>
+
+                    <input
+                        type="text"
+                        id="signupName"
+                        placeholder="Your full name"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="signupEmail">Email address</label>
+
+                    <input
+                        type="email"
+                        id="signupEmail"
+                        placeholder="name@example.com"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+
+                    <input
+                        type="password"
+                        id="signupPassword"
+                        placeholder="At least 6 characters"
+                        minlength="6"
+                        required
+                    >
+                </div>
+
+                <button
+                    type="submit"
+                    class="button button-primary modal-submit"
+                >
+                    Create Account
+                </button>
+
+            </form>
+
+            <p class="modal-switch">
+                Already have an account?
+
+                <button
+                    type="button"
+                    id="switchToLogin"
+                >
+                    Log in
+                </button>
+            </p>
+        </div>
+    </div>
+
+
+    <!-- Notification -->
+    <div class="toast" id="toast">
+        <span id="toastMessage"></span>
+    </div>
+
+
+    <script src="script.js"></script>
 </body>
 </html>
