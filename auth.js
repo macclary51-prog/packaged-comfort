@@ -4,143 +4,239 @@ import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
     updateProfile
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+} from
+    "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
 
-const signupForm = document.getElementById("signupForm");
-const loginForm = document.getElementById("loginForm");
-const authMessage = document.getElementById("authMessage");
+const signupForm =
+    document.getElementById("signupForm");
+
+const loginForm =
+    document.getElementById("loginForm");
+
+const authMessage =
+    document.getElementById("authMessage");
 
 
-function showMessage(message, isError = false) {
+function displayMessage(message, isError = false) {
     if (!authMessage) {
         return;
     }
 
     authMessage.textContent = message;
-    authMessage.style.color = isError ? "#b42318" : "#1c7c54";
+
+    authMessage.style.color =
+        isError ? "#b42318" : "#1c7c54";
 }
 
 
-function friendlyError(error) {
+function setButtonState(
+    button,
+    loading,
+    normalText,
+    loadingText
+) {
+    if (!button) {
+        return;
+    }
+
+    button.disabled = loading;
+
+    button.textContent =
+        loading ? loadingText : normalText;
+
+    button.style.opacity =
+        loading ? "0.72" : "1";
+
+    button.style.cursor =
+        loading ? "wait" : "pointer";
+}
+
+
+function friendlyFirebaseError(error) {
     switch (error.code) {
         case "auth/email-already-in-use":
-            return "An account already exists with this email.";
+            return "An account already exists with this email address.";
 
         case "auth/invalid-email":
             return "Enter a valid email address.";
 
         case "auth/weak-password":
-            return "Your password must contain at least 6 characters.";
+            return "Use a password containing at least 6 characters.";
 
         case "auth/invalid-credential":
             return "The email address or password is incorrect.";
 
+        case "auth/user-disabled":
+            return "This account has been disabled.";
+
         case "auth/too-many-requests":
-            return "Too many attempts. Wait a moment and try again.";
+            return "Too many attempts were made. Wait and try again.";
 
         case "auth/network-request-failed":
             return "Check your internet connection and try again.";
 
+        case "auth/operation-not-allowed":
+            return "Email and password login is not enabled in Firebase.";
+
         default:
-            console.error(error);
+            console.error(
+                "Firebase Authentication error:",
+                error
+            );
+
             return "Something went wrong. Please try again.";
     }
 }
 
 
-/* Create customer account */
+/* Create an account */
 
 if (signupForm) {
-    signupForm.addEventListener("submit", async (event) => {
-        event.preventDefault();
+    signupForm.addEventListener(
+        "submit",
+        async (event) => {
+            event.preventDefault();
 
-        const fullName = document
-            .getElementById("signupName")
-            .value
-            .trim();
+            if (!signupForm.checkValidity()) {
+                signupForm.reportValidity();
+                return;
+            }
 
-        const email = document
-            .getElementById("signupEmail")
-            .value
-            .trim();
+            const fullName =
+                document
+                    .getElementById("signupName")
+                    .value
+                    .trim();
 
-        const password = document
-            .getElementById("signupPassword")
-            .value;
+            const email =
+                document
+                    .getElementById("signupEmail")
+                    .value
+                    .trim();
 
-        const signupButton = document.getElementById("signupButton");
+            const password =
+                document
+                    .getElementById("signupPassword")
+                    .value;
 
-        signupButton.disabled = true;
-        signupButton.textContent = "Creating Account...";
-        showMessage("");
+            const signupButton =
+                document.getElementById("signupButton");
 
-        try {
-            const result = await createUserWithEmailAndPassword(
-                auth,
-                email,
-                password
+            displayMessage("");
+
+            setButtonState(
+                signupButton,
+                true,
+                "Create Account",
+                "Creating Account..."
             );
 
-            await updateProfile(result.user, {
-                displayName: fullName
-            });
+            try {
+                const userCredential =
+                    await createUserWithEmailAndPassword(
+                        auth,
+                        email,
+                        password
+                    );
 
-            showMessage("Account created successfully.");
+                await updateProfile(
+                    userCredential.user,
+                    {
+                        displayName: fullName
+                    }
+                );
 
-            window.setTimeout(() => {
-                window.location.href = "dashboard.html";
-            }, 800);
+                displayMessage(
+                    "Account created successfully. Opening your dashboard..."
+                );
 
-        } catch (error) {
-            showMessage(friendlyError(error), true);
+                window.setTimeout(() => {
+                    window.location.href =
+                        "dashboard.html";
+                }, 900);
+            } catch (error) {
+                displayMessage(
+                    friendlyFirebaseError(error),
+                    true
+                );
 
-            signupButton.disabled = false;
-            signupButton.textContent = "Create Account";
+                setButtonState(
+                    signupButton,
+                    false,
+                    "Create Account",
+                    "Creating Account..."
+                );
+            }
         }
-    });
+    );
 }
 
 
-/* Log customer in */
+/* Log into an existing account */
 
 if (loginForm) {
-    loginForm.addEventListener("submit", async (event) => {
-        event.preventDefault();
+    loginForm.addEventListener(
+        "submit",
+        async (event) => {
+            event.preventDefault();
 
-        const email = document
-            .getElementById("loginEmail")
-            .value
-            .trim();
+            if (!loginForm.checkValidity()) {
+                loginForm.reportValidity();
+                return;
+            }
 
-        const password = document
-            .getElementById("loginPassword")
-            .value;
+            const email =
+                document
+                    .getElementById("loginEmail")
+                    .value
+                    .trim();
 
-        const loginButton = document.getElementById("loginButton");
+            const password =
+                document
+                    .getElementById("loginPassword")
+                    .value;
 
-        loginButton.disabled = true;
-        loginButton.textContent = "Logging In...";
-        showMessage("");
+            const loginButton =
+                document.getElementById("loginButton");
 
-        try {
-            await signInWithEmailAndPassword(
-                auth,
-                email,
-                password
+            displayMessage("");
+
+            setButtonState(
+                loginButton,
+                true,
+                "Log In",
+                "Logging In..."
             );
 
-            showMessage("Login successful.");
+            try {
+                await signInWithEmailAndPassword(
+                    auth,
+                    email,
+                    password
+                );
 
-            window.setTimeout(() => {
-                window.location.href = "dashboard.html";
-            }, 700);
+                displayMessage(
+                    "Login successful. Opening your dashboard..."
+                );
 
-        } catch (error) {
-            showMessage(friendlyError(error), true);
+                window.setTimeout(() => {
+                    window.location.href =
+                        "dashboard.html";
+                }, 700);
+            } catch (error) {
+                displayMessage(
+                    friendlyFirebaseError(error),
+                    true
+                );
 
-            loginButton.disabled = false;
-            loginButton.textContent = "Log In";
+                setButtonState(
+                    loginButton,
+                    false,
+                    "Log In",
+                    "Logging In..."
+                );
+            }
         }
-    });
+    );
 }
