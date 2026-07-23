@@ -1,5 +1,5 @@
 /* ========================================
-   Packaged Confort
+   Packaged Comfort
    Main Website Styles
 ======================================== */
 
@@ -21,7 +21,6 @@
     --gray-800: #273448;
 
     --success: #21a66f;
-    --danger: #d54b4b;
 
     --shadow-small: 0 8px 24px rgba(20, 37, 61, 0.08);
     --shadow-medium: 0 18px 50px rgba(20, 37, 61, 0.12);
@@ -79,13 +78,13 @@ textarea {
     font: inherit;
 }
 
+button {
+    cursor: pointer;
+}
+
 button,
 a {
     -webkit-tap-highlight-color: transparent;
-}
-
-button {
-    cursor: pointer;
 }
 
 a {
@@ -244,13 +243,13 @@ textarea {
     z-index: 1000;
     top: 0;
     border-bottom: 1px solid rgba(220, 226, 233, 0.8);
-    background: rgba(255, 255, 255, 0.94);
+    background: rgba(255, 255, 255, 0.96);
     backdrop-filter: blur(16px);
 }
 
 .nav-container {
     display: flex;
-    min-height: 78px;
+    min-height: 88px;
     align-items: center;
     justify-content: space-between;
 }
@@ -258,41 +257,39 @@ textarea {
 .brand {
     display: inline-flex;
     align-items: center;
-    gap: 11px;
+    gap: 12px;
 }
 
-.brand-icon {
-    display: grid;
-    width: 44px;
-    height: 44px;
+.logo-link {
     flex-shrink: 0;
-    place-items: center;
-    border-radius: 12px;
-    background: var(--primary);
-    color: var(--white);
-    font-size: 0.9rem;
-    font-weight: 900;
-    letter-spacing: 0.04em;
-    box-shadow: 0 8px 20px rgba(238, 108, 47, 0.25);
 }
 
-.brand-text {
+.site-logo {
+    width: 68px;
+    height: 68px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    object-fit: cover;
+    background: #000000;
+    box-shadow: 0 8px 20px rgba(20, 37, 61, 0.16);
+}
+
+.header-brand-name {
     display: flex;
     flex-direction: column;
     color: var(--navy);
     font-size: 1rem;
-    line-height: 1.03;
+    line-height: 1.05;
 }
 
-.brand-text strong {
-    font-size: 1.08rem;
-    font-weight: 850;
+.header-brand-name strong {
+    font-size: 1.12rem;
+    font-weight: 900;
 }
 
-.brand-text span {
+.header-brand-name span {
     color: var(--primary);
-    font-weight: 750;
-    letter-spacing: 0.03em;
+    font-weight: 800;
 }
 
 .main-nav {
@@ -486,177 +483,20 @@ textarea {
 }
 
 .moving-illustration {
-    position: relative;
-    min-height: 330px;
-    overflow: hidden;
-    background:
-        linear-gradient(
-            to bottom,
-            #eaf4fb 0%,
-            #f7fbfd 65%,
-            #dce4e9 65%,
-            #dce4e9 72%,
-            #b8c2cb 72%,
-            #b8c2cb 100%
-        );
-}
-
-.moving-illustration::before {
-    position: absolute;
-    top: 45px;
-    right: 34px;
-    width: 75px;
-    height: 75px;
-    border-radius: 50%;
-    background: rgba(255, 194, 82, 0.75);
-    content: "";
-}
-
-.moving-illustration::after {
-    position: absolute;
-    right: 0;
-    bottom: 89px;
-    left: 0;
-    height: 4px;
-    background: rgba(20, 37, 61, 0.12);
-    content: "";
-}
-
-.moving-box {
-    position: absolute;
-    z-index: 2;
-    border: 4px solid #99551f;
-    border-radius: 5px;
-    background: #cd7b37;
-    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.12);
-}
-
-.moving-box::before {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 50%;
-    width: 5px;
-    background: #e3a56c;
-    content: "";
-    transform: translateX(-50%);
-}
-
-.box-one {
-    right: 43px;
-    bottom: 88px;
-    width: 72px;
-    height: 74px;
-}
-
-.box-one span {
-    position: absolute;
-    z-index: 2;
-    top: 27px;
-    left: 20px;
-    color: #67330f;
-    font-size: 0.72rem;
-    font-weight: 900;
-}
-
-.box-two {
-    right: 108px;
-    bottom: 88px;
-    width: 58px;
-    height: 57px;
-}
-
-.box-three {
-    right: 65px;
-    bottom: 160px;
-    width: 53px;
-    height: 49px;
-}
-
-.moving-truck {
-    position: absolute;
-    z-index: 5;
-    bottom: 67px;
-    left: 42px;
-    width: 280px;
-    height: 135px;
-}
-
-.truck-cargo {
-    position: absolute;
-    top: 0;
-    left: 0;
     display: grid;
-    width: 195px;
-    height: 102px;
+    min-height: 420px;
     place-items: center;
-    border-radius: 9px 3px 4px 4px;
-    background: var(--navy);
-    color: var(--white);
-    box-shadow: inset 0 -8px 0 rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    padding: 15px;
+    background: #000000;
 }
 
-.truck-cargo span {
-    max-width: 130px;
-    text-align: center;
-    font-size: 0.76rem;
-    font-weight: 900;
-    letter-spacing: 0.08em;
-    line-height: 1.3;
-}
-
-.truck-front {
-    position: absolute;
-    right: 0;
-    bottom: 33px;
-    width: 90px;
-    height: 68px;
-    border-radius: 5px 18px 5px 3px;
-    background: var(--primary);
-    box-shadow: inset 0 -7px 0 rgba(0, 0, 0, 0.1);
-}
-
-.truck-front::before {
-    position: absolute;
-    right: 4px;
-    bottom: 5px;
-    width: 14px;
-    height: 10px;
-    border-radius: 3px;
-    background: #ffd981;
-    content: "";
-}
-
-.truck-window {
-    position: absolute;
-    z-index: 2;
-    top: 43px;
-    right: 23px;
-    width: 48px;
-    height: 29px;
-    border-radius: 3px 12px 2px 2px;
-    background: #bfe1ef;
-    transform: skewX(8deg);
-}
-
-.wheel {
-    position: absolute;
-    z-index: 6;
-    bottom: 12px;
-    width: 42px;
-    height: 42px;
-    border: 9px solid #24303d;
-    border-radius: 50%;
-    background: #9da7af;
-    box-shadow: 0 3px 0 rgba(0, 0, 0, 0.15);
-}
-
-.wheel-left {
-    left: 32px;
-}
-
-.wheel-right {
-    right: 27px;
+.hero-logo-image {
+    width: 100%;
+    height: 100%;
+    max-height: 420px;
+    object-fit: contain;
+    background: #000000;
 }
 
 .hero-card-steps {
@@ -1191,9 +1031,14 @@ textarea {
     color: var(--navy);
 }
 
-.contact-card p {
+.contact-card p,
+.contact-card a {
     color: var(--gray-600);
     font-size: 0.92rem;
+}
+
+.contact-card a:hover {
+    color: var(--primary);
 }
 
 
@@ -1213,11 +1058,16 @@ textarea {
 }
 
 .footer-brand {
+    display: inline-flex;
     margin-bottom: 18px;
 }
 
-.footer-brand .brand-text strong {
-    color: var(--white);
+.footer-logo {
+    width: 170px;
+    height: 170px;
+    border-radius: 18px;
+    object-fit: cover;
+    background: #000000;
 }
 
 .footer-grid > div:first-child p {
@@ -1315,17 +1165,13 @@ textarea {
     text-align: center;
 }
 
-.modal-icon {
-    display: grid;
-    width: 50px;
-    height: 50px;
+.modal-logo {
+    width: 95px;
+    height: 95px;
     margin: 0 auto 14px;
-    place-items: center;
     border-radius: 14px;
-    background: var(--primary);
-    color: var(--white);
-    font-size: 0.9rem;
-    font-weight: 900;
+    object-fit: cover;
+    background: #000000;
 }
 
 .modal-header h2 {
@@ -1393,12 +1239,12 @@ textarea {
 }
 
 
-/* Responsive Design */
+/* Responsive */
 
 @media (max-width: 1040px) {
     .main-nav {
         position: absolute;
-        top: 78px;
+        top: 88px;
         right: 20px;
         left: 20px;
         display: none;
@@ -1525,18 +1371,27 @@ textarea {
     }
 
     .nav-container {
-        min-height: 70px;
+        min-height: 76px;
     }
 
     .main-nav {
-        top: 70px;
+        top: 76px;
         right: 14px;
         left: 14px;
     }
 
-    .brand-icon {
-        width: 40px;
-        height: 40px;
+    .site-logo {
+        width: 54px;
+        height: 54px;
+        border-radius: 9px;
+    }
+
+    .header-brand-name strong {
+        font-size: 0.98rem;
+    }
+
+    .header-brand-name span {
+        font-size: 0.88rem;
     }
 
     .hero {
@@ -1566,26 +1421,12 @@ textarea {
     }
 
     .moving-illustration {
-        min-height: 280px;
+        min-height: 320px;
+        padding: 8px;
     }
 
-    .moving-truck {
-        left: 18px;
-        bottom: 67px;
-        transform: scale(0.83);
-        transform-origin: left bottom;
-    }
-
-    .box-one {
-        right: 25px;
-    }
-
-    .box-two {
-        right: 87px;
-    }
-
-    .box-three {
-        right: 45px;
+    .hero-logo-image {
+        max-height: 320px;
     }
 
     .hero-card-steps {
@@ -1655,6 +1496,11 @@ textarea {
 
     .footer-grid > div:first-child {
         grid-column: auto;
+    }
+
+    .footer-logo {
+        width: 145px;
+        height: 145px;
     }
 
     .modal {
