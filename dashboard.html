@@ -13,220 +13,547 @@
         content="Manage your Packaged Comfort account and service requests."
     >
 
-    <title>My Account | Packaged Comfort</title>
+    <title>Dashboard | Packaged Comfort</title>
 
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="style.css">
 
     <style>
-        .account-layout {
+        .dashboard-shell {
             display: grid;
-            grid-template-columns: 340px minmax(0, 1fr);
-            gap: 28px;
+            grid-template-columns: 285px minmax(0, 1fr);
+            gap: 26px;
             align-items: start;
         }
 
-        .account-card {
+        .dashboard-sidebar,
+        .dashboard-panel,
+        .summary-card,
+        .action-card {
             border: 1px solid rgba(23, 35, 59, 0.09);
-            border-radius: 22px;
-            padding: 28px;
             background: white;
-            box-shadow: 0 18px 50px rgba(23, 35, 59, 0.08);
+            box-shadow: 0 18px 48px rgba(23, 35, 59, 0.075);
         }
 
-        .account-profile-card {
+        .dashboard-sidebar {
             position: sticky;
-            top: 106px;
+            top: 105px;
+            overflow: hidden;
+            border-radius: 22px;
         }
 
-        .account-avatar-large {
+        .dashboard-profile {
+            padding: 30px 24px 25px;
+            border-bottom: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .dashboard-avatar {
             display: grid;
             width: 78px;
             height: 78px;
-            margin-bottom: 20px;
+            margin: 0 auto 17px;
             place-items: center;
             border-radius: 50%;
-            background: #fff1e9;
+            background:
+                linear-gradient(
+                    145deg,
+                    #fff4ed,
+                    #ffe1cf
+                );
             color: var(--primary);
             font-size: 1.85rem;
             font-weight: 900;
-            box-shadow: inset 0 0 0 1px rgba(238, 108, 47, 0.16);
+            box-shadow:
+                inset 0 0 0 1px rgba(238, 108, 47, 0.15),
+                0 12px 28px rgba(238, 108, 47, 0.13);
         }
 
-        .account-profile-card h2 {
-            margin-bottom: 5px;
+        .dashboard-profile h2 {
+            margin-bottom: 4px;
+            font-size: 1.2rem;
         }
 
-        .account-email {
+        .dashboard-profile-email {
             color: var(--muted);
+            font-size: 0.9rem;
             overflow-wrap: anywhere;
         }
 
-        .account-status {
+        .dashboard-account-status {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            margin-top: 18px;
+            gap: 7px;
+            margin-top: 15px;
             border-radius: 999px;
-            padding: 8px 12px;
+            padding: 7px 11px;
             background: #edf8f2;
             color: #176b46;
-            font-size: 0.88rem;
+            font-size: 0.8rem;
             font-weight: 850;
         }
 
-        .account-status::before {
+        .dashboard-account-status::before {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: #1c9963;
+            background: #1f9d67;
             content: "";
         }
 
-        .account-profile-actions {
+        .dashboard-sidebar-nav {
             display: grid;
-            gap: 10px;
-            margin-top: 24px;
+            gap: 5px;
+            padding: 13px;
         }
 
-        .account-profile-actions .button {
+        .dashboard-sidebar-nav a,
+        .dashboard-sidebar-nav button {
+            display: flex;
             width: 100%;
+            align-items: center;
+            gap: 12px;
+            border: 0;
+            border-radius: 12px;
+            padding: 13px 14px;
+            background: transparent;
+            color: var(--navy);
+            font: inherit;
+            font-weight: 800;
+            text-align: left;
+            text-decoration: none;
+            cursor: pointer;
         }
 
-        .account-main {
+        .dashboard-sidebar-nav a:hover,
+        .dashboard-sidebar-nav button:hover,
+        .dashboard-sidebar-nav a.active {
+            background: #fff1e9;
+            color: var(--primary);
+        }
+
+        .dashboard-main {
             display: grid;
             gap: 24px;
         }
 
-        .account-section-header {
+        .dashboard-welcome {
+            position: relative;
+            overflow: hidden;
+            border-radius: 24px;
+            padding: 34px;
+            background:
+                linear-gradient(
+                    135deg,
+                    #17233b 0%,
+                    #263c63 68%,
+                    #ee6c2f 155%
+                );
+            color: white;
+            box-shadow: 0 20px 52px rgba(23, 35, 59, 0.2);
+        }
+
+        .dashboard-welcome::after {
+            position: absolute;
+            top: -70px;
+            right: -70px;
+            width: 240px;
+            height: 240px;
+            border: 42px solid rgba(255, 255, 255, 0.055);
+            border-radius: 50%;
+            content: "";
+        }
+
+        .dashboard-date {
+            display: block;
+            margin-bottom: 12px;
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 0.88rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .dashboard-welcome h1 {
+            position: relative;
+            z-index: 1;
+            max-width: 690px;
+            margin-bottom: 10px;
+            color: white;
+            font-size: clamp(2rem, 4vw, 3.25rem);
+        }
+
+        .dashboard-welcome p {
+            position: relative;
+            z-index: 1;
+            max-width: 650px;
+            color: rgba(255, 255, 255, 0.82);
+            font-size: 1.02rem;
+            line-height: 1.65;
+        }
+
+        .dashboard-welcome-actions {
+            position: relative;
+            z-index: 1;
             display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 18px;
-            margin-bottom: 22px;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 25px;
         }
 
-        .account-section-header h2 {
-            margin-bottom: 5px;
+        .dashboard-welcome .button-secondary {
+            border-color: rgba(255, 255, 255, 0.45);
+            color: white;
         }
 
-        .account-section-header p {
-            color: var(--muted);
+        .dashboard-welcome .button-secondary:hover {
+            border-color: white;
+            background: white;
+            color: var(--navy);
         }
 
-        .quick-action-grid {
+        .dashboard-summary-grid {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 16px;
         }
 
-        .quick-action {
-            display: block;
-            min-height: 170px;
-            border: 1px solid rgba(23, 35, 59, 0.09);
+        .summary-card {
+            position: relative;
+            overflow: hidden;
             border-radius: 18px;
-            padding: 22px;
-            background: #fbfbfc;
+            padding: 21px;
+        }
+
+        .summary-card::after {
+            position: absolute;
+            right: -28px;
+            bottom: -32px;
+            width: 95px;
+            height: 95px;
+            border-radius: 50%;
+            background: rgba(238, 108, 47, 0.06);
+            content: "";
+        }
+
+        .summary-card-icon {
+            display: grid;
+            width: 42px;
+            height: 42px;
+            margin-bottom: 18px;
+            place-items: center;
+            border-radius: 12px;
+            background: #fff1e9;
+            font-size: 1.1rem;
+        }
+
+        .summary-card strong {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--navy);
+            font-size: 1.75rem;
+            line-height: 1;
+        }
+
+        .summary-card span {
+            color: var(--muted);
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .dashboard-panel {
+            overflow: hidden;
+            border-radius: 22px;
+        }
+
+        .dashboard-panel-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 24px 26px 18px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .dashboard-panel-header h2 {
+            margin-bottom: 5px;
+        }
+
+        .dashboard-panel-header p {
+            color: var(--muted);
+        }
+
+        .dashboard-panel-body {
+            padding: 25px 26px 27px;
+        }
+
+        .dashboard-action-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .action-card {
+            display: block;
+            min-height: 185px;
+            border-radius: 17px;
+            padding: 20px;
             color: var(--navy);
             text-decoration: none;
             transition:
                 transform 170ms ease,
-                border-color 170ms ease,
                 box-shadow 170ms ease,
-                background 170ms ease;
+                border-color 170ms ease;
         }
 
-        .quick-action:hover {
-            transform: translateY(-3px);
-            border-color: rgba(238, 108, 47, 0.32);
-            background: white;
-            box-shadow: 0 16px 38px rgba(23, 35, 59, 0.1);
+        .action-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(238, 108, 47, 0.3);
+            box-shadow: 0 20px 46px rgba(23, 35, 59, 0.12);
         }
 
-        .quick-action-icon {
+        .action-icon {
             display: grid;
-            width: 45px;
-            height: 45px;
+            width: 46px;
+            height: 46px;
             margin-bottom: 18px;
             place-items: center;
             border-radius: 13px;
             background: #fff1e9;
-            font-size: 1.25rem;
+            font-size: 1.2rem;
         }
 
-        .quick-action strong {
+        .action-card strong {
             display: block;
             margin-bottom: 7px;
-            font-size: 1.02rem;
+            font-size: 1rem;
         }
 
-        .quick-action span {
+        .action-card span {
             display: block;
             color: var(--muted);
-            font-size: 0.91rem;
-            line-height: 1.5;
+            font-size: 0.88rem;
+            line-height: 1.52;
         }
 
-        .request-empty-state {
-            border: 1px dashed rgba(23, 35, 59, 0.2);
+        .request-center {
+            display: grid;
+            grid-template-columns: minmax(0, 1.3fr) minmax(250px, 0.7fr);
+            gap: 20px;
+        }
+
+        .request-empty {
+            display: grid;
+            min-height: 285px;
+            place-items: center;
+            border: 1px dashed rgba(23, 35, 59, 0.22);
             border-radius: 18px;
-            padding: 42px 24px;
+            padding: 38px 24px;
             background: #fbfbfc;
             text-align: center;
         }
 
         .request-empty-icon {
             display: grid;
-            width: 58px;
-            height: 58px;
+            width: 62px;
+            height: 62px;
             margin: 0 auto 18px;
             place-items: center;
             border-radius: 50%;
             background: #fff1e9;
-            font-size: 1.45rem;
+            font-size: 1.5rem;
         }
 
-        .request-empty-state h3 {
+        .request-empty h3 {
             margin-bottom: 8px;
         }
 
-        .request-empty-state p {
-            max-width: 560px;
+        .request-empty p {
+            max-width: 510px;
             margin: 0 auto 22px;
             color: var(--muted);
+            line-height: 1.6;
         }
 
-        .account-loading {
-            padding: 70px 20px;
-            text-align: center;
+        .support-card {
+            border-radius: 18px;
+            padding: 24px;
+            background:
+                linear-gradient(
+                    145deg,
+                    #fff5ef,
+                    #fffaf7
+                );
+            box-shadow: inset 0 0 0 1px rgba(238, 108, 47, 0.11);
+        }
+
+        .support-card-icon {
+            display: grid;
+            width: 48px;
+            height: 48px;
+            margin-bottom: 18px;
+            place-items: center;
+            border-radius: 14px;
+            background: white;
+            font-size: 1.2rem;
+            box-shadow: 0 8px 24px rgba(23, 35, 59, 0.07);
+        }
+
+        .support-card h3 {
+            margin-bottom: 8px;
+        }
+
+        .support-card p {
+            margin-bottom: 20px;
             color: var(--muted);
+            line-height: 1.58;
         }
 
-        @media (max-width: 960px) {
-            .account-layout {
+        .support-contact {
+            display: grid;
+            gap: 10px;
+        }
+
+        .support-contact a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--navy);
+            font-weight: 850;
+            text-decoration: none;
+        }
+
+        .service-area {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            border-top: 1px solid var(--border);
+            margin-top: 23px;
+            padding-top: 20px;
+        }
+
+        .service-area strong,
+        .service-area span {
+            display: block;
+        }
+
+        .service-area span {
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .dashboard-loading {
+            padding: 75px 20px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        @media (max-width: 1120px) {
+            .dashboard-action-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .request-center {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 930px) {
+            .dashboard-shell {
                 grid-template-columns: 1fr;
             }
 
-            .account-profile-card {
+            .dashboard-sidebar {
                 position: static;
             }
 
-            .quick-action-grid {
-                grid-template-columns: 1fr;
+            .dashboard-profile {
+                display: grid;
+                grid-template-columns: auto minmax(0, 1fr);
+                column-gap: 18px;
+                text-align: left;
+            }
+
+            .dashboard-avatar {
+                grid-row: 1 / 4;
+                margin: 0;
+            }
+
+            .dashboard-account-status {
+                justify-self: start;
+            }
+
+            .dashboard-sidebar-nav {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+
+            .dashboard-sidebar-nav a,
+            .dashboard-sidebar-nav button {
+                justify-content: center;
+                text-align: center;
+            }
+
+            .dashboard-sidebar-nav span {
+                display: none;
             }
         }
 
-        @media (max-width: 620px) {
-            .account-card {
-                padding: 22px 18px;
+        @media (max-width: 720px) {
+            .dashboard-summary-grid {
+                grid-template-columns: 1fr;
             }
 
-            .account-section-header {
+            .dashboard-action-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-sidebar-nav {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .dashboard-welcome {
+                padding: 28px 22px;
+            }
+
+            .dashboard-panel-header {
+                align-items: stretch;
                 flex-direction: column;
             }
 
-            .account-section-header .button {
+            .dashboard-panel-header .button {
                 width: 100%;
+            }
+
+            .service-area {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dashboard-profile {
+                display: block;
+                text-align: center;
+            }
+
+            .dashboard-avatar {
+                margin: 0 auto 17px;
+            }
+
+            .dashboard-account-status {
+                justify-self: center;
+            }
+
+            .dashboard-sidebar-nav {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-panel-header,
+            .dashboard-panel-body {
+                padding-left: 19px;
+                padding-right: 19px;
             }
         }
     </style>
@@ -292,157 +619,125 @@
 
     <main>
 
-        <section class="page-hero">
-            <div class="container">
-                <span class="section-label">
-                    Customer account
-                </span>
-
-                <h1>
-                    Welcome,
-                    <span data-dashboard-name>Customer</span>
-                </h1>
-
-                <p>
-                    Manage your service requests, profile, and account access.
-                </p>
-            </div>
-        </section>
-
-
         <section class="section alt">
             <div class="container">
 
                 <div
-                    class="account-loading"
-                    id="accountLoading"
+                    class="dashboard-loading"
+                    id="dashboardLoading"
                 >
-                    Loading your account...
+                    Loading your dashboard...
                 </div>
 
 
                 <div
-                    class="account-layout"
-                    id="accountContent"
+                    class="dashboard-shell"
+                    id="dashboardContent"
                     hidden
                 >
 
-                    <aside class="account-card account-profile-card">
+                    <aside class="dashboard-sidebar">
 
-                        <div
-                            class="account-avatar-large"
-                            id="dashboardAvatar"
-                        >
-                            C
+                        <div class="dashboard-profile">
+
+                            <div
+                                class="dashboard-avatar"
+                                id="dashboardAvatar"
+                            >
+                                C
+                            </div>
+
+                            <h2 id="dashboardFullName">
+                                Customer
+                            </h2>
+
+                            <p
+                                class="dashboard-profile-email"
+                                id="dashboardEmail"
+                            >
+                                Account email
+                            </p>
+
+                            <span class="dashboard-account-status">
+                                Account active
+                            </span>
+
                         </div>
 
-                        <h2 id="dashboardFullName">
-                            Customer
-                        </h2>
 
-                        <p
-                            class="account-email"
-                            id="dashboardEmail"
-                        >
-                            Account email
-                        </p>
-
-                        <span class="account-status">
-                            Signed in
-                        </span>
-
-                        <div class="account-profile-actions">
+                        <nav class="dashboard-sidebar-nav">
 
                             <a
-                                href="settings.html"
-                                class="button button-primary"
+                                href="dashboard.html"
+                                class="active"
                             >
-                                Account Settings
+                                <span>▦</span>
+                                Overview
                             </a>
 
-                            <a
-                                href="contact.html"
-                                class="button button-secondary"
-                            >
-                                Contact Support
+                            <a href="quote.html">
+                                <span>＋</span>
+                                New Quote
                             </a>
 
-                        </div>
+                            <a href="settings.html">
+                                <span>⚙</span>
+                                Settings
+                            </a>
+
+                            <button
+                                type="button"
+                                id="dashboardLogoutButton"
+                            >
+                                <span>↪</span>
+                                Log Out
+                            </button>
+
+                        </nav>
 
                     </aside>
 
 
-                    <div class="account-main">
+                    <div class="dashboard-main">
 
-                        <section class="account-card">
+                        <section class="dashboard-welcome">
 
-                            <div class="account-section-header">
-                                <div>
-                                    <h2>Quick Actions</h2>
+                            <span
+                                class="dashboard-date"
+                                id="dashboardDate"
+                            >
+                                Today
+                            </span>
 
-                                    <p>
-                                        Choose what you would like to do next.
-                                    </p>
-                                </div>
-                            </div>
+                            <h1>
+                                <span id="dashboardGreeting">
+                                    Welcome back
+                                </span>,
+                                <span data-dashboard-name>
+                                    Customer
+                                </span>
+                            </h1>
 
+                            <p>
+                                Manage your account, begin a new service request,
+                                and quickly reach Packaged Comfort whenever you
+                                need assistance.
+                            </p>
 
-                            <div class="quick-action-grid">
+                            <div class="dashboard-welcome-actions">
 
                                 <a
                                     href="quote.html"
-                                    class="quick-action"
+                                    class="button button-primary"
                                 >
-                                    <span class="quick-action-icon">
-                                        📦
-                                    </span>
-
-                                    <strong>
-                                        Request a Quote
-                                    </strong>
-
-                                    <span>
-                                        Share pickup, destination, service,
-                                        and item details.
-                                    </span>
+                                    Request a Quote
                                 </a>
 
-
                                 <a
-                                    href="settings.html"
-                                    class="quick-action"
+                                    href="services.html"
+                                    class="button button-secondary"
                                 >
-                                    <span class="quick-action-icon">
-                                        ⚙
-                                    </span>
-
-                                    <strong>
-                                        Account Settings
-                                    </strong>
-
-                                    <span>
-                                        Update your name, password, and
-                                        account access.
-                                    </span>
-                                </a>
-
-
-                                <a
-                                    href="contact.html"
-                                    class="quick-action"
-                                >
-                                    <span class="quick-action-icon">
-                                        ☎
-                                    </span>
-
-                                    <strong>
-                                        Contact Packaged Comfort
-                                    </strong>
-
-                                    <span>
-                                        Call or text for availability and
-                                        service assistance.
-                                    </span>
+                                    View Services
                                 </a>
 
                             </div>
@@ -450,15 +745,168 @@
                         </section>
 
 
-                        <section class="account-card">
+                        <section class="dashboard-summary-grid">
 
-                            <div class="account-section-header">
+                            <article class="summary-card">
+
+                                <div class="summary-card-icon">
+                                    📦
+                                </div>
+
+                                <strong>0</strong>
+
+                                <span>
+                                    Active requests
+                                </span>
+
+                            </article>
+
+
+                            <article class="summary-card">
+
+                                <div class="summary-card-icon">
+                                    ✓
+                                </div>
+
+                                <strong>0</strong>
+
+                                <span>
+                                    Completed services
+                                </span>
+
+                            </article>
+
+
+                            <article class="summary-card">
+
+                                <div class="summary-card-icon">
+                                    ◷
+                                </div>
+
+                                <strong id="memberSince">
+                                    New
+                                </strong>
+
+                                <span>
+                                    Account member
+                                </span>
+
+                            </article>
+
+                        </section>
+
+
+                        <section class="dashboard-panel">
+
+                            <div class="dashboard-panel-header">
+
+                                <div>
+                                    <h2>Quick Actions</h2>
+
+                                    <p>
+                                        Start a request or manage your account.
+                                    </p>
+                                </div>
+
+                            </div>
+
+
+                            <div class="dashboard-panel-body">
+
+                                <div class="dashboard-action-grid">
+
+                                    <a
+                                        href="quote.html"
+                                        class="action-card"
+                                    >
+                                        <div class="action-icon">
+                                            📦
+                                        </div>
+
+                                        <strong>
+                                            Request a Quote
+                                        </strong>
+
+                                        <span>
+                                            Provide pickup, destination,
+                                            service, and item details.
+                                        </span>
+                                    </a>
+
+
+                                    <a
+                                        href="services.html"
+                                        class="action-card"
+                                    >
+                                        <div class="action-icon">
+                                            🚚
+                                        </div>
+
+                                        <strong>
+                                            Browse Services
+                                        </strong>
+
+                                        <span>
+                                            Review hauling, courier, delivery,
+                                            and moving options.
+                                        </span>
+                                    </a>
+
+
+                                    <a
+                                        href="settings.html"
+                                        class="action-card"
+                                    >
+                                        <div class="action-icon">
+                                            ⚙
+                                        </div>
+
+                                        <strong>
+                                            Account Settings
+                                        </strong>
+
+                                        <span>
+                                            Update your name, password, and
+                                            account access.
+                                        </span>
+                                    </a>
+
+
+                                    <a
+                                        href="contact.html"
+                                        class="action-card"
+                                    >
+                                        <div class="action-icon">
+                                            ☎
+                                        </div>
+
+                                        <strong>
+                                            Contact Us
+                                        </strong>
+
+                                        <span>
+                                            Call or text for service
+                                            availability and assistance.
+                                        </span>
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </section>
+
+
+                        <section class="dashboard-panel">
+
+                            <div class="dashboard-panel-header">
+
                                 <div>
                                     <h2>Service Requests</h2>
 
                                     <p>
-                                        Review your current Packaged Comfort
-                                        service activity.
+                                        Your active and completed requests
+                                        will appear here.
                                     </p>
                                 </div>
 
@@ -468,29 +916,85 @@
                                 >
                                     New Request
                                 </a>
+
                             </div>
 
 
-                            <div class="request-empty-state">
+                            <div class="dashboard-panel-body">
 
-                                <div class="request-empty-icon">
-                                    🚚
+                                <div class="request-center">
+
+                                    <div class="request-empty">
+
+                                        <div>
+                                            <div class="request-empty-icon">
+                                                🚚
+                                            </div>
+
+                                            <h3>No active requests</h3>
+
+                                            <p>
+                                                Start a request for private
+                                                hauling, courier service,
+                                                delivery, or moving assistance.
+                                            </p>
+
+                                            <a
+                                                href="quote.html"
+                                                class="button button-secondary"
+                                            >
+                                                Start Your First Request
+                                            </a>
+                                        </div>
+
+                                    </div>
+
+
+                                    <aside class="support-card">
+
+                                        <div class="support-card-icon">
+                                            💬
+                                        </div>
+
+                                        <h3>Need Assistance?</h3>
+
+                                        <p>
+                                            Reach Packaged Comfort directly
+                                            for availability, service questions,
+                                            or help planning your request.
+                                        </p>
+
+                                        <div class="support-contact">
+
+                                            <a href="tel:7257240012">
+                                                ☎ 725-724-0012
+                                            </a>
+
+                                            <a href="sms:7257240012">
+                                                ✉ Send a text
+                                            </a>
+
+                                        </div>
+
+
+                                        <div class="service-area">
+
+                                            <div>
+                                                <strong>
+                                                    Service Area
+                                                </strong>
+
+                                                <span>
+                                                    Henderson, Nevada and
+                                                    surrounding areas
+                                                </span>
+                                            </div>
+
+                                        </div>
+
+                                    </aside>
+
                                 </div>
-
-                                <h3>No active requests</h3>
-
-                                <p>
-                                    Start a quote request for private hauling,
-                                    courier service, furniture delivery, or
-                                    moving assistance.
-                                </p>
-
-                                <a
-                                    href="quote.html"
-                                    class="button button-secondary"
-                                >
-                                    Start a Request
-                                </a>
 
                             </div>
 
@@ -534,7 +1038,7 @@
 
             <div class="footer-links">
                 <strong>Account</strong>
-                <a href="dashboard.html">My Account</a>
+                <a href="dashboard.html">Dashboard</a>
                 <a href="settings.html">Account Settings</a>
                 <a href="quote.html">New Quote Request</a>
             </div>
