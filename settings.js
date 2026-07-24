@@ -10,6 +10,7 @@ import {
     onAuthStateChanged,
     reauthenticateWithCredential,
     sendPasswordResetEmail,
+    signOut,
     updatePassword,
     updateProfile
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
@@ -68,6 +69,9 @@ const changePasswordButton =
 const resetPasswordButton =
     document.getElementById("resetPasswordButton");
 
+const settingsLogoutButton =
+    document.getElementById("settingsLogoutButton");
+
 const profileMessage =
     document.getElementById("profileMessage");
 
@@ -85,7 +89,7 @@ function setMessage(element, message, isError = false) {
     element.textContent = message;
 
     element.style.color =
-        isError ? "#b42318" : "#1c7c54";
+        isError ? "#b42318" : "#176b46";
 }
 
 
@@ -102,26 +106,49 @@ function setButtonLoading(
 }
 
 
-function getInitial(name, email) {
-    const source =
-        (name || email || "C").trim();
+function getDisplayName(user) {
+    if (user.displayName?.trim()) {
+        return user.displayName.trim();
+    }
 
-    return source.charAt(0).toUpperCase();
+    if (user.email) {
+        return user.email.split("@")[0];
+    }
+
+    return "Customer";
 }
 
 
-function displayAccount(user) {
+function getInitial(name, email) {
+    const source =
+        name || email || "C";
+
+    return source
+        .trim()
+        .charAt(0)
+        .toUpperCase();
+}
+
+
+function showAccount(user) {
     const displayName =
-        user.displayName?.trim() || "Customer";
+        getDisplayName(user);
 
     const email =
-        user.email || "No email available";
+        user.email || "Account email unavailable";
 
-    settingsName.value = displayName;
-    settingsEmail.textContent = email;
+    settingsName.value =
+        displayName;
 
-    accountDisplayName.textContent = displayName;
-    accountEmailSummary.textContent = email;
+    settingsEmail.textContent =
+        email;
+
+    accountDisplayName.textContent =
+        displayName;
+
+    accountEmailSummary.textContent =
+        email;
+
     accountAvatar.textContent =
         getInitial(displayName, email);
 
@@ -130,20 +157,20 @@ function displayAccount(user) {
 }
 
 
-function friendlyError(error) {
+function accountErrorMessage(error) {
     switch (error.code) {
         case "auth/invalid-credential":
         case "auth/wrong-password":
             return "Your current password is incorrect.";
 
         case "auth/weak-password":
-            return "The new password must contain at least 6 characters.";
+            return "Your new password must contain at least 6 characters.";
 
         case "auth/requires-recent-login":
             return "Please log out, log back in, and try again.";
 
         case "auth/too-many-requests":
-            return "Too many attempts. Wait a moment and try again.";
+            return "Too many attempts were made. Wait and try again.";
 
         case "auth/network-request-failed":
             return "Check your internet connection and try again.";
@@ -152,11 +179,12 @@ function friendlyError(error) {
             return "This account has been disabled.";
 
         default:
-            console.error("Account settings error:", error);
+            console.error(
+                "Account settings error:",
+                error
+            );
 
-            return `Something went wrong: ${
-                error.code || error.message
-            }`;
+            return "Something went wrong. Please try again.";
     }
 }
 
@@ -168,209 +196,260 @@ onAuthStateChanged(auth, (user) => {
     }
 
     activeUser = user;
-    displayAccount(user);
+    showAccount(user);
 });
 
 
-profileForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
+profileForm.addEventListener(
+    "submit",
+    async (event) => {
+        event.preventDefault();
 
-    if (!activeUser) {
-        return;
-    }
+        if (!activeUser) {
+            return;
+        }
 
-    const fullName =
-        settingsName.value.trim();
+        const fullName =
+            settingsName.value.trim();
 
-    if (!fullName) {
-        setMessage(
-            profileMessage,
-            "Enter your full name.",
-            true
-        );
-
-        return;
-    }
-
-    setButtonLoading(
-        saveProfileButton,
-        true,
-        "Save Profile",
-        "Saving..."
-    );
-
-    setMessage(profileMessage, "");
-
-    try {
-        await updateProfile(activeUser, {
-            displayName: fullName
-        });
-
-        accountDisplayName.textContent = fullName;
-        accountAvatar.textContent =
-            getInitial(fullName, activeUser.email);
-
-        document
-            .querySelectorAll(
-                "[data-user-name], [data-dashboard-name]"
-            )
-            .forEach((element) => {
-                element.textContent =
-                    fullName.split(/\s+/)[0];
-            });
-
-        setMessage(
-            profileMessage,
-            "Your profile name was updated."
-        );
-    } catch (error) {
-        setMessage(
-            profileMessage,
-            friendlyError(error),
-            true
-        );
-    } finally {
-        setButtonLoading(
-            saveProfileButton,
-            false,
-            "Save Profile",
-            "Saving..."
-        );
-    }
-});
-
-
-passwordForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    if (!activeUser || !activeUser.email) {
-        return;
-    }
-
-    const currentPassword =
-        document.getElementById("currentPassword").value;
-
-    const newPassword =
-        document.getElementById("newPassword").value;
-
-    const confirmPassword =
-        document.getElementById("confirmPassword").value;
-
-    if (newPassword.length < 6) {
-        setMessage(
-            passwordMessage,
-            "The new password must contain at least 6 characters.",
-            true
-        );
-
-        return;
-    }
-
-    if (newPassword !== confirmPassword) {
-        setMessage(
-            passwordMessage,
-            "The new passwords do not match.",
-            true
-        );
-
-        return;
-    }
-
-    if (currentPassword === newPassword) {
-        setMessage(
-            passwordMessage,
-            "Choose a password different from your current password.",
-            true
-        );
-
-        return;
-    }
-
-    setButtonLoading(
-        changePasswordButton,
-        true,
-        "Change Password",
-        "Changing Password..."
-    );
-
-    setMessage(passwordMessage, "");
-
-    try {
-        const credential =
-            EmailAuthProvider.credential(
-                activeUser.email,
-                currentPassword
+        if (!fullName) {
+            setMessage(
+                profileMessage,
+                "Enter your full name.",
+                true
             );
 
-        await reauthenticateWithCredential(
-            activeUser,
-            credential
+            return;
+        }
+
+        setButtonLoading(
+            saveProfileButton,
+            true,
+            "Save Changes",
+            "Saving..."
         );
 
-        await updatePassword(
-            activeUser,
-            newPassword
-        );
+        setMessage(profileMessage, "");
 
-        passwordForm.reset();
+        try {
+            await updateProfile(
+                activeUser,
+                {
+                    displayName: fullName
+                }
+            );
 
-        setMessage(
-            passwordMessage,
-            "Your password was changed successfully."
-        );
-    } catch (error) {
-        setMessage(
-            passwordMessage,
-            friendlyError(error),
-            true
-        );
-    } finally {
+            accountDisplayName.textContent =
+                fullName;
+
+            accountAvatar.textContent =
+                getInitial(
+                    fullName,
+                    activeUser.email
+                );
+
+            document
+                .querySelectorAll(
+                    "[data-user-name], " +
+                    "[data-dashboard-name]"
+                )
+                .forEach((element) => {
+                    element.textContent =
+                        fullName
+                            .split(/\s+/)[0];
+                });
+
+            setMessage(
+                profileMessage,
+                "Your profile was updated successfully."
+            );
+        } catch (error) {
+            setMessage(
+                profileMessage,
+                accountErrorMessage(error),
+                true
+            );
+        } finally {
+            setButtonLoading(
+                saveProfileButton,
+                false,
+                "Save Changes",
+                "Saving..."
+            );
+        }
+    }
+);
+
+
+passwordForm.addEventListener(
+    "submit",
+    async (event) => {
+        event.preventDefault();
+
+        if (!activeUser?.email) {
+            return;
+        }
+
+        const currentPassword =
+            document
+                .getElementById("currentPassword")
+                .value;
+
+        const newPassword =
+            document
+                .getElementById("newPassword")
+                .value;
+
+        const confirmPassword =
+            document
+                .getElementById("confirmPassword")
+                .value;
+
+        if (newPassword.length < 6) {
+            setMessage(
+                passwordMessage,
+                "Your new password must contain at least 6 characters.",
+                true
+            );
+
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            setMessage(
+                passwordMessage,
+                "The new passwords do not match.",
+                true
+            );
+
+            return;
+        }
+
+        if (currentPassword === newPassword) {
+            setMessage(
+                passwordMessage,
+                "Choose a password different from your current password.",
+                true
+            );
+
+            return;
+        }
+
         setButtonLoading(
             changePasswordButton,
-            false,
-            "Change Password",
-            "Changing Password..."
+            true,
+            "Update Password",
+            "Updating..."
         );
+
+        setMessage(passwordMessage, "");
+
+        try {
+            const credential =
+                EmailAuthProvider.credential(
+                    activeUser.email,
+                    currentPassword
+                );
+
+            await reauthenticateWithCredential(
+                activeUser,
+                credential
+            );
+
+            await updatePassword(
+                activeUser,
+                newPassword
+            );
+
+            passwordForm.reset();
+
+            setMessage(
+                passwordMessage,
+                "Your password was updated successfully."
+            );
+        } catch (error) {
+            setMessage(
+                passwordMessage,
+                accountErrorMessage(error),
+                true
+            );
+        } finally {
+            setButtonLoading(
+                changePasswordButton,
+                false,
+                "Update Password",
+                "Updating..."
+            );
+        }
     }
-});
+);
 
 
-resetPasswordButton.addEventListener("click", async () => {
-    if (!activeUser?.email) {
-        return;
-    }
+resetPasswordButton.addEventListener(
+    "click",
+    async () => {
+        if (!activeUser?.email) {
+            return;
+        }
 
-    setButtonLoading(
-        resetPasswordButton,
-        true,
-        "Send Reset Email",
-        "Sending..."
-    );
-
-    setMessage(resetMessage, "");
-
-    try {
-        await sendPasswordResetEmail(
-            auth,
-            activeUser.email
-        );
-
-        setMessage(
-            resetMessage,
-            `A password-reset email was sent to ${activeUser.email}.`
-        );
-    } catch (error) {
-        setMessage(
-            resetMessage,
-            friendlyError(error),
-            true
-        );
-    } finally {
         setButtonLoading(
             resetPasswordButton,
-            false,
+            true,
             "Send Reset Email",
             "Sending..."
         );
+
+        setMessage(resetMessage, "");
+
+        try {
+            await sendPasswordResetEmail(
+                auth,
+                activeUser.email
+            );
+
+            setMessage(
+                resetMessage,
+                `A reset email was sent to ${activeUser.email}.`
+            );
+        } catch (error) {
+            setMessage(
+                resetMessage,
+                accountErrorMessage(error),
+                true
+            );
+        } finally {
+            setButtonLoading(
+                resetPasswordButton,
+                false,
+                "Send Reset Email",
+                "Sending..."
+            );
+        }
     }
-});
+);
+
+
+settingsLogoutButton.addEventListener(
+    "click",
+    async () => {
+        settingsLogoutButton.disabled = true;
+        settingsLogoutButton.textContent =
+            "Logging Out...";
+
+        try {
+            await signOut(auth);
+
+            window.location.href =
+                "index.html";
+        } catch (error) {
+            console.error(
+                "Account logout error:",
+                error
+            );
+
+            settingsLogoutButton.disabled = false;
+            settingsLogoutButton.textContent =
+                "Log Out";
+        }
+    }
+);
