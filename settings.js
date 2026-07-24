@@ -5,14 +5,9 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 
 import {
-    EmailAuthProvider,
     getAuth,
     onAuthStateChanged,
-    reauthenticateWithCredential,
-    sendPasswordResetEmail,
-    signOut,
-    updatePassword,
-    updateProfile
+    signOut
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
 
@@ -33,77 +28,32 @@ const app = getApps().length
 const auth = getAuth(app);
 
 
-const settingsLoading =
-    document.getElementById("settingsLoading");
+const dashboardLoading =
+    document.getElementById("dashboardLoading");
 
-const settingsContent =
-    document.getElementById("settingsContent");
+const dashboardContent =
+    document.getElementById("dashboardContent");
 
-const profileForm =
-    document.getElementById("profileForm");
+const dashboardFullName =
+    document.getElementById("dashboardFullName");
 
-const passwordForm =
-    document.getElementById("passwordForm");
+const dashboardEmail =
+    document.getElementById("dashboardEmail");
 
-const settingsName =
-    document.getElementById("settingsName");
+const dashboardAvatar =
+    document.getElementById("dashboardAvatar");
 
-const settingsEmail =
-    document.getElementById("settingsEmail");
+const dashboardDate =
+    document.getElementById("dashboardDate");
 
-const accountDisplayName =
-    document.getElementById("accountDisplayName");
+const dashboardGreeting =
+    document.getElementById("dashboardGreeting");
 
-const accountEmailSummary =
-    document.getElementById("accountEmailSummary");
+const memberSince =
+    document.getElementById("memberSince");
 
-const accountAvatar =
-    document.getElementById("accountAvatar");
-
-const saveProfileButton =
-    document.getElementById("saveProfileButton");
-
-const changePasswordButton =
-    document.getElementById("changePasswordButton");
-
-const resetPasswordButton =
-    document.getElementById("resetPasswordButton");
-
-const settingsLogoutButton =
-    document.getElementById("settingsLogoutButton");
-
-const profileMessage =
-    document.getElementById("profileMessage");
-
-const passwordMessage =
-    document.getElementById("passwordMessage");
-
-const resetMessage =
-    document.getElementById("resetMessage");
-
-
-let activeUser = null;
-
-
-function setMessage(element, message, isError = false) {
-    element.textContent = message;
-
-    element.style.color =
-        isError ? "#b42318" : "#176b46";
-}
-
-
-function setButtonLoading(
-    button,
-    loading,
-    normalText,
-    loadingText
-) {
-    button.disabled = loading;
-
-    button.textContent =
-        loading ? loadingText : normalText;
-}
+const dashboardLogoutButton =
+    document.getElementById("dashboardLogoutButton");
 
 
 function getDisplayName(user) {
@@ -119,9 +69,16 @@ function getDisplayName(user) {
 }
 
 
-function getInitial(name, email) {
+function getFirstName(fullName) {
+    return fullName
+        .trim()
+        .split(/\s+/)[0];
+}
+
+
+function getInitial(fullName, email) {
     const source =
-        name || email || "C";
+        fullName || email || "C";
 
     return source
         .trim()
@@ -130,62 +87,97 @@ function getInitial(name, email) {
 }
 
 
-function showAccount(user) {
-    const displayName =
+function getGreeting() {
+    const hour =
+        new Date().getHours();
+
+    if (hour < 12) {
+        return "Good morning";
+    }
+
+    if (hour < 18) {
+        return "Good afternoon";
+    }
+
+    return "Good evening";
+}
+
+
+function formatCurrentDate() {
+    return new Intl.DateTimeFormat(
+        "en-US",
+        {
+            weekday: "long",
+            month: "long",
+            day: "numeric"
+        }
+    ).format(new Date());
+}
+
+
+function formatMemberSince(user) {
+    const creationTime =
+        user.metadata?.creationTime;
+
+    if (!creationTime) {
+        return "Active";
+    }
+
+    const created =
+        new Date(creationTime);
+
+    return new Intl.DateTimeFormat(
+        "en-US",
+        {
+            month: "short",
+            year: "numeric"
+        }
+    ).format(created);
+}
+
+
+function displayDashboard(user) {
+    const fullName =
         getDisplayName(user);
+
+    const firstName =
+        getFirstName(fullName);
 
     const email =
         user.email || "Account email unavailable";
 
-    settingsName.value =
-        displayName;
 
-    settingsEmail.textContent =
+    dashboardFullName.textContent =
+        fullName;
+
+    dashboardEmail.textContent =
         email;
 
-    accountDisplayName.textContent =
-        displayName;
+    dashboardAvatar.textContent =
+        getInitial(fullName, email);
 
-    accountEmailSummary.textContent =
-        email;
+    dashboardDate.textContent =
+        formatCurrentDate();
 
-    accountAvatar.textContent =
-        getInitial(displayName, email);
+    dashboardGreeting.textContent =
+        getGreeting();
 
-    settingsLoading.hidden = true;
-    settingsContent.hidden = false;
-}
+    memberSince.textContent =
+        formatMemberSince(user);
 
 
-function accountErrorMessage(error) {
-    switch (error.code) {
-        case "auth/invalid-credential":
-        case "auth/wrong-password":
-            return "Your current password is incorrect.";
+    document
+        .querySelectorAll(
+            "[data-dashboard-name], [data-user-name]"
+        )
+        .forEach((element) => {
+            element.textContent =
+                firstName;
+        });
 
-        case "auth/weak-password":
-            return "Your new password must contain at least 6 characters.";
 
-        case "auth/requires-recent-login":
-            return "Please log out, log back in, and try again.";
-
-        case "auth/too-many-requests":
-            return "Too many attempts were made. Wait and try again.";
-
-        case "auth/network-request-failed":
-            return "Check your internet connection and try again.";
-
-        case "auth/user-disabled":
-            return "This account has been disabled.";
-
-        default:
-            console.error(
-                "Account settings error:",
-                error
-            );
-
-            return "Something went wrong. Please try again.";
-    }
+    dashboardLoading.hidden = true;
+    dashboardContent.hidden = false;
 }
 
 
@@ -195,245 +187,15 @@ onAuthStateChanged(auth, (user) => {
         return;
     }
 
-    activeUser = user;
-    showAccount(user);
+    displayDashboard(user);
 });
 
 
-profileForm.addEventListener(
-    "submit",
-    async (event) => {
-        event.preventDefault();
-
-        if (!activeUser) {
-            return;
-        }
-
-        const fullName =
-            settingsName.value.trim();
-
-        if (!fullName) {
-            setMessage(
-                profileMessage,
-                "Enter your full name.",
-                true
-            );
-
-            return;
-        }
-
-        setButtonLoading(
-            saveProfileButton,
-            true,
-            "Save Changes",
-            "Saving..."
-        );
-
-        setMessage(profileMessage, "");
-
-        try {
-            await updateProfile(
-                activeUser,
-                {
-                    displayName: fullName
-                }
-            );
-
-            accountDisplayName.textContent =
-                fullName;
-
-            accountAvatar.textContent =
-                getInitial(
-                    fullName,
-                    activeUser.email
-                );
-
-            document
-                .querySelectorAll(
-                    "[data-user-name], " +
-                    "[data-dashboard-name]"
-                )
-                .forEach((element) => {
-                    element.textContent =
-                        fullName
-                            .split(/\s+/)[0];
-                });
-
-            setMessage(
-                profileMessage,
-                "Your profile was updated successfully."
-            );
-        } catch (error) {
-            setMessage(
-                profileMessage,
-                accountErrorMessage(error),
-                true
-            );
-        } finally {
-            setButtonLoading(
-                saveProfileButton,
-                false,
-                "Save Changes",
-                "Saving..."
-            );
-        }
-    }
-);
-
-
-passwordForm.addEventListener(
-    "submit",
-    async (event) => {
-        event.preventDefault();
-
-        if (!activeUser?.email) {
-            return;
-        }
-
-        const currentPassword =
-            document
-                .getElementById("currentPassword")
-                .value;
-
-        const newPassword =
-            document
-                .getElementById("newPassword")
-                .value;
-
-        const confirmPassword =
-            document
-                .getElementById("confirmPassword")
-                .value;
-
-        if (newPassword.length < 6) {
-            setMessage(
-                passwordMessage,
-                "Your new password must contain at least 6 characters.",
-                true
-            );
-
-            return;
-        }
-
-        if (newPassword !== confirmPassword) {
-            setMessage(
-                passwordMessage,
-                "The new passwords do not match.",
-                true
-            );
-
-            return;
-        }
-
-        if (currentPassword === newPassword) {
-            setMessage(
-                passwordMessage,
-                "Choose a password different from your current password.",
-                true
-            );
-
-            return;
-        }
-
-        setButtonLoading(
-            changePasswordButton,
-            true,
-            "Update Password",
-            "Updating..."
-        );
-
-        setMessage(passwordMessage, "");
-
-        try {
-            const credential =
-                EmailAuthProvider.credential(
-                    activeUser.email,
-                    currentPassword
-                );
-
-            await reauthenticateWithCredential(
-                activeUser,
-                credential
-            );
-
-            await updatePassword(
-                activeUser,
-                newPassword
-            );
-
-            passwordForm.reset();
-
-            setMessage(
-                passwordMessage,
-                "Your password was updated successfully."
-            );
-        } catch (error) {
-            setMessage(
-                passwordMessage,
-                accountErrorMessage(error),
-                true
-            );
-        } finally {
-            setButtonLoading(
-                changePasswordButton,
-                false,
-                "Update Password",
-                "Updating..."
-            );
-        }
-    }
-);
-
-
-resetPasswordButton.addEventListener(
+dashboardLogoutButton.addEventListener(
     "click",
     async () => {
-        if (!activeUser?.email) {
-            return;
-        }
-
-        setButtonLoading(
-            resetPasswordButton,
-            true,
-            "Send Reset Email",
-            "Sending..."
-        );
-
-        setMessage(resetMessage, "");
-
-        try {
-            await sendPasswordResetEmail(
-                auth,
-                activeUser.email
-            );
-
-            setMessage(
-                resetMessage,
-                `A reset email was sent to ${activeUser.email}.`
-            );
-        } catch (error) {
-            setMessage(
-                resetMessage,
-                accountErrorMessage(error),
-                true
-            );
-        } finally {
-            setButtonLoading(
-                resetPasswordButton,
-                false,
-                "Send Reset Email",
-                "Sending..."
-            );
-        }
-    }
-);
-
-
-settingsLogoutButton.addEventListener(
-    "click",
-    async () => {
-        settingsLogoutButton.disabled = true;
-        settingsLogoutButton.textContent =
+        dashboardLogoutButton.disabled = true;
+        dashboardLogoutButton.textContent =
             "Logging Out...";
 
         try {
@@ -447,8 +209,8 @@ settingsLogoutButton.addEventListener(
                 error
             );
 
-            settingsLogoutButton.disabled = false;
-            settingsLogoutButton.textContent =
+            dashboardLogoutButton.disabled = false;
+            dashboardLogoutButton.textContent =
                 "Log Out";
         }
     }
