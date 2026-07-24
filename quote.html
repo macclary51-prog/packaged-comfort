@@ -32,7 +32,7 @@
             box-shadow: 0 12px 34px rgba(23, 35, 59, 0.06);
         }
 
-        .quote-access-note span {
+        .quote-access-note > span {
             display: grid;
             width: 34px;
             height: 34px;
@@ -40,6 +40,8 @@
             place-items: center;
             border-radius: 50%;
             background: #fff1e9;
+            color: #ee6c2f;
+            font-weight: 900;
         }
 
         .quote-access-note strong,
@@ -78,6 +80,62 @@
 
         .quote-status.error {
             color: #b42318;
+        }
+
+        .account-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .account-name {
+            display: inline-flex;
+            min-height: 44px;
+            align-items: center;
+            border-radius: 10px;
+            padding: 8px 13px;
+            background: #fff1e9;
+            color: #17233b;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .account-name strong {
+            margin-left: 4px;
+            color: #ee6c2f;
+        }
+
+        .account-logout {
+            min-height: 44px;
+            border: 1px solid #17233b;
+            border-radius: 10px;
+            padding: 10px 16px;
+            background: transparent;
+            color: #17233b;
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .account-hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 980px) {
+            .account-menu {
+                width: 100%;
+                align-items: stretch;
+                flex-direction: column;
+                margin-top: 8px;
+                padding-top: 12px;
+                border-top: 1px solid #d9dde5;
+            }
+
+            .account-name,
+            .account-logout {
+                width: 100%;
+            }
         }
 
         @media (max-width: 560px) {
@@ -129,7 +187,10 @@
                 <a href="quote.html">Request a Quote</a>
                 <a href="contact.html">Contact</a>
 
-                <div class="nav-actions">
+                <div
+                    class="nav-actions"
+                    id="guestNavigation"
+                >
                     <a
                         href="login.html"
                         class="button button-secondary"
@@ -143,6 +204,36 @@
                     >
                         Sign Up
                     </a>
+                </div>
+
+                <div
+                    class="account-menu account-hidden"
+                    id="customerNavigation"
+                >
+                    <a
+                        href="dashboard.html"
+                        class="firebase-dashboard-link"
+                    >
+                        Dashboard
+                    </a>
+
+                    <a
+                        href="settings.html"
+                        class="account-name"
+                    >
+                        Hi,
+                        <strong id="customerFirstName">
+                            Customer
+                        </strong>
+                    </a>
+
+                    <button
+                        type="button"
+                        class="account-logout"
+                        id="logoutButton"
+                    >
+                        Log Out
+                    </button>
                 </div>
             </nav>
 
@@ -178,9 +269,8 @@
                         <strong>No account is required</strong>
 
                         <p>
-                            Anyone can request a quote. Customers who are
-                            signed in will have their name and email filled
-                            automatically.
+                            Every customer can request a quote. Signing in is
+                            optional and only fills in your saved name and email.
                         </p>
                     </div>
                 </div>
@@ -305,31 +395,31 @@
                                     Select a service
                                 </option>
 
-                                <option>
+                                <option value="Private hauling">
                                     Private hauling
                                 </option>
 
-                                <option>
+                                <option value="Courier service">
                                     Courier service
                                 </option>
 
-                                <option>
+                                <option value="Residential moving">
                                     Residential moving
                                 </option>
 
-                                <option>
+                                <option value="Furniture delivery">
                                     Furniture delivery
                                 </option>
 
-                                <option>
+                                <option value="Business delivery">
                                     Business delivery
                                 </option>
 
-                                <option>
+                                <option value="Loading and unloading">
                                     Loading and unloading
                                 </option>
 
-                                <option>
+                                <option value="Other">
                                     Other
                                 </option>
                             </select>
@@ -350,35 +440,35 @@
                                     Select an amount
                                 </option>
 
-                                <option>
+                                <option value="Single package">
                                     Single package
                                 </option>
 
-                                <option>
+                                <option value="A few items">
                                     A few items
                                 </option>
 
-                                <option>
+                                <option value="Furniture or appliances">
                                     Furniture or appliances
                                 </option>
 
-                                <option>
+                                <option value="Small room">
                                     Small room
                                 </option>
 
-                                <option>
+                                <option value="One-bedroom move">
                                     One-bedroom move
                                 </option>
 
-                                <option>
+                                <option value="Two-bedroom move">
                                     Two-bedroom move
                                 </option>
 
-                                <option>
+                                <option value="Business or office items">
                                     Business or office items
                                 </option>
 
-                                <option>
+                                <option value="Other">
                                     Other
                                 </option>
                             </select>
@@ -516,18 +606,453 @@
 
 
         <div class="container footer-bottom">
-            © <span data-current-year></span>
+            © <span id="currentYear"></span>
             Packaged Comfort. All rights reserved.
         </div>
     </footer>
 
 
-    <div class="toast" id="toast">
-        <span id="toastMessage"></span>
-    </div>
+    <script type="module">
+        import {
+            initializeApp
+        } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+        import {
+            getAuth,
+            onAuthStateChanged,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
 
-    <script src="script.js"></script>
-    <script type="module" src="quote.js"></script>
+        const accountServiceConfig = {
+            apiKey: "AIzaSyDMWaronfPi0cujdvzGIsieadLss_d4iMQ",
+            authDomain: "packaged-comfort-website.firebaseapp.com",
+            projectId: "packaged-comfort-website",
+            storageBucket: "packaged-comfort-website.firebasestorage.app",
+            messagingSenderId: "150317110708",
+            appId: "1:150317110708:web:dab83f056b04b1e0210ee1"
+        };
+
+
+        const app =
+            initializeApp(accountServiceConfig);
+
+        const auth =
+            getAuth(app);
+
+
+        const menuButton =
+            document.getElementById("menuButton");
+
+        const mainNav =
+            document.getElementById("mainNav");
+
+        const guestNavigation =
+            document.getElementById("guestNavigation");
+
+        const customerNavigation =
+            document.getElementById("customerNavigation");
+
+        const customerFirstName =
+            document.getElementById("customerFirstName");
+
+        const logoutButton =
+            document.getElementById("logoutButton");
+
+        const quoteForm =
+            document.getElementById("quoteForm");
+
+        const quoteSubmitButton =
+            document.getElementById("quoteSubmitButton");
+
+        const copyQuoteButton =
+            document.getElementById("copyQuoteButton");
+
+        const quoteStatus =
+            document.getElementById("quoteStatus");
+
+        const photoInput =
+            document.getElementById("movingPhotos");
+
+        const photoPreview =
+            document.getElementById("photoPreview");
+
+        const businessPhone =
+            "7257240012";
+
+        let selectedPhotos = [];
+
+
+        document.getElementById("currentYear").textContent =
+            new Date().getFullYear();
+
+
+        menuButton.addEventListener("click", () => {
+            const menuIsOpen =
+                mainNav.classList.toggle("open");
+
+            menuButton.setAttribute(
+                "aria-expanded",
+                String(menuIsOpen)
+            );
+
+            menuButton.textContent =
+                menuIsOpen ? "×" : "☰";
+        });
+
+
+        const serviceDateInput =
+            document.getElementById("serviceDate");
+
+        const now =
+            new Date();
+
+        serviceDateInput.min =
+            new Date(
+                now.getTime() -
+                now.getTimezoneOffset() * 60000
+            )
+                .toISOString()
+                .split("T")[0];
+
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                guestNavigation.classList.remove(
+                    "account-hidden"
+                );
+
+                customerNavigation.classList.add(
+                    "account-hidden"
+                );
+
+                return;
+            }
+
+
+            guestNavigation.classList.add(
+                "account-hidden"
+            );
+
+            customerNavigation.classList.remove(
+                "account-hidden"
+            );
+
+
+            const displayName =
+                user.displayName?.trim() ||
+                user.email?.split("@")[0] ||
+                "Customer";
+
+            customerFirstName.textContent =
+                displayName.split(/\s+/)[0];
+
+
+            const nameInput =
+                document.getElementById("fullName");
+
+            const emailInput =
+                document.getElementById("email");
+
+
+            if (
+                !nameInput.value &&
+                user.displayName
+            ) {
+                nameInput.value =
+                    user.displayName;
+            }
+
+
+            if (
+                !emailInput.value &&
+                user.email
+            ) {
+                emailInput.value =
+                    user.email;
+            }
+        });
+
+
+        logoutButton.addEventListener(
+            "click",
+            async () => {
+                logoutButton.disabled = true;
+                logoutButton.textContent =
+                    "Logging Out...";
+
+                try {
+                    await signOut(auth);
+
+                    window.location.href =
+                        "index.html";
+                } catch (error) {
+                    console.error(
+                        "Account logout error:",
+                        error
+                    );
+
+                    logoutButton.disabled = false;
+                    logoutButton.textContent =
+                        "Log Out";
+                }
+            }
+        );
+
+
+        photoInput.addEventListener(
+            "change",
+            (event) => {
+                const files =
+                    Array.from(event.target.files)
+                        .filter((file) => {
+                            return file.type.startsWith(
+                                "image/"
+                            );
+                        });
+
+                const remaining =
+                    12 - selectedPhotos.length;
+
+                selectedPhotos = [
+                    ...selectedPhotos,
+                    ...files.slice(0, remaining)
+                ];
+
+                renderPhotoPreview();
+
+                photoInput.value = "";
+            }
+        );
+
+
+        function renderPhotoPreview() {
+            photoPreview.innerHTML = "";
+
+            selectedPhotos.forEach(
+                (file, index) => {
+                    const previewItem =
+                        document.createElement("div");
+
+                    previewItem.className =
+                        "preview-item";
+
+
+                    const image =
+                        document.createElement("img");
+
+                    image.alt =
+                        `Selected item photo ${index + 1}`;
+
+                    const objectUrl =
+                        URL.createObjectURL(file);
+
+                    image.src =
+                        objectUrl;
+
+                    image.addEventListener(
+                        "load",
+                        () => {
+                            URL.revokeObjectURL(
+                                objectUrl
+                            );
+                        },
+                        { once: true }
+                    );
+
+
+                    const removeButton =
+                        document.createElement("button");
+
+                    removeButton.type =
+                        "button";
+
+                    removeButton.textContent =
+                        "×";
+
+                    removeButton.setAttribute(
+                        "aria-label",
+                        `Remove photo ${index + 1}`
+                    );
+
+                    removeButton.addEventListener(
+                        "click",
+                        () => {
+                            selectedPhotos.splice(
+                                index,
+                                1
+                            );
+
+                            renderPhotoPreview();
+                        }
+                    );
+
+
+                    previewItem.append(
+                        image,
+                        removeButton
+                    );
+
+                    photoPreview.appendChild(
+                        previewItem
+                    );
+                }
+            );
+        }
+
+
+        function getValue(id) {
+            return (
+                document
+                    .getElementById(id)
+                    ?.value
+                    .trim() || ""
+            );
+        }
+
+
+        function buildQuoteMessage() {
+            return [
+                "Packaged Comfort Quote Request",
+                "",
+                `Name: ${getValue("fullName")}`,
+                `Phone: ${getValue("phone")}`,
+                `Email: ${getValue("email")}`,
+                `Preferred date: ${getValue("serviceDate")}`,
+                `Service: ${getValue("service")}`,
+                `Amount: ${getValue("amount")}`,
+                `Pickup: ${getValue("pickup")}`,
+                `Destination: ${getValue("destination")}`,
+                `Details: ${getValue("details") || "None provided"}`,
+                "",
+                "I can attach item photos in this message if needed."
+            ].join("\n");
+        }
+
+
+        function showStatus(
+            message,
+            isError = false
+        ) {
+            quoteStatus.textContent =
+                message;
+
+            quoteStatus.classList.toggle(
+                "error",
+                isError
+            );
+
+            quoteStatus.classList.toggle(
+                "success",
+                !isError && Boolean(message)
+            );
+        }
+
+
+        function isMobileDevice() {
+            return /Android|iPhone|iPad|iPod|Mobile/i.test(
+                navigator.userAgent
+            );
+        }
+
+
+        async function copyRequest() {
+            if (!quoteForm.checkValidity()) {
+                quoteForm.reportValidity();
+                return false;
+            }
+
+            try {
+                await navigator.clipboard.writeText(
+                    buildQuoteMessage()
+                );
+
+                showStatus(
+                    "Your quote request details were copied."
+                );
+
+                return true;
+            } catch (error) {
+                console.error(
+                    "Copy request error:",
+                    error
+                );
+
+                showStatus(
+                    "Please call or text 725-724-0012 to complete your request.",
+                    true
+                );
+
+                return false;
+            }
+        }
+
+
+        copyQuoteButton.addEventListener(
+            "click",
+            async () => {
+                copyQuoteButton.disabled = true;
+                copyQuoteButton.textContent =
+                    "Copying...";
+
+                await copyRequest();
+
+                copyQuoteButton.disabled = false;
+                copyQuoteButton.textContent =
+                    "Copy Request Details";
+            }
+        );
+
+
+        quoteForm.addEventListener(
+            "submit",
+            async (event) => {
+                event.preventDefault();
+
+                if (!quoteForm.checkValidity()) {
+                    quoteForm.reportValidity();
+                    return;
+                }
+
+                quoteSubmitButton.disabled = true;
+                quoteSubmitButton.textContent =
+                    "Preparing Request...";
+
+                showStatus("");
+
+                const message =
+                    buildQuoteMessage();
+
+                const smsLink =
+                    `sms:${businessPhone}?body=${encodeURIComponent(message)}`;
+
+
+                if (isMobileDevice()) {
+                    showStatus(
+                        "Your request is ready. Review the message and tap send."
+                    );
+
+                    window.location.href =
+                        smsLink;
+                } else {
+                    const copied =
+                        await copyRequest();
+
+                    if (copied) {
+                        showStatus(
+                            "Your request was copied. Text it to 725-724-0012."
+                        );
+                    }
+                }
+
+
+                window.setTimeout(() => {
+                    quoteSubmitButton.disabled = false;
+                    quoteSubmitButton.textContent =
+                        "Prepare Quote Request";
+                }, 700);
+            }
+        );
+    </script>
 </body>
 </html>
