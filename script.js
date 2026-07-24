@@ -450,6 +450,15 @@ function showLoggedOutNavigation() {
 
     document
         .querySelectorAll(
+            ".firebase-dashboard-link"
+        )
+        .forEach((link) => {
+            link.remove();
+        });
+
+
+    document
+        .querySelectorAll(
             ".firebase-account-menu"
         )
         .forEach((menu) => {
@@ -488,6 +497,9 @@ function showLoggedInNavigation(
                 "firebase-auth-hidden"
             );
         });
+
+
+    createDashboardNavigationLink();
 
 
     document
@@ -532,6 +544,74 @@ function showLoggedInNavigation(
         customerName,
         auth,
         signOut
+    );
+}
+
+
+/* ========================================
+   CREATE DASHBOARD LINK
+======================================== */
+
+function createDashboardNavigationLink() {
+    const navigation =
+        getWebsiteNavigation();
+
+
+    if (!navigation) {
+        return;
+    }
+
+
+    const existingDashboardLink =
+        navigation.querySelector(
+            ".firebase-dashboard-link"
+        );
+
+
+    if (existingDashboardLink) {
+        return;
+    }
+
+
+    const dashboardLink =
+        document.createElement("a");
+
+
+    dashboardLink.href =
+        "dashboard.html";
+
+
+    dashboardLink.textContent =
+        "Dashboard";
+
+
+    dashboardLink.className =
+        "firebase-dashboard-link";
+
+
+    const firstActionSection =
+        navigation.querySelector(
+            ".nav-actions, [data-auth-guest], [data-auth-user]"
+        );
+
+
+    if (firstActionSection) {
+        navigation.insertBefore(
+            dashboardLink,
+            firstActionSection
+        );
+    } else {
+        navigation.appendChild(
+            dashboardLink
+        );
+    }
+
+
+    dashboardLink.addEventListener(
+        "click",
+        () => {
+            closeMobileMenu();
+        }
     );
 }
 
@@ -735,6 +815,11 @@ function addFirebaseNavigationStyles() {
             display: none !important;
         }
 
+        .firebase-dashboard-link {
+            display: inline-flex;
+            align-items: center;
+        }
+
         .firebase-account-menu {
             display: flex;
             align-items: center;
@@ -782,6 +867,10 @@ function addFirebaseNavigationStyles() {
         }
 
         @media (max-width: 980px) {
+            .firebase-dashboard-link {
+                width: 100%;
+            }
+
             .firebase-account-menu {
                 width: 100%;
                 align-items: stretch;
