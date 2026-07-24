@@ -26,61 +26,106 @@ const app = getApps().length
 
 const auth = getAuth(app);
 
-const quoteForm = document.getElementById("quoteForm");
-const quoteButton = document.getElementById("quoteSubmitButton");
-const quoteStatus = document.getElementById("quoteStatus");
+const quoteForm =
+    document.getElementById("quoteForm");
+
+const quoteButton =
+    document.getElementById("quoteSubmitButton");
+
+const copyQuoteButton =
+    document.getElementById("copyQuoteButton");
+
+const quoteStatus =
+    document.getElementById("quoteStatus");
 
 const businessPhone = "7257240012";
 
+
+/*
+   This page is public.
+
+   Signed-in customers receive automatic name and email
+   completion. Signed-out visitors can still use the form.
+*/
 
 onAuthStateChanged(auth, (user) => {
     if (!user) {
         return;
     }
 
-    const nameInput = document.getElementById("fullName");
-    const emailInput = document.getElementById("email");
+    const nameInput =
+        document.getElementById("fullName");
 
-    if (nameInput && !nameInput.value && user.displayName) {
-        nameInput.value = user.displayName;
+    const emailInput =
+        document.getElementById("email");
+
+
+    if (
+        nameInput &&
+        !nameInput.value &&
+        user.displayName
+    ) {
+        nameInput.value =
+            user.displayName;
     }
 
-    if (emailInput && !emailInput.value && user.email) {
-        emailInput.value = user.email;
+
+    if (
+        emailInput &&
+        !emailInput.value &&
+        user.email
+    ) {
+        emailInput.value =
+            user.email;
     }
 });
 
 
-function showStatus(message, isError = false) {
-    quoteStatus.textContent = message;
-    quoteStatus.classList.toggle("error", isError);
-    quoteStatus.classList.toggle("success", !isError && Boolean(message));
+function showStatus(
+    message,
+    isError = false
+) {
+    quoteStatus.textContent =
+        message;
+
+    quoteStatus.classList.toggle(
+        "error",
+        isError
+    );
+
+    quoteStatus.classList.toggle(
+        "success",
+        !isError && Boolean(message)
+    );
 }
 
 
-function valueOf(id) {
-    return document.getElementById(id)?.value.trim() || "";
+function getValue(id) {
+    return (
+        document
+            .getElementById(id)
+            ?.value
+            .trim() || ""
+    );
 }
 
 
 function buildQuoteMessage() {
-    const lines = [
+    return [
         "Packaged Comfort Quote Request",
         "",
-        `Name: ${valueOf("fullName")}`,
-        `Phone: ${valueOf("phone")}`,
-        `Email: ${valueOf("email")}`,
-        `Preferred date: ${valueOf("serviceDate")}`,
-        `Service: ${valueOf("service")}`,
-        `Amount: ${valueOf("amount")}`,
-        `Pickup: ${valueOf("pickup")}`,
-        `Destination: ${valueOf("destination")}`,
-        `Details: ${valueOf("details") || "None provided"}`,
+        `Name: ${getValue("fullName")}`,
+        `Phone: ${getValue("phone")}`,
+        `Email: ${getValue("email")}`,
+        `Preferred date: ${getValue("serviceDate")}`,
+        `Service: ${getValue("service")}`,
+        `Amount: ${getValue("amount")}`,
+        `Pickup: ${getValue("pickup")}`,
+        `Destination: ${getValue("destination")}`,
+        `Details: ${getValue("details") || "None provided"}`,
         "",
         "I can attach item photos in this message if needed."
-    ];
-
-    return lines.join("\n");
+    ].join("\n");
 }
 
 
@@ -91,46 +136,115 @@ function isLikelyMobileDevice() {
 }
 
 
-quoteForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
+async function copyRequestDetails() {
     if (!quoteForm.checkValidity()) {
         quoteForm.reportValidity();
-        return;
+        return false;
     }
 
-    quoteButton.disabled = true;
-    quoteButton.textContent = "Preparing Request...";
-    showStatus("");
-
-    const message = buildQuoteMessage();
-    const smsLink = `sms:${businessPhone}?body=${encodeURIComponent(message)}`;
+    const message =
+        buildQuoteMessage();
 
     try {
-        if (isLikelyMobileDevice()) {
-            showStatus(
-                "Your message is ready. Review it and tap send."
-            );
-
-            window.location.href = smsLink;
-        } else {
-            await navigator.clipboard.writeText(message);
-
-            showStatus(
-                "Your request details were copied. Text them to 725-724-0012, or use your phone to submit from this page."
-            );
-        }
-    } catch (error) {
-        console.error("Quote preparation error:", error);
+        await navigator.clipboard.writeText(
+            message
+        );
 
         showStatus(
-            "Please call or text 725-724-0012 to complete your quote request.",
+            "Your quote request details were copied."
+        );
+
+        return true;
+    } catch (error) {
+        console.error(
+            "Copy request error:",
+            error
+        );
+
+        showStatus(
+            "The request could not be copied automatically. Please call or text 725-724-0012.",
             true
         );
-    } finally {
-        window.setTimeout(() => {
-            quoteButton.disabled = false;
-            quoteButton.textContent = "Continue to Text Message";
-        }, 900);
+
+        return false;
     }
-});
+}
+
+
+copyQuoteButton.addEventListener(
+    "click",
+    async () => {
+        copyQuoteButton.disabled = true;
+        copyQuoteButton.textContent =
+            "Copying...";
+
+        await copyRequestDetails();
+
+        copyQuoteButton.disabled = false;
+        copyQuoteButton.textContent =
+            "Copy Request Details";
+    }
+);
+
+
+quoteForm.addEventListener(
+    "submit",
+    async (event) => {
+        event.preventDefault();
+
+        if (!quoteForm.checkValidity()) {
+            quoteForm.reportValidity();
+            return;
+        }
+
+        quoteButton.disabled = true;
+        quoteButton.textContent =
+            "Preparing Request...";
+
+        showStatus("");
+
+        const message =
+            buildQuoteMessage();
+
+        const smsLink =
+            `sms:${businessPhone}?body=${encodeURIComponent(message)}`;
+
+
+        try {
+            if (isLikelyMobileDevice()) {
+                showStatus(
+                    "Your request is ready. Review the message and tap send."
+                );
+
+                window.location.href =
+                    smsLink;
+            } else {
+                const copied =
+                    await copyRequestDetails();
+
+                if (copied) {
+                    showStatus(
+                        "Your request was copied. Text it to 725-724-0012, or open this page on your phone."
+                    );
+                }
+            }
+        } catch (error) {
+            console.error(
+                "Quote request error:",
+                error
+            );
+
+            showStatus(
+                "Please call or text 725-724-0012 to complete your request.",
+                true
+            );
+        } finally {
+            window.setTimeout(() => {
+                quoteButton.disabled = false;
+
+                quoteButton.textContent =
+                    "Prepare Quote Request";
+            }, 700);
+        }
+    }
+);
