@@ -15,7 +15,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
 
-const firebaseConfig = {
+const accountServiceConfig = {
     apiKey: "AIzaSyDMWaronfPi0cujdvzGIsieadLss_d4iMQ",
     authDomain: "packaged-comfort-website.firebaseapp.com",
     projectId: "packaged-comfort-website",
@@ -27,7 +27,7 @@ const firebaseConfig = {
 
 const app = getApps().length
     ? getApp()
-    : initializeApp(firebaseConfig);
+    : initializeApp(accountServiceConfig);
 
 const auth = getAuth(app);
 
@@ -152,7 +152,7 @@ function friendlyError(error) {
             return "This account has been disabled.";
 
         default:
-            console.error("Firebase settings error:", error);
+            console.error("Account settings error:", error);
 
             return `Something went wrong: ${
                 error.code || error.message
