@@ -2,25 +2,45 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Request a personalized hauling, courier, delivery, or moving quote.">
-    <title>Request a Quote | Packaged Comfort</title>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Log in to your Packaged Comfort customer account."
+    >
+
+    <title>Log In | Packaged Comfort</title>
+
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<header class="site-header">
+    <header class="site-header">
     <div class="container nav-wrap">
         <a href="index.html" class="brand" aria-label="Packaged Comfort home">
             <img src="logo.png" alt="Packaged Comfort logo">
+
             <span class="brand-text">
                 <strong>Packaged</strong>
                 <span>Comfort</span>
             </span>
         </a>
 
-        <button class="menu-button" id="menuButton" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+        <button
+            class="menu-button"
+            id="menuButton"
+            type="button"
+            aria-label="Open navigation menu"
+            aria-expanded="false"
+        >
+            ☰
+        </button>
 
         <nav class="main-nav" id="mainNav">
             <a href="index.html">Home</a>
@@ -29,142 +49,304 @@
             <a href="contact.html">Contact</a>
 
             <div class="nav-actions">
-                <a href="login.html" class="button button-secondary">Log In</a>
-                <a href="signup.html" class="button button-primary">Sign Up</a>
+                <a href="login.html" class="button button-secondary">
+                    Log In
+                </a>
+
+                <a href="signup.html" class="button button-primary">
+                    Sign Up
+                </a>
             </div>
         </nav>
     </div>
 </header>
 
-<main>
 
-<section class="page-hero">
-    <div class="container">
-        <span class="section-label">Request a quote</span>
-        <h1>Tell us what you need transported</h1>
-        <p>Add your pickup, destination, service details, and item photos.</p>
-    </div>
-</section>
+    <main>
 
-<section class="section alt">
-    <div class="container">
-        <form class="form-shell" id="quoteForm" data-demo-form>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="fullName">Full name *</label>
-                    <input type="text" id="fullName" required>
-                </div>
+        <section class="page-hero">
+            <div class="container">
+                <span class="section-label">Customer account</span>
 
-                <div class="form-group">
-                    <label for="phone">Phone number *</label>
-                    <input type="tel" id="phone" required>
-                </div>
+                <h1>Log in</h1>
 
-                <div class="form-group">
-                    <label for="email">Email address *</label>
-                    <input type="email" id="email" required>
-                </div>
+                <p>
+                    Access your saved quote requests and service updates.
+                </p>
+            </div>
+        </section>
 
-                <div class="form-group">
-                    <label for="serviceDate">Preferred service date *</label>
-                    <input type="date" id="serviceDate" required>
-                </div>
 
-                <div class="form-group full">
-                    <label for="pickup">Pickup location *</label>
-                    <input type="text" id="pickup" placeholder="Address or ZIP code" required>
-                </div>
+        <section class="section alt">
+            <div class="container auth-shell">
 
-                <div class="form-group full">
-                    <label for="destination">Destination location *</label>
-                    <input type="text" id="destination" placeholder="Address or ZIP code" required>
-                </div>
+                <form
+                    class="form-shell"
+                    id="loginForm"
+                    novalidate
+                >
+                    <img
+                        src="logo.png"
+                        alt="Packaged Comfort logo"
+                        class="auth-logo"
+                    >
 
-                <div class="form-group">
-                    <label for="service">Service needed *</label>
-                    <select id="service" required>
-                        <option value="">Select a service</option>
-                        <option>Private hauling</option>
-                        <option>Courier service</option>
-                        <option>Residential moving</option>
-                        <option>Furniture delivery</option>
-                        <option>Business delivery</option>
-                        <option>Loading and unloading</option>
-                        <option>Other</option>
-                    </select>
-                </div>
+                    <div class="form-group">
+                        <label for="loginEmail">
+                            Email address
+                        </label>
 
-                <div class="form-group">
-                    <label for="amount">Amount being transported *</label>
-                    <select id="amount" required>
-                        <option value="">Select an amount</option>
-                        <option>Single package</option>
-                        <option>A few items</option>
-                        <option>Furniture or appliances</option>
-                        <option>Small room</option>
-                        <option>One-bedroom move</option>
-                        <option>Two-bedroom move</option>
-                        <option>Business or office items</option>
-                        <option>Other</option>
-                    </select>
-                </div>
+                        <input
+                            type="email"
+                            id="loginEmail"
+                            name="email"
+                            autocomplete="email"
+                            required
+                        >
+                    </div>
 
-                <div class="form-group full">
-                    <label for="details">Additional details</label>
-                    <textarea id="details" placeholder="Describe the items, weight, dimensions, stairs, parking, fragile items, or special instructions."></textarea>
-                </div>
+                    <div
+                        class="form-group"
+                        style="margin-top: 16px;"
+                    >
+                        <label for="loginPassword">
+                            Password
+                        </label>
 
-                <div class="form-group full">
-                    <label for="movingPhotos">Item photos</label>
+                        <input
+                            type="password"
+                            id="loginPassword"
+                            name="password"
+                            autocomplete="current-password"
+                            minlength="6"
+                            required
+                        >
+                    </div>
 
-                    <label class="upload-area" for="movingPhotos">
-                        <strong>Take or upload photos</strong>
-                        <small>Select up to 12 images</small>
-                    </label>
+                    <button
+                        type="submit"
+                        class="button button-primary form-submit"
+                        id="loginButton"
+                    >
+                        Log In
+                    </button>
 
-                    <input class="hidden-input" type="file" id="movingPhotos" accept="image/*" multiple>
-                    <div class="photo-preview" id="photoPreview"></div>
-                </div>
+                    <p
+                        class="notice"
+                        id="authMessage"
+                        aria-live="polite"
+                    ></p>
+
+                    <p class="notice">
+                        Do not have an account?
+                        <a
+                            href="signup.html"
+                            style="color: #ee6c2f; font-weight: 800;"
+                        >
+                            Create one
+                        </a>
+                    </p>
+                </form>
+
+            </div>
+        </section>
+
+    </main>
+
+
+    <footer class="site-footer">
+        <div class="container footer-grid">
+
+            <div>
+                <img
+                    src="logo.png"
+                    alt="Packaged Comfort logo"
+                    class="footer-logo"
+                >
+
+                <p>
+                    Private hauling, courier, delivery, and moving assistance
+                    designed to move your package with comfort.
+                </p>
             </div>
 
-            <button type="submit" class="button button-primary form-submit">Submit Quote Request</button>
-            <p class="notice">Firebase will be connected later to save and send real quote requests.</p>
-        </form>
-    </div>
-</section>
+            <div class="footer-links">
+                <strong>Website</strong>
+                <a href="index.html">Home</a>
+                <a href="services.html">Services</a>
+                <a href="quote.html">Request a Quote</a>
+                <a href="contact.html">Contact</a>
+            </div>
 
-</main>
+            <div class="footer-links">
+                <strong>Account</strong>
+                <a href="login.html">Log In</a>
+                <a href="signup.html">Sign Up</a>
+                <a href="dashboard.html">Customer Dashboard</a>
+            </div>
 
-<footer class="site-footer">
-    <div class="container footer-grid">
-        <div>
-            <img src="logo.png" alt="Packaged Comfort logo" class="footer-logo">
-            <p>Private hauling, courier, delivery, and moving assistance designed to move your package with comfort.</p>
         </div>
 
-        <div class="footer-links">
-            <strong>Website</strong>
-            <a href="index.html">Home</a>
-            <a href="services.html">Services</a>
-            <a href="quote.html">Request a Quote</a>
-            <a href="contact.html">Contact</a>
+        <div class="container footer-bottom">
+            © <span data-current-year></span>
+            Packaged Comfort. All rights reserved.
         </div>
+    </footer>
 
-        <div class="footer-links">
-            <strong>Account</strong>
-            <a href="login.html">Log In</a>
-            <a href="signup.html">Sign Up</a>
-            <a href="dashboard.html">Customer Dashboard</a>
-        </div>
+
+    <div class="toast" id="toast">
+        <span id="toastMessage"></span>
     </div>
 
-    <div class="container footer-bottom">
-        © <span data-current-year></span> Packaged Comfort. All rights reserved.
-    </div>
-</footer>
 
-<div class="toast" id="toast"><span id="toastMessage"></span></div>
-<script src="script.js"></script>
+    <script src="script.js"></script>
+
+    <script type="module">
+        import {
+            initializeApp,
+            getApp,
+            getApps
+        } from
+            "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+        import {
+            getAuth,
+            setPersistence,
+            browserLocalPersistence,
+            signInWithEmailAndPassword
+        } from
+            "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
+
+        const accountServiceConfig = {
+            apiKey: "AIzaSyDMWaronfPi0cujdvzGIsieadLss_d4iMQ",
+            authDomain: "packaged-comfort-website.firebaseapp.com",
+            projectId: "packaged-comfort-website",
+            storageBucket: "packaged-comfort-website.firebasestorage.app",
+            messagingSenderId: "150317110708",
+            appId: "1:150317110708:web:dab83f056b04b1e0210ee1"
+        };
+
+
+        const app = getApps().length
+            ? getApp()
+            : initializeApp(accountServiceConfig);
+
+        const auth = getAuth(app);
+
+        const loginForm =
+            document.getElementById("loginForm");
+
+        const loginButton =
+            document.getElementById("loginButton");
+
+        const authMessage =
+            document.getElementById("authMessage");
+
+
+        function showMessage(message, isError = false) {
+            authMessage.textContent = message;
+
+            authMessage.style.color =
+                isError ? "#b42318" : "#1c7c54";
+        }
+
+
+        function showLoginError(error) {
+            console.error("Account login error:", error);
+
+            switch (error.code) {
+                case "auth/invalid-email":
+                    return "Enter a valid email address.";
+
+                case "auth/invalid-credential":
+                case "auth/user-not-found":
+                case "auth/wrong-password":
+                    return "The email address or password is incorrect.";
+
+                case "auth/user-disabled":
+                    return "This account has been disabled.";
+
+                case "auth/too-many-requests":
+                    return "Too many login attempts. Wait a moment and try again.";
+
+                case "auth/network-request-failed":
+                    return "Check your internet connection and try again.";
+
+                case "auth/operation-not-allowed":
+                    return "Sign-in is temporarily unavailable. Please try again later.";
+
+                case "auth/unauthorized-domain":
+                    return "Sign-in is not available from this web address.";
+
+                default:
+                    return `Login failed: ${error.code || error.message}`;
+            }
+        }
+
+
+        loginForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            if (!loginForm.checkValidity()) {
+                loginForm.reportValidity();
+                return;
+            }
+
+            const email =
+                document
+                    .getElementById("loginEmail")
+                    .value
+                    .trim()
+                    .toLowerCase();
+
+            const password =
+                document
+                    .getElementById("loginPassword")
+                    .value;
+
+            loginButton.disabled = true;
+            loginButton.textContent = "Logging In...";
+
+            showMessage("");
+
+            try {
+                await setPersistence(
+                    auth,
+                    browserLocalPersistence
+                );
+
+                const userCredential =
+                    await signInWithEmailAndPassword(
+                        auth,
+                        email,
+                        password
+                    );
+
+                if (!userCredential.user) {
+                    throw new Error(
+                        "The account session could not be started."
+                    );
+                }
+
+                showMessage(
+                    "Login successful. Opening your dashboard..."
+                );
+
+                window.setTimeout(() => {
+                    window.location.assign("dashboard.html");
+                }, 700);
+            } catch (error) {
+                showMessage(
+                    showLoginError(error),
+                    true
+                );
+
+                loginButton.disabled = false;
+                loginButton.textContent = "Log In";
+            }
+        });
+    </script>
 
 </body>
 </html>
