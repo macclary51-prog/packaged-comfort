@@ -513,6 +513,20 @@ function showLoggedInNavigation(
         });
 
 
+    document
+        .querySelectorAll(
+            ".user-greeting, " +
+            ".firebase-account-name"
+        )
+        .forEach((link) => {
+            link.href = "settings.html";
+            link.setAttribute(
+                "aria-label",
+                "Open account settings"
+            );
+        });
+
+
     const existingUserSections =
         document.querySelectorAll(
             "[data-auth-user]"
@@ -591,7 +605,10 @@ function createDashboardNavigationLink() {
 
     const firstActionSection =
         navigation.querySelector(
-            ".nav-actions, [data-auth-guest], [data-auth-user]"
+            ".nav-actions, " +
+            "[data-auth-guest], " +
+            "[data-auth-user], " +
+            ".firebase-account-menu"
         );
 
 
@@ -657,7 +674,12 @@ function createAccountMenu(
         "firebase-account-name";
 
     accountLink.href =
-        "dashboard.html";
+        "settings.html";
+
+    accountLink.setAttribute(
+        "aria-label",
+        "Open account settings"
+    );
 
 
     accountLink.append(
