@@ -48,7 +48,7 @@
             <a href="quote.html">Request a Quote</a>
             <a href="contact.html">Contact</a>
 
-            <div class="nav-actions" data-auth-guest>
+            <div class="nav-actions">
                 <a href="login.html" class="button button-secondary">
                     Log In
                 </a>
@@ -56,20 +56,6 @@
                 <a href="signup.html" class="button button-primary">
                     Sign Up
                 </a>
-            </div>
-
-            <div class="nav-user hidden" data-auth-user>
-                <a href="dashboard.html" class="user-greeting">
-                    Hi, <span data-user-name>Customer</span>
-                </a>
-
-                <button
-                    type="button"
-                    class="button button-secondary"
-                    data-logout
-                >
-                    Log Out
-                </button>
             </div>
         </nav>
     </div>
@@ -231,7 +217,141 @@
 
 
     <script src="script.js"></script>
-    <script type="module" src="auth.js"></script>
-    <script type="module" src="auth-ui.js"></script>
+
+    <script type="module">
+        import { initializeApp } from
+            "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+        import {
+            getAuth,
+            createUserWithEmailAndPassword,
+            updateProfile
+        } from
+            "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
+
+        const accountServiceConfig = {
+            apiKey: "AIzaSyDMWaronfPi0cujdvzGIsieadLss_d4iMQ",
+            authDomain: "packaged-comfort-website.firebaseapp.com",
+            projectId: "packaged-comfort-website",
+            storageBucket: "packaged-comfort-website.firebasestorage.app",
+            messagingSenderId: "150317110708",
+            appId: "1:150317110708:web:dab83f056b04b1e0210ee1"
+        };
+
+
+        const app = initializeApp(accountServiceConfig);
+        const auth = getAuth(app);
+
+        const signupForm =
+            document.getElementById("signupForm");
+
+        const signupButton =
+            document.getElementById("signupButton");
+
+        const authMessage =
+            document.getElementById("authMessage");
+
+
+        function showMessage(message, isError = false) {
+            authMessage.textContent = message;
+            authMessage.style.color =
+                isError ? "#b42318" : "#1c7c54";
+        }
+
+
+        function friendlyError(error) {
+            switch (error.code) {
+                case "auth/email-already-in-use":
+                    return "An account already exists with this email address.";
+
+                case "auth/invalid-email":
+                    return "Enter a valid email address.";
+
+                case "auth/weak-password":
+                    return "Use a password containing at least 6 characters.";
+
+                case "auth/too-many-requests":
+                    return "Too many attempts. Wait a moment and try again.";
+
+                case "auth/network-request-failed":
+                    return "Check your internet connection and try again.";
+
+                case "auth/operation-not-allowed":
+                    return "Account creation is temporarily unavailable. Please try again later.";
+
+                case "auth/unauthorized-domain":
+                    return "Account creation is not available from this web address.";
+
+                default:
+                    console.error("Account creation error:", error);
+                    return `Signup failed: ${error.code || "unknown error"}`;
+            }
+        }
+
+
+        signupForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            if (!signupForm.checkValidity()) {
+                signupForm.reportValidity();
+                return;
+            }
+
+            const fullName =
+                document.getElementById("signupName")
+                    .value
+                    .trim();
+
+            const email =
+                document.getElementById("signupEmail")
+                    .value
+                    .trim();
+
+            const password =
+                document.getElementById("signupPassword")
+                    .value;
+
+            signupButton.disabled = true;
+            signupButton.textContent = "Creating Account...";
+            showMessage("");
+
+            try {
+                const userCredential =
+                    await createUserWithEmailAndPassword(
+                        auth,
+                        email,
+                        password
+                    );
+
+                try {
+                    await updateProfile(
+                        userCredential.user,
+                        {
+                            displayName: fullName
+                        }
+                    );
+                } catch (profileError) {
+                    console.warn(
+                        "Account created, but the name was not saved:",
+                        profileError
+                    );
+                }
+
+                showMessage(
+                    "Account created successfully. Opening your dashboard..."
+                );
+
+                window.setTimeout(() => {
+                    window.location.href = "dashboard.html";
+                }, 700);
+            } catch (error) {
+                showMessage(friendlyError(error), true);
+                signupButton.disabled = false;
+                signupButton.textContent = "Create Account";
+            }
+        });
+    </script>
+
 </body>
 </html>
