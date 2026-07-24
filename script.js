@@ -107,23 +107,6 @@ function showToast(message) {
 
 
 /* ========================================
-   TEMPORARY DEMO FORMS
-======================================== */
-
-document
-    .querySelectorAll("[data-demo-form]")
-    .forEach((form) => {
-        form.addEventListener("submit", (event) => {
-            event.preventDefault();
-
-            showToast(
-                "This form will work after its Firebase feature is connected."
-            );
-        });
-    });
-
-
-/* ========================================
    QUOTE PHOTO PREVIEWS
 ======================================== */
 
@@ -262,10 +245,10 @@ if (serviceDateInput) {
 
 
 /* ========================================
-   FIREBASE ACCOUNT NAVIGATION
+   ACCOUNT NAVIGATION
 ======================================== */
 
-const firebaseConfig = {
+const accountServiceConfig = {
     apiKey:
         "AIzaSyDMWaronfPi0cujdvzGIsieadLss_d4iMQ",
 
@@ -286,16 +269,16 @@ const firebaseConfig = {
 };
 
 
-loadFirebaseAccountNavigation();
+loadAccountNavigation();
 
 
-async function loadFirebaseAccountNavigation() {
+async function loadAccountNavigation() {
     try {
-        const firebaseAppModule = await import(
+        const appModule = await import(
             "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js"
         );
 
-        const firebaseAuthModule = await import(
+        const authModule = await import(
             "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js"
         );
 
@@ -304,26 +287,26 @@ async function loadFirebaseAccountNavigation() {
             initializeApp,
             getApp,
             getApps
-        } = firebaseAppModule;
+        } = appModule;
 
 
         const {
             getAuth,
             onAuthStateChanged,
             signOut
-        } = firebaseAuthModule;
+        } = authModule;
 
 
         const app =
             getApps().length > 0
                 ? getApp()
-                : initializeApp(firebaseConfig);
+                : initializeApp(accountServiceConfig);
 
 
         const auth = getAuth(app);
 
 
-        addFirebaseNavigationStyles();
+        addAccountNavigationStyles();
 
 
         onAuthStateChanged(
@@ -343,7 +326,7 @@ async function loadFirebaseAccountNavigation() {
 
     } catch (error) {
         console.error(
-            "Firebase navigation could not load:",
+            "Account navigation could not load:",
             error
         );
     }
@@ -443,14 +426,14 @@ function showLoggedOutNavigation() {
     getGuestNavigationElements()
         .forEach((element) => {
             element.classList.remove(
-                "firebase-auth-hidden"
+                "account-auth-hidden"
             );
         });
 
 
     document
         .querySelectorAll(
-            ".firebase-dashboard-link"
+            ".account-dashboard-link"
         )
         .forEach((link) => {
             link.remove();
@@ -459,7 +442,7 @@ function showLoggedOutNavigation() {
 
     document
         .querySelectorAll(
-            ".firebase-account-menu"
+            ".account-menu"
         )
         .forEach((menu) => {
             menu.remove();
@@ -472,7 +455,7 @@ function showLoggedOutNavigation() {
         )
         .forEach((element) => {
             element.classList.add(
-                "firebase-auth-hidden"
+                "account-auth-hidden"
             );
         });
 }
@@ -494,7 +477,7 @@ function showLoggedInNavigation(
     getGuestNavigationElements()
         .forEach((element) => {
             element.classList.add(
-                "firebase-auth-hidden"
+                "account-auth-hidden"
             );
         });
 
@@ -516,7 +499,7 @@ function showLoggedInNavigation(
     document
         .querySelectorAll(
             ".user-greeting, " +
-            ".firebase-account-name"
+            ".account-name"
         )
         .forEach((link) => {
             link.href = "settings.html";
@@ -538,7 +521,7 @@ function showLoggedInNavigation(
             (section) => {
                 section.classList.remove(
                     "hidden",
-                    "firebase-auth-hidden"
+                    "account-auth-hidden"
                 );
 
 
@@ -578,7 +561,7 @@ function createDashboardNavigationLink() {
 
     const existingDashboardLink =
         navigation.querySelector(
-            ".firebase-dashboard-link"
+            ".account-dashboard-link"
         );
 
 
@@ -600,7 +583,7 @@ function createDashboardNavigationLink() {
 
 
     dashboardLink.className =
-        "firebase-dashboard-link";
+        "account-dashboard-link";
 
 
     const firstActionSection =
@@ -608,7 +591,7 @@ function createDashboardNavigationLink() {
             ".nav-actions, " +
             "[data-auth-guest], " +
             "[data-auth-user], " +
-            ".firebase-account-menu"
+            ".account-menu"
         );
 
 
@@ -653,7 +636,7 @@ function createAccountMenu(
 
     document
         .querySelectorAll(
-            ".firebase-account-menu"
+            ".account-menu"
         )
         .forEach((menu) => {
             menu.remove();
@@ -664,14 +647,14 @@ function createAccountMenu(
         document.createElement("div");
 
     accountMenu.className =
-        "firebase-account-menu";
+        "account-menu";
 
 
     const accountLink =
         document.createElement("a");
 
     accountLink.className =
-        "firebase-account-name";
+        "account-name";
 
     accountLink.href =
         "settings.html";
@@ -705,7 +688,7 @@ function createAccountMenu(
     logoutButton.type = "button";
 
     logoutButton.className =
-        "firebase-logout-button";
+        "account-logout-button";
 
     logoutButton.textContent =
         "Log Out";
@@ -728,7 +711,7 @@ function createAccountMenu(
 
             } catch (error) {
                 console.error(
-                    "Firebase logout error:",
+                    "Account logout error:",
                     error
                 );
 
@@ -795,7 +778,7 @@ function connectExistingLogoutButtons(
 
                     } catch (error) {
                         console.error(
-                            "Firebase logout error:",
+                            "Account logout error:",
                             error
                         );
 
@@ -814,10 +797,10 @@ function connectExistingLogoutButtons(
    ACCOUNT MENU STYLES
 ======================================== */
 
-function addFirebaseNavigationStyles() {
+function addAccountNavigationStyles() {
     if (
         document.getElementById(
-            "firebaseAccountMenuStyles"
+            "accountMenuStyles"
         )
     ) {
         return;
@@ -829,26 +812,26 @@ function addFirebaseNavigationStyles() {
 
 
     style.id =
-        "firebaseAccountMenuStyles";
+        "accountMenuStyles";
 
 
     style.textContent = `
-        .firebase-auth-hidden {
+        .account-auth-hidden {
             display: none !important;
         }
 
-        .firebase-dashboard-link {
+        .account-dashboard-link {
             display: inline-flex;
             align-items: center;
         }
 
-        .firebase-account-menu {
+        .account-menu {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .firebase-account-name {
+        .account-name {
             display: inline-flex;
             min-height: 44px;
             align-items: center;
@@ -860,12 +843,12 @@ function addFirebaseNavigationStyles() {
             text-decoration: none;
         }
 
-        .firebase-account-name strong {
+        .account-name strong {
             margin-left: 4px;
             color: #ee6c2f;
         }
 
-        .firebase-logout-button {
+        .account-logout-button {
             min-height: 44px;
             border: 1px solid #17233b;
             border-radius: 10px;
@@ -878,22 +861,22 @@ function addFirebaseNavigationStyles() {
             cursor: pointer;
         }
 
-        .firebase-logout-button:hover {
+        .account-logout-button:hover {
             background: #17233b;
             color: white;
         }
 
-        .firebase-logout-button:disabled {
+        .account-logout-button:disabled {
             cursor: wait;
             opacity: 0.7;
         }
 
         @media (max-width: 980px) {
-            .firebase-dashboard-link {
+            .account-dashboard-link {
                 width: 100%;
             }
 
-            .firebase-account-menu {
+            .account-menu {
                 width: 100%;
                 align-items: stretch;
                 flex-direction: column;
@@ -902,8 +885,8 @@ function addFirebaseNavigationStyles() {
                 border-top: 1px solid #d9dde5;
             }
 
-            .firebase-account-name,
-            .firebase-logout-button {
+            .account-name,
+            .account-logout-button {
                 width: 100%;
             }
         }
