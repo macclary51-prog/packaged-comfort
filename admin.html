@@ -2,101 +2,327 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Packaged Comfort owner dashboard.">
-    <title>Admin Dashboard | Packaged Comfort</title>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Packaged Comfort administrator access."
+    >
+
+    <meta name="robots" content="noindex, nofollow">
+
+    <title>Administrator Access | Packaged Comfort</title>
+
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="style.css">
+
+    <style>
+        .admin-login-page {
+            display: grid;
+            min-height: 100vh;
+            grid-template-columns: minmax(0, 0.9fr) minmax(480px, 1.1fr);
+            background: #f5f6f8;
+        }
+
+        .admin-login-brand {
+            position: relative;
+            display: flex;
+            overflow: hidden;
+            align-items: center;
+            padding: 70px clamp(35px, 6vw, 90px);
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(23, 35, 59, 0.98),
+                    rgba(38, 60, 99, 0.96)
+                );
+            color: white;
+        }
+
+        .admin-login-brand::before,
+        .admin-login-brand::after {
+            position: absolute;
+            border: 38px solid rgba(255, 255, 255, 0.045);
+            border-radius: 50%;
+            content: "";
+        }
+
+        .admin-login-brand::before {
+            top: -110px;
+            right: -100px;
+            width: 310px;
+            height: 310px;
+        }
+
+        .admin-login-brand::after {
+            bottom: -145px;
+            left: -105px;
+            width: 360px;
+            height: 360px;
+        }
+
+        .admin-brand-content {
+            position: relative;
+            z-index: 1;
+            max-width: 590px;
+        }
+
+        .admin-brand-logo {
+            width: 112px;
+            height: 112px;
+            margin-bottom: 30px;
+            border-radius: 24px;
+            object-fit: contain;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.22);
+        }
+
+        .admin-brand-label {
+            display: inline-flex;
+            margin-bottom: 17px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 999px;
+            padding: 7px 11px;
+            color: rgba(255, 255, 255, 0.82);
+            font-size: 0.8rem;
+            font-weight: 850;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .admin-login-brand h1 {
+            margin-bottom: 16px;
+            color: white;
+            font-size: clamp(2.3rem, 5vw, 4.5rem);
+            line-height: 1.04;
+        }
+
+        .admin-login-brand p {
+            max-width: 510px;
+            color: rgba(255, 255, 255, 0.76);
+            font-size: 1.04rem;
+            line-height: 1.7;
+        }
+
+        .admin-login-form-side {
+            display: grid;
+            place-items: center;
+            padding: 38px;
+        }
+
+        .admin-login-card {
+            width: min(100%, 490px);
+            border: 1px solid rgba(23, 35, 59, 0.09);
+            border-radius: 24px;
+            padding: 38px;
+            background: white;
+            box-shadow: 0 24px 65px rgba(23, 35, 59, 0.12);
+        }
+
+        .admin-login-card h2 {
+            margin-bottom: 8px;
+            font-size: 1.8rem;
+        }
+
+        .admin-login-card > p {
+            margin-bottom: 28px;
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .admin-secure-note {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-top: 20px;
+            border-radius: 13px;
+            padding: 14px;
+            background: #f7f8fa;
+            color: var(--muted);
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        .admin-secure-note strong {
+            color: var(--navy);
+        }
+
+        .admin-message {
+            min-height: 24px;
+            margin-top: 15px;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .admin-back-link {
+            display: block;
+            margin-top: 22px;
+            color: var(--navy);
+            font-weight: 800;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .admin-back-link:hover {
+            color: var(--primary);
+        }
+
+        @media (max-width: 900px) {
+            .admin-login-page {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-login-brand {
+                min-height: 390px;
+                padding: 55px 30px;
+            }
+
+            .admin-brand-logo {
+                width: 88px;
+                height: 88px;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .admin-login-form-side {
+                padding: 22px 14px;
+            }
+
+            .admin-login-card {
+                padding: 28px 20px;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-<header class="site-header">
-    <div class="container nav-wrap">
-        <a href="index.html" class="brand" aria-label="Packaged Comfort home">
-            <img src="logo.png" alt="Packaged Comfort logo">
-            <span class="brand-text">
-                <strong>Packaged</strong>
-                <span>Comfort</span>
-            </span>
-        </a>
+    <main class="admin-login-page">
 
-        <button class="menu-button" id="menuButton" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+        <section class="admin-login-brand">
 
-        <nav class="main-nav" id="mainNav">
-            <a href="index.html">Home</a>
-            <a href="services.html">Services</a>
-            <a href="quote.html">Request a Quote</a>
-            <a href="contact.html">Contact</a>
+            <div class="admin-brand-content">
 
-            <div class="nav-actions">
-                <a href="login.html" class="button button-secondary">Log In</a>
-                <a href="signup.html" class="button button-primary">Sign Up</a>
+                <img
+                    src="logo.png"
+                    alt="Packaged Comfort logo"
+                    class="admin-brand-logo"
+                >
+
+                <span class="admin-brand-label">
+                    Private administration
+                </span>
+
+                <h1>Packaged Comfort Admin Portal</h1>
+
+                <p>
+                    Secure access for authorized business administrators.
+                    Customer accounts do not have permission to enter this area.
+                </p>
+
             </div>
-        </nav>
-    </div>
-</header>
 
-<main>
+        </section>
 
-<section class="page-hero">
-    <div class="container">
-        <span class="section-label">Owner dashboard</span>
-        <h1>Operations Dashboard</h1>
-        <p>Review incoming requests, customer activity, and scheduled service operations.</p>
-    </div>
-</section>
 
-<section class="section alt">
-    <div class="container dashboard-grid">
-        <article class="stat-card">
-            <strong>0</strong>
-            <span>New requests</span>
-        </article>
+        <section class="admin-login-form-side">
 
-        <article class="stat-card">
-            <strong>0</strong>
-            <span>Quotes awaiting response</span>
-        </article>
+            <form
+                class="admin-login-card"
+                id="adminLoginForm"
+                novalidate
+            >
 
-        <article class="stat-card">
-            <strong>0</strong>
-            <span>Scheduled jobs</span>
-        </article>
-    </div>
-</section>
+                <h2>Administrator Sign In</h2>
 
-</main>
+                <p>
+                    Enter the email and password assigned to your
+                    administrator account.
+                </p>
 
-<footer class="site-footer">
-    <div class="container footer-grid">
-        <div>
-            <img src="logo.png" alt="Packaged Comfort logo" class="footer-logo">
-            <p>Private hauling, courier, delivery, and moving assistance designed to move your package with comfort.</p>
-        </div>
 
-        <div class="footer-links">
-            <strong>Website</strong>
-            <a href="index.html">Home</a>
-            <a href="services.html">Services</a>
-            <a href="quote.html">Request a Quote</a>
-            <a href="contact.html">Contact</a>
-        </div>
+                <div class="form-group">
 
-        <div class="footer-links">
-            <strong>Account</strong>
-            <a href="login.html">Log In</a>
-            <a href="signup.html">Sign Up</a>
-            <a href="dashboard.html">Customer Dashboard</a>
-        </div>
-    </div>
+                    <label for="adminEmail">
+                        Administrator email
+                    </label>
 
-    <div class="container footer-bottom">
-        © <span data-current-year></span> Packaged Comfort. All rights reserved.
-    </div>
-</footer>
+                    <input
+                        type="email"
+                        id="adminEmail"
+                        autocomplete="username"
+                        required
+                    >
 
-<div class="toast" id="toast"><span id="toastMessage"></span></div>
-<script src="script.js"></script>
+                </div>
 
+
+                <div
+                    class="form-group"
+                    style="margin-top: 17px;"
+                >
+
+                    <label for="adminPassword">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="adminPassword"
+                        autocomplete="current-password"
+                        minlength="6"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="button button-primary form-submit"
+                    id="adminLoginButton"
+                >
+                    Enter Admin Portal
+                </button>
+
+
+                <p
+                    class="admin-message"
+                    id="adminLoginMessage"
+                    aria-live="polite"
+                ></p>
+
+
+                <div class="admin-secure-note">
+
+                    <span>🔒</span>
+
+                    <span>
+                        <strong>Restricted area:</strong>
+                        signing in with a normal customer account will not
+                        provide administrator access.
+                    </span>
+
+                </div>
+
+
+                <a
+                    href="index.html"
+                    class="admin-back-link"
+                >
+                    ← Return to public website
+                </a>
+
+            </form>
+
+        </section>
+
+    </main>
+
+
+    <script type="module" src="admin-login.js"></script>
 </body>
 </html>
