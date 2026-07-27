@@ -8,191 +8,426 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <meta
-        name="description"
-        content="Packaged Comfort administrator access."
-    >
-
     <meta name="robots" content="noindex, nofollow">
 
-    <title>Administrator Access | Packaged Comfort</title>
+    <title>Admin Portal | Packaged Comfort</title>
 
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="style.css">
 
     <style>
-        .admin-login-page {
-            display: grid;
-            min-height: 100vh;
-            grid-template-columns: minmax(0, 0.9fr) minmax(480px, 1.1fr);
-            background: #f5f6f8;
+        body {
+            background: #f4f6f8;
         }
 
-        .admin-login-brand {
-            position: relative;
+        .admin-protected {
+            visibility: hidden;
+        }
+
+        .admin-protected.access-approved {
+            visibility: visible;
+        }
+
+        .admin-topbar {
+            position: sticky;
+            z-index: 50;
+            top: 0;
+            border-bottom: 1px solid rgba(23, 35, 59, 0.09);
+            background: rgba(255, 255, 255, 0.94);
+            box-shadow: 0 10px 32px rgba(23, 35, 59, 0.06);
+            backdrop-filter: blur(14px);
+        }
+
+        .admin-topbar-inner {
             display: flex;
-            overflow: hidden;
+            min-height: 78px;
             align-items: center;
-            padding: 70px clamp(35px, 6vw, 90px);
-            background:
-                linear-gradient(
-                    145deg,
-                    rgba(23, 35, 59, 0.98),
-                    rgba(38, 60, 99, 0.96)
-                );
-            color: white;
+            justify-content: space-between;
+            gap: 22px;
         }
 
-        .admin-login-brand::before,
-        .admin-login-brand::after {
-            position: absolute;
-            border: 38px solid rgba(255, 255, 255, 0.045);
-            border-radius: 50%;
-            content: "";
+        .admin-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--navy);
+            text-decoration: none;
         }
 
-        .admin-login-brand::before {
-            top: -110px;
-            right: -100px;
-            width: 310px;
-            height: 310px;
-        }
-
-        .admin-login-brand::after {
-            bottom: -145px;
-            left: -105px;
-            width: 360px;
-            height: 360px;
-        }
-
-        .admin-brand-content {
-            position: relative;
-            z-index: 1;
-            max-width: 590px;
-        }
-
-        .admin-brand-logo {
-            width: 112px;
-            height: 112px;
-            margin-bottom: 30px;
-            border-radius: 24px;
+        .admin-brand img {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             object-fit: contain;
-            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.22);
         }
 
-        .admin-brand-label {
-            display: inline-flex;
-            margin-bottom: 17px;
-            border: 1px solid rgba(255, 255, 255, 0.22);
-            border-radius: 999px;
-            padding: 7px 11px;
-            color: rgba(255, 255, 255, 0.82);
+        .admin-brand strong,
+        .admin-brand span {
+            display: block;
+        }
+
+        .admin-brand strong {
+            font-size: 1.02rem;
+        }
+
+        .admin-brand span {
+            margin-top: 2px;
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-weight: 750;
+        }
+
+        .admin-user-menu {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .admin-user-copy {
+            text-align: right;
+        }
+
+        .admin-user-copy strong,
+        .admin-user-copy span {
+            display: block;
+        }
+
+        .admin-user-copy span {
+            margin-top: 2px;
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+
+        .admin-shell {
+            display: grid;
+            grid-template-columns: 250px minmax(0, 1fr);
+            gap: 26px;
+            padding-top: 28px;
+            padding-bottom: 55px;
+        }
+
+        .admin-sidebar {
+            position: sticky;
+            top: 106px;
+            height: fit-content;
+            overflow: hidden;
+            border: 1px solid rgba(23, 35, 59, 0.09);
+            border-radius: 20px;
+            background: white;
+            box-shadow: 0 16px 42px rgba(23, 35, 59, 0.07);
+        }
+
+        .admin-sidebar-heading {
+            padding: 22px 20px 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .admin-sidebar-heading span {
+            color: var(--muted);
             font-size: 0.8rem;
             font-weight: 850;
             letter-spacing: 0.06em;
             text-transform: uppercase;
         }
 
-        .admin-login-brand h1 {
-            margin-bottom: 16px;
-            color: white;
-            font-size: clamp(2.3rem, 5vw, 4.5rem);
-            line-height: 1.04;
-        }
-
-        .admin-login-brand p {
-            max-width: 510px;
-            color: rgba(255, 255, 255, 0.76);
-            font-size: 1.04rem;
-            line-height: 1.7;
-        }
-
-        .admin-login-form-side {
+        .admin-nav {
             display: grid;
-            place-items: center;
-            padding: 38px;
+            gap: 5px;
+            padding: 12px;
         }
 
-        .admin-login-card {
-            width: min(100%, 490px);
+        .admin-nav a {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            border-radius: 11px;
+            padding: 12px 13px;
+            color: var(--navy);
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .admin-nav a:hover,
+        .admin-nav a.active {
+            background: #fff1e9;
+            color: var(--primary);
+        }
+
+        .admin-main {
+            display: grid;
+            gap: 22px;
+        }
+
+        .admin-hero {
+            position: relative;
+            overflow: hidden;
+            border-radius: 23px;
+            padding: 34px;
+            background:
+                linear-gradient(
+                    135deg,
+                    #17233b,
+                    #2a436d
+                );
+            color: white;
+            box-shadow: 0 20px 52px rgba(23, 35, 59, 0.18);
+        }
+
+        .admin-hero::after {
+            position: absolute;
+            top: -100px;
+            right: -75px;
+            width: 280px;
+            height: 280px;
+            border: 42px solid rgba(255, 255, 255, 0.045);
+            border-radius: 50%;
+            content: "";
+        }
+
+        .admin-hero-label {
+            display: inline-flex;
+            margin-bottom: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 999px;
+            padding: 7px 10px;
+            color: rgba(255, 255, 255, 0.77);
+            font-size: 0.78rem;
+            font-weight: 850;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .admin-hero h1 {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 9px;
+            color: white;
+        }
+
+        .admin-hero p {
+            position: relative;
+            z-index: 1;
+            max-width: 680px;
+            color: rgba(255, 255, 255, 0.76);
+            line-height: 1.65;
+        }
+
+        .admin-stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .admin-stat {
             border: 1px solid rgba(23, 35, 59, 0.09);
-            border-radius: 24px;
-            padding: 38px;
+            border-radius: 18px;
+            padding: 21px;
             background: white;
-            box-shadow: 0 24px 65px rgba(23, 35, 59, 0.12);
+            box-shadow: 0 15px 38px rgba(23, 35, 59, 0.065);
         }
 
-        .admin-login-card h2 {
-            margin-bottom: 8px;
-            font-size: 1.8rem;
+        .admin-stat-icon {
+            display: grid;
+            width: 42px;
+            height: 42px;
+            margin-bottom: 17px;
+            place-items: center;
+            border-radius: 12px;
+            background: #fff1e9;
+            font-size: 1.1rem;
         }
 
-        .admin-login-card > p {
-            margin-bottom: 28px;
+        .admin-stat strong,
+        .admin-stat span {
+            display: block;
+        }
+
+        .admin-stat strong {
+            margin-bottom: 4px;
+            font-size: 1.25rem;
+        }
+
+        .admin-stat span {
             color: var(--muted);
-            line-height: 1.6;
+            font-size: 0.88rem;
         }
 
-        .admin-secure-note {
+        .admin-panel {
+            overflow: hidden;
+            border: 1px solid rgba(23, 35, 59, 0.09);
+            border-radius: 20px;
+            background: white;
+            box-shadow: 0 16px 42px rgba(23, 35, 59, 0.065);
+        }
+
+        .admin-panel-header {
             display: flex;
             align-items: flex-start;
-            gap: 10px;
-            margin-top: 20px;
-            border-radius: 13px;
-            padding: 14px;
-            background: #f7f8fa;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 23px 25px 17px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .admin-panel-header h2 {
+            margin-bottom: 5px;
+        }
+
+        .admin-panel-header p {
+            color: var(--muted);
+        }
+
+        .admin-panel-body {
+            padding: 24px 25px 26px;
+        }
+
+        .admin-tool-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .admin-tool {
+            display: block;
+            min-height: 165px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            background: #fbfbfc;
+            color: var(--navy);
+            text-decoration: none;
+            transition:
+                transform 170ms ease,
+                box-shadow 170ms ease,
+                border-color 170ms ease;
+        }
+
+        .admin-tool:hover {
+            transform: translateY(-3px);
+            border-color: rgba(238, 108, 47, 0.3);
+            background: white;
+            box-shadow: 0 17px 40px rgba(23, 35, 59, 0.1);
+        }
+
+        .admin-tool-icon {
+            display: grid;
+            width: 44px;
+            height: 44px;
+            margin-bottom: 17px;
+            place-items: center;
+            border-radius: 12px;
+            background: #fff1e9;
+        }
+
+        .admin-tool strong,
+        .admin-tool span {
+            display: block;
+        }
+
+        .admin-tool strong {
+            margin-bottom: 6px;
+        }
+
+        .admin-tool span {
             color: var(--muted);
             font-size: 0.88rem;
             line-height: 1.5;
         }
 
-        .admin-secure-note strong {
-            color: var(--navy);
+        .admin-access-confirmed {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            border-radius: 15px;
+            padding: 17px;
+            background: #edf8f2;
+            color: #176b46;
         }
 
-        .admin-message {
-            min-height: 24px;
-            margin-top: 15px;
-            font-weight: 800;
-            text-align: center;
+        .admin-access-confirmed-icon {
+            display: grid;
+            width: 42px;
+            height: 42px;
+            flex: 0 0 42px;
+            place-items: center;
+            border-radius: 50%;
+            background: white;
+            font-weight: 900;
+            box-shadow: 0 8px 20px rgba(23, 35, 59, 0.07);
         }
 
-        .admin-back-link {
+        .admin-access-confirmed strong,
+        .admin-access-confirmed span {
             display: block;
-            margin-top: 22px;
-            color: var(--navy);
+        }
+
+        .admin-access-confirmed span {
+            margin-top: 3px;
+            color: #3d765e;
+            font-size: 0.88rem;
+        }
+
+        .admin-loading {
+            display: grid;
+            min-height: 100vh;
+            place-items: center;
+            background: #f4f6f8;
+            color: var(--muted);
             font-weight: 800;
-            text-align: center;
-            text-decoration: none;
         }
 
-        .admin-back-link:hover {
-            color: var(--primary);
+        @media (max-width: 1050px) {
+            .admin-tool-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
         }
 
-        @media (max-width: 900px) {
-            .admin-login-page {
+        @media (max-width: 850px) {
+            .admin-shell {
                 grid-template-columns: 1fr;
             }
 
-            .admin-login-brand {
-                min-height: 390px;
-                padding: 55px 30px;
+            .admin-sidebar {
+                position: static;
             }
 
-            .admin-brand-logo {
-                width: 88px;
-                height: 88px;
+            .admin-nav {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
         }
 
-        @media (max-width: 540px) {
-            .admin-login-form-side {
-                padding: 22px 14px;
+        @media (max-width: 650px) {
+            .admin-stat-grid,
+            .admin-tool-grid {
+                grid-template-columns: 1fr;
             }
 
-            .admin-login-card {
-                padding: 28px 20px;
+            .admin-user-copy {
+                display: none;
+            }
+
+            .admin-topbar-inner {
+                min-height: 70px;
+            }
+
+            .admin-hero {
+                padding: 27px 21px;
+            }
+        }
+
+        @media (max-width: 470px) {
+            .admin-nav {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-brand span {
+                display: none;
+            }
+
+            .admin-panel-header,
+            .admin-panel-body {
+                padding-left: 19px;
+                padding-right: 19px;
             }
         }
     </style>
@@ -200,129 +435,317 @@
 
 <body>
 
-    <main class="admin-login-page">
+    <div
+        class="admin-loading"
+        id="adminLoading"
+    >
+        Verifying administrator access...
+    </div>
 
-        <section class="admin-login-brand">
 
-            <div class="admin-brand-content">
+    <div
+        class="admin-protected"
+        id="adminProtected"
+        hidden
+    >
 
-                <img
-                    src="logo.png"
-                    alt="Packaged Comfort logo"
-                    class="admin-brand-logo"
+        <header class="admin-topbar">
+
+            <div class="container admin-topbar-inner">
+
+                <a
+                    href="admin.html"
+                    class="admin-brand"
                 >
 
-                <span class="admin-brand-label">
-                    Private administration
-                </span>
+                    <img
+                        src="logo.png"
+                        alt="Packaged Comfort logo"
+                    >
 
-                <h1>Packaged Comfort Admin Portal</h1>
+                    <span>
+                        <strong>Packaged Comfort</strong>
+                        <span>Administrator Portal</span>
+                    </span>
 
-                <p>
-                    Secure access for authorized business administrators.
-                    Customer accounts do not have permission to enter this area.
-                </p>
+                </a>
+
+
+                <div class="admin-user-menu">
+
+                    <div class="admin-user-copy">
+                        <strong id="adminTopName">
+                            Administrator
+                        </strong>
+
+                        <span id="adminTopEmail">
+                            Admin account
+                        </span>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="button button-secondary"
+                        id="adminLogoutButton"
+                    >
+                        Log Out
+                    </button>
+
+                </div>
 
             </div>
 
-        </section>
+        </header>
 
 
-        <section class="admin-login-form-side">
+        <div class="container admin-shell">
 
-            <form
-                class="admin-login-card"
-                id="adminLoginForm"
-                novalidate
-            >
+            <aside class="admin-sidebar">
 
-                <h2>Administrator Sign In</h2>
-
-                <p>
-                    Enter the email and password assigned to your
-                    administrator account.
-                </p>
-
-
-                <div class="form-group">
-
-                    <label for="adminEmail">
-                        Administrator email
-                    </label>
-
-                    <input
-                        type="email"
-                        id="adminEmail"
-                        autocomplete="username"
-                        required
-                    >
-
+                <div class="admin-sidebar-heading">
+                    <span>Administration</span>
                 </div>
 
+                <nav class="admin-nav">
 
-                <div
-                    class="form-group"
-                    style="margin-top: 17px;"
-                >
-
-                    <label for="adminPassword">
-                        Password
-                    </label>
-
-                    <input
-                        type="password"
-                        id="adminPassword"
-                        autocomplete="current-password"
-                        minlength="6"
-                        required
+                    <a
+                        href="admin.html"
+                        class="active"
                     >
+                        <span>▦</span>
+                        Overview
+                    </a>
 
-                </div>
+                    <a href="index.html">
+                        <span>⌂</span>
+                        Public Website
+                    </a>
+
+                    <a href="quote.html">
+                        <span>＋</span>
+                        Quote Page
+                    </a>
+
+                    <a href="contact.html">
+                        <span>☎</span>
+                        Contact Page
+                    </a>
+
+                </nav>
+
+            </aside>
 
 
-                <button
-                    type="submit"
-                    class="button button-primary form-submit"
-                    id="adminLoginButton"
-                >
-                    Enter Admin Portal
-                </button>
+            <main class="admin-main">
 
+                <section class="admin-hero">
 
-                <p
-                    class="admin-message"
-                    id="adminLoginMessage"
-                    aria-live="polite"
-                ></p>
-
-
-                <div class="admin-secure-note">
-
-                    <span>🔒</span>
-
-                    <span>
-                        <strong>Restricted area:</strong>
-                        signing in with a normal customer account will not
-                        provide administrator access.
+                    <span class="admin-hero-label">
+                        Authorized access
                     </span>
 
-                </div>
+                    <h1>
+                        Welcome,
+                        <span id="adminFirstName">
+                            Administrator
+                        </span>
+                    </h1>
+
+                    <p>
+                        Manage Packaged Comfort’s public website and access
+                        authorized business tools from this private portal.
+                    </p>
+
+                </section>
 
 
-                <a
-                    href="index.html"
-                    class="admin-back-link"
-                >
-                    ← Return to public website
-                </a>
+                <section class="admin-stat-grid">
 
-            </form>
+                    <article class="admin-stat">
 
-        </section>
+                        <div class="admin-stat-icon">
+                            ✓
+                        </div>
 
-    </main>
+                        <strong>Verified</strong>
+
+                        <span>
+                            Administrator access
+                        </span>
+
+                    </article>
 
 
-    <script type="module" src="admin-login.js"></script>
+                    <article class="admin-stat">
+
+                        <div class="admin-stat-icon">
+                            ●
+                        </div>
+
+                        <strong>Online</strong>
+
+                        <span>
+                            Public website status
+                        </span>
+
+                    </article>
+
+
+                    <article class="admin-stat">
+
+                        <div class="admin-stat-icon">
+                            ⌖
+                        </div>
+
+                        <strong>Henderson</strong>
+
+                        <span>
+                            Primary service area
+                        </span>
+
+                    </article>
+
+                </section>
+
+
+                <section class="admin-panel">
+
+                    <div class="admin-panel-header">
+
+                        <div>
+                            <h2>Business Tools</h2>
+
+                            <p>
+                                Quickly open the areas you manage most often.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="admin-panel-body">
+
+                        <div class="admin-tool-grid">
+
+                            <a
+                                href="index.html"
+                                class="admin-tool"
+                            >
+                                <div class="admin-tool-icon">
+                                    ⌂
+                                </div>
+
+                                <strong>View Website</strong>
+
+                                <span>
+                                    Open the Packaged Comfort public homepage.
+                                </span>
+                            </a>
+
+
+                            <a
+                                href="quote.html"
+                                class="admin-tool"
+                            >
+                                <div class="admin-tool-icon">
+                                    📦
+                                </div>
+
+                                <strong>Review Quote Page</strong>
+
+                                <span>
+                                    Check the customer quote-request experience.
+                                </span>
+                            </a>
+
+
+                            <a
+                                href="dashboard.html"
+                                class="admin-tool"
+                            >
+                                <div class="admin-tool-icon">
+                                    ▦
+                                </div>
+
+                                <strong>Customer View</strong>
+
+                                <span>
+                                    Review the signed-in customer dashboard.
+                                </span>
+                            </a>
+
+
+                            <a
+                                href="contact.html"
+                                class="admin-tool"
+                            >
+                                <div class="admin-tool-icon">
+                                    ☎
+                                </div>
+
+                                <strong>Contact Information</strong>
+
+                                <span>
+                                    Review the public phone and service details.
+                                </span>
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <section class="admin-panel">
+
+                    <div class="admin-panel-header">
+
+                        <div>
+                            <h2>Access Security</h2>
+
+                            <p>
+                                This portal is restricted to approved
+                                administrator accounts.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="admin-panel-body">
+
+                        <div class="admin-access-confirmed">
+
+                            <div class="admin-access-confirmed-icon">
+                                ✓
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Administrator role confirmed
+                                </strong>
+
+                                <span>
+                                    Normal customer accounts are redirected away
+                                    from this portal and cannot access protected
+                                    business information.
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <script type="module" src="admin.js"></script>
 </body>
 </html>
