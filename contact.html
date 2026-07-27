@@ -29,7 +29,9 @@
     <style>
         .contact-layout {
             display: grid;
-            grid-template-columns: minmax(0, 1.1fr) minmax(340px, 0.9fr);
+            grid-template-columns:
+                minmax(0, 1.1fr)
+                minmax(340px, 0.9fr);
             gap: 30px;
             align-items: stretch;
         }
@@ -39,7 +41,8 @@
             border: 1px solid rgba(23, 35, 59, 0.09);
             border-radius: 24px;
             background: white;
-            box-shadow: 0 18px 50px rgba(23, 35, 59, 0.08);
+            box-shadow:
+                0 18px 50px rgba(23, 35, 59, 0.08);
         }
 
         .contact-main-card {
@@ -52,11 +55,12 @@
             position: absolute;
             inset: 0 0 auto;
             height: 5px;
-            background: linear-gradient(
-                90deg,
-                #ee6c2f,
-                #ffb07a
-            );
+            background:
+                linear-gradient(
+                    90deg,
+                    #ee6c2f,
+                    #ffb07a
+                );
             content: "";
         }
 
@@ -95,7 +99,8 @@
             transform: translateY(-2px);
             border-color: rgba(238, 108, 47, 0.3);
             background: white;
-            box-shadow: 0 15px 38px rgba(23, 35, 59, 0.09);
+            box-shadow:
+                0 15px 38px rgba(23, 35, 59, 0.09);
         }
 
         .contact-method-icon {
@@ -160,19 +165,38 @@
 
         .contact-side-top p {
             margin-bottom: 24px;
-            color: rgba(255, 255, 255, 0.78);
+            color: rgba(255, 255, 255, 0.82);
             line-height: 1.7;
         }
 
-        .contact-side-top .button-secondary {
-            border-color: rgba(255, 255, 255, 0.45);
-            color: white;
+        .contact-side-buttons {
+            display: grid;
+            gap: 12px;
         }
 
-        .contact-side-top .button-secondary:hover {
-            border-color: white;
+        .contact-side-buttons .button {
+            width: 100%;
+        }
+
+        .contact-call-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
             background: white;
-            color: var(--navy);
+            color: #17233b !important;
+            font-weight: 900;
+        }
+
+        .contact-call-button:visited {
+            color: #17233b !important;
+        }
+
+        .contact-call-button:hover,
+        .contact-call-button:focus {
+            border-color: #ee6c2f;
+            background: #ee6c2f;
+            color: white !important;
         }
 
         .contact-service-area {
@@ -227,7 +251,9 @@
                     #fffaf7
                 );
             text-align: center;
-            box-shadow: inset 0 0 0 1px rgba(238, 108, 47, 0.11);
+            box-shadow:
+                inset 0 0 0 1px
+                rgba(238, 108, 47, 0.11);
         }
 
         .contact-cta h2 {
@@ -246,6 +272,18 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 12px;
+        }
+
+        .footer-phone {
+            display: inline-block;
+            margin-top: 12px;
+            color: white !important;
+            font-weight: 850;
+            text-decoration: none;
+        }
+
+        .footer-phone:hover {
+            color: #ffb07a !important;
         }
 
         @media (max-width: 900px) {
@@ -373,8 +411,8 @@
                 </h1>
 
                 <p>
-                    Call or text us for availability, service questions,
-                    and quote assistance.
+                    Call or text us for availability,
+                    service questions, and quote assistance.
                 </p>
 
             </div>
@@ -396,9 +434,10 @@
 
                         <p class="contact-intro">
                             Packaged Comfort provides private hauling,
-                            courier service, furniture delivery, residential
-                            moving assistance, business deliveries, and
-                            loading and unloading services.
+                            courier service, furniture delivery,
+                            residential moving assistance, business
+                            deliveries, and loading and unloading
+                            services.
                         </p>
 
 
@@ -421,9 +460,9 @@
                                     </a>
 
                                     <p>
-                                        Call to discuss your service needs,
-                                        pickup location, destination, and
-                                        preferred date.
+                                        Call to discuss your service
+                                        needs, pickup location,
+                                        destination, and preferred date.
                                     </p>
 
                                 </div>
@@ -448,9 +487,10 @@
                                     </a>
 
                                     <p>
-                                        Text your service details, item
-                                        information, and any questions you
-                                        have about availability.
+                                        Text your service details,
+                                        item information, and any
+                                        questions you have about
+                                        availability.
                                     </p>
 
                                 </div>
@@ -476,7 +516,7 @@
 
                                     <p>
                                         Serving Henderson and surrounding
-                                        areas. Contact us to confirm service
+                                        areas. Contact us to confirm
                                         availability for your location.
                                     </p>
 
@@ -498,25 +538,30 @@
                             </h2>
 
                             <p>
-                                Provide your pickup location, destination,
-                                service type, preferred date, and details
-                                about the items being transported.
+                                Provide your pickup location,
+                                destination, service type, preferred
+                                date, and details about the items
+                                being transported.
                             </p>
 
-                            <a
-                                href="quote.html"
-                                class="button button-primary"
-                            >
-                                Request a Quote
-                            </a>
 
-                            <a
-                                href="tel:7257240012"
-                                class="button button-secondary"
-                                style="margin-top: 12px;"
-                            >
-                                Call 725-724-0012
-                            </a>
+                            <div class="contact-side-buttons">
+
+                                <a
+                                    href="quote.html"
+                                    class="button button-primary"
+                                >
+                                    Request a Quote
+                                </a>
+
+                                <a
+                                    href="tel:7257240012"
+                                    class="button contact-call-button"
+                                >
+                                    Call 725-724-0012
+                                </a>
+
+                            </div>
 
                         </div>
 
@@ -575,9 +620,9 @@
                     </h2>
 
                     <p>
-                        Call, text, or submit a quote request and Packaged
-                        Comfort will review the details of your delivery or
-                        move.
+                        Call, text, or submit a quote request and
+                        Packaged Comfort will review the details of
+                        your delivery or move.
                     </p>
 
 
@@ -629,18 +674,13 @@
 
                 <p>
                     Private hauling, courier, delivery, and moving
-                    assistance designed to move your package with comfort.
+                    assistance designed to move your package with
+                    comfort.
                 </p>
 
                 <a
                     href="tel:7257240012"
-                    style="
-                        display: inline-block;
-                        margin-top: 12px;
-                        color: white;
-                        font-weight: 850;
-                        text-decoration: none;
-                    "
+                    class="footer-phone"
                 >
                     725-724-0012
                 </a>
