@@ -2,105 +2,719 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Contact Packaged Comfort in Henderson, Nevada.">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Contact Packaged Comfort for private hauling, courier service, delivery, and moving assistance in Henderson, Nevada."
+    >
+
     <title>Contact | Packaged Comfort</title>
-    <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="style.css">
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="logo.png"
+    >
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <style>
+        .contact-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(340px, 0.9fr);
+            gap: 30px;
+            align-items: stretch;
+        }
+
+        .contact-main-card,
+        .contact-side-card {
+            border: 1px solid rgba(23, 35, 59, 0.09);
+            border-radius: 24px;
+            background: white;
+            box-shadow: 0 18px 50px rgba(23, 35, 59, 0.08);
+        }
+
+        .contact-main-card {
+            position: relative;
+            overflow: hidden;
+            padding: 38px;
+        }
+
+        .contact-main-card::before {
+            position: absolute;
+            inset: 0 0 auto;
+            height: 5px;
+            background: linear-gradient(
+                90deg,
+                #ee6c2f,
+                #ffb07a
+            );
+            content: "";
+        }
+
+        .contact-main-card h2 {
+            margin-bottom: 10px;
+        }
+
+        .contact-intro {
+            max-width: 650px;
+            margin-bottom: 30px;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .contact-methods {
+            display: grid;
+            gap: 16px;
+        }
+
+        .contact-method {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            padding: 21px;
+            background: #fbfbfc;
+            transition:
+                transform 170ms ease,
+                border-color 170ms ease,
+                box-shadow 170ms ease,
+                background 170ms ease;
+        }
+
+        .contact-method:hover {
+            transform: translateY(-2px);
+            border-color: rgba(238, 108, 47, 0.3);
+            background: white;
+            box-shadow: 0 15px 38px rgba(23, 35, 59, 0.09);
+        }
+
+        .contact-method-icon {
+            display: grid;
+            width: 48px;
+            height: 48px;
+            flex: 0 0 48px;
+            place-items: center;
+            border-radius: 14px;
+            background: #fff1e9;
+            color: var(--primary);
+            font-size: 1.25rem;
+            font-weight: 900;
+        }
+
+        .contact-method h3 {
+            margin-bottom: 5px;
+            font-size: 1.03rem;
+        }
+
+        .contact-method a {
+            display: inline-block;
+            color: var(--navy);
+            font-size: 1.06rem;
+            font-weight: 900;
+            text-decoration: none;
+        }
+
+        .contact-method a:hover {
+            color: var(--primary);
+        }
+
+        .contact-method p {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 0.91rem;
+            line-height: 1.55;
+        }
+
+        .contact-side-card {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .contact-side-top {
+            flex: 1;
+            padding: 34px;
+            background:
+                linear-gradient(
+                    145deg,
+                    #17233b,
+                    #2a436d
+                );
+            color: white;
+        }
+
+        .contact-side-top h2 {
+            margin-bottom: 12px;
+            color: white;
+        }
+
+        .contact-side-top p {
+            margin-bottom: 24px;
+            color: rgba(255, 255, 255, 0.78);
+            line-height: 1.7;
+        }
+
+        .contact-side-top .button-secondary {
+            border-color: rgba(255, 255, 255, 0.45);
+            color: white;
+        }
+
+        .contact-side-top .button-secondary:hover {
+            border-color: white;
+            background: white;
+            color: var(--navy);
+        }
+
+        .contact-service-area {
+            padding: 28px 34px;
+        }
+
+        .contact-service-area h3 {
+            margin-bottom: 8px;
+        }
+
+        .contact-service-area p {
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .contact-service-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 19px;
+        }
+
+        .contact-service-list span {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: var(--navy);
+            font-weight: 750;
+        }
+
+        .contact-service-list span::before {
+            display: grid;
+            width: 22px;
+            height: 22px;
+            flex: 0 0 22px;
+            place-items: center;
+            border-radius: 50%;
+            background: #fff1e9;
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 900;
+            content: "✓";
+        }
+
+        .contact-cta {
+            margin-top: 30px;
+            border-radius: 22px;
+            padding: 32px;
+            background:
+                linear-gradient(
+                    135deg,
+                    #fff4ed,
+                    #fffaf7
+                );
+            text-align: center;
+            box-shadow: inset 0 0 0 1px rgba(238, 108, 47, 0.11);
+        }
+
+        .contact-cta h2 {
+            margin-bottom: 9px;
+        }
+
+        .contact-cta p {
+            max-width: 680px;
+            margin: 0 auto 22px;
+            color: var(--muted);
+            line-height: 1.65;
+        }
+
+        .contact-cta-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        @media (max-width: 900px) {
+            .contact-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .contact-main-card,
+            .contact-side-top,
+            .contact-service-area {
+                padding-left: 21px;
+                padding-right: 21px;
+            }
+
+            .contact-method {
+                align-items: flex-start;
+                padding: 18px;
+            }
+
+            .contact-cta-actions {
+                flex-direction: column;
+            }
+
+            .contact-cta-actions .button {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-<header class="site-header">
-    <div class="container nav-wrap">
-        <a href="index.html" class="brand" aria-label="Packaged Comfort home">
-            <img src="logo.png" alt="Packaged Comfort logo">
-            <span class="brand-text">
-                <strong>Packaged</strong>
-                <span>Comfort</span>
-            </span>
-        </a>
+    <header class="site-header">
+        <div class="container nav-wrap">
 
-        <button class="menu-button" id="menuButton" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+            <a
+                href="index.html"
+                class="brand"
+                aria-label="Packaged Comfort home"
+            >
+                <img
+                    src="logo.png"
+                    alt="Packaged Comfort logo"
+                >
 
-        <nav class="main-nav" id="mainNav">
-            <a href="index.html">Home</a>
-            <a href="services.html">Services</a>
-            <a href="quote.html">Request a Quote</a>
-            <a href="contact.html">Contact</a>
+                <span class="brand-text">
+                    <strong>Packaged</strong>
+                    <span>Comfort</span>
+                </span>
+            </a>
 
-            <div class="nav-actions">
-                <a href="login.html" class="button button-secondary">Log In</a>
-                <a href="signup.html" class="button button-primary">Sign Up</a>
+
+            <button
+                class="menu-button"
+                id="menuButton"
+                type="button"
+                aria-label="Open navigation menu"
+                aria-expanded="false"
+            >
+                ☰
+            </button>
+
+
+            <nav
+                class="main-nav"
+                id="mainNav"
+            >
+                <a href="index.html">
+                    Home
+                </a>
+
+                <a href="services.html">
+                    Services
+                </a>
+
+                <a href="quote.html">
+                    Request a Quote
+                </a>
+
+                <a
+                    href="contact.html"
+                    class="active"
+                >
+                    Contact
+                </a>
+
+
+                <div class="nav-actions">
+
+                    <a
+                        href="login.html"
+                        class="button button-secondary"
+                    >
+                        Log In
+                    </a>
+
+                    <a
+                        href="signup.html"
+                        class="button button-primary"
+                    >
+                        Sign Up
+                    </a>
+
+                </div>
+            </nav>
+
+        </div>
+    </header>
+
+
+    <main>
+
+        <section class="page-hero">
+
+            <div class="container">
+
+                <span class="section-label">
+                    Contact Packaged Comfort
+                </span>
+
+                <h1>
+                    Let’s plan your delivery or move
+                </h1>
+
+                <p>
+                    Call or text us for availability, service questions,
+                    and quote assistance.
+                </p>
+
             </div>
-        </nav>
-    </div>
-</header>
 
-<main>
+        </section>
 
-<section class="page-hero">
-    <div class="container">
-        <span class="section-label">Contact us</span>
-        <h1>Let’s plan your delivery or move</h1>
-        <p>Call or text Packaged Comfort for availability, service questions, and quote assistance.</p>
-    </div>
-</section>
 
-<section class="section">
-    <div class="container contact-grid">
-        <article class="contact-card">
-            <span>☎</span>
-            <h3>Call Us</h3>
-            <a href="tel:7257240012">725-724-0012</a>
-        </article>
+        <section class="section alt">
 
-        <article class="contact-card">
-            <span>✉</span>
-            <h3>Text Us</h3>
-            <a href="sms:7257240012">Send a text message</a>
-            <p>Share your service details for a quick response.</p>
-        </article>
+            <div class="container">
 
-        <article class="contact-card">
-            <span>⌖</span>
-            <h3>Service Area</h3>
-            <p>Henderson, Nevada and surrounding areas</p>
-        </article>
-    </div>
-</section>
+                <div class="contact-layout">
 
-</main>
+                    <section class="contact-main-card">
 
-<footer class="site-footer">
-    <div class="container footer-grid">
-        <div>
-            <img src="logo.png" alt="Packaged Comfort logo" class="footer-logo">
-            <p>Private hauling, courier, delivery, and moving assistance designed to move your package with comfort.</p>
+                        <h2>
+                            Get in Touch
+                        </h2>
+
+                        <p class="contact-intro">
+                            Packaged Comfort provides private hauling,
+                            courier service, furniture delivery, residential
+                            moving assistance, business deliveries, and
+                            loading and unloading services.
+                        </p>
+
+
+                        <div class="contact-methods">
+
+                            <article class="contact-method">
+
+                                <div class="contact-method-icon">
+                                    ☎
+                                </div>
+
+                                <div>
+
+                                    <h3>
+                                        Call Packaged Comfort
+                                    </h3>
+
+                                    <a href="tel:7257240012">
+                                        725-724-0012
+                                    </a>
+
+                                    <p>
+                                        Call to discuss your service needs,
+                                        pickup location, destination, and
+                                        preferred date.
+                                    </p>
+
+                                </div>
+
+                            </article>
+
+
+                            <article class="contact-method">
+
+                                <div class="contact-method-icon">
+                                    ✉
+                                </div>
+
+                                <div>
+
+                                    <h3>
+                                        Send a Text Message
+                                    </h3>
+
+                                    <a href="sms:7257240012">
+                                        Text 725-724-0012
+                                    </a>
+
+                                    <p>
+                                        Text your service details, item
+                                        information, and any questions you
+                                        have about availability.
+                                    </p>
+
+                                </div>
+
+                            </article>
+
+
+                            <article class="contact-method">
+
+                                <div class="contact-method-icon">
+                                    ⌖
+                                </div>
+
+                                <div>
+
+                                    <h3>
+                                        Service Area
+                                    </h3>
+
+                                    <strong>
+                                        Henderson, Nevada
+                                    </strong>
+
+                                    <p>
+                                        Serving Henderson and surrounding
+                                        areas. Contact us to confirm service
+                                        availability for your location.
+                                    </p>
+
+                                </div>
+
+                            </article>
+
+                        </div>
+
+                    </section>
+
+
+                    <aside class="contact-side-card">
+
+                        <div class="contact-side-top">
+
+                            <h2>
+                                Need a Quote?
+                            </h2>
+
+                            <p>
+                                Provide your pickup location, destination,
+                                service type, preferred date, and details
+                                about the items being transported.
+                            </p>
+
+                            <a
+                                href="quote.html"
+                                class="button button-primary"
+                            >
+                                Request a Quote
+                            </a>
+
+                            <a
+                                href="tel:7257240012"
+                                class="button button-secondary"
+                                style="margin-top: 12px;"
+                            >
+                                Call 725-724-0012
+                            </a>
+
+                        </div>
+
+
+                        <div class="contact-service-area">
+
+                            <h3>
+                                Available Services
+                            </h3>
+
+                            <p>
+                                Transportation and moving assistance
+                                tailored to your request.
+                            </p>
+
+
+                            <div class="contact-service-list">
+
+                                <span>
+                                    Private hauling
+                                </span>
+
+                                <span>
+                                    Courier service
+                                </span>
+
+                                <span>
+                                    Residential moving
+                                </span>
+
+                                <span>
+                                    Furniture delivery
+                                </span>
+
+                                <span>
+                                    Business deliveries
+                                </span>
+
+                                <span>
+                                    Loading and unloading
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </aside>
+
+                </div>
+
+
+                <section class="contact-cta">
+
+                    <h2>
+                        Ready to Get Started?
+                    </h2>
+
+                    <p>
+                        Call, text, or submit a quote request and Packaged
+                        Comfort will review the details of your delivery or
+                        move.
+                    </p>
+
+
+                    <div class="contact-cta-actions">
+
+                        <a
+                            href="tel:7257240012"
+                            class="button button-primary"
+                        >
+                            Call 725-724-0012
+                        </a>
+
+                        <a
+                            href="sms:7257240012"
+                            class="button button-secondary"
+                        >
+                            Send a Text
+                        </a>
+
+                        <a
+                            href="quote.html"
+                            class="button button-secondary"
+                        >
+                            Request a Quote
+                        </a>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer class="site-footer">
+
+        <div class="container footer-grid">
+
+            <div>
+
+                <img
+                    src="logo.png"
+                    alt="Packaged Comfort logo"
+                    class="footer-logo"
+                >
+
+                <p>
+                    Private hauling, courier, delivery, and moving
+                    assistance designed to move your package with comfort.
+                </p>
+
+                <a
+                    href="tel:7257240012"
+                    style="
+                        display: inline-block;
+                        margin-top: 12px;
+                        color: white;
+                        font-weight: 850;
+                        text-decoration: none;
+                    "
+                >
+                    725-724-0012
+                </a>
+
+            </div>
+
+
+            <div class="footer-links">
+
+                <strong>
+                    Website
+                </strong>
+
+                <a href="index.html">
+                    Home
+                </a>
+
+                <a href="services.html">
+                    Services
+                </a>
+
+                <a href="quote.html">
+                    Request a Quote
+                </a>
+
+                <a href="contact.html">
+                    Contact
+                </a>
+
+            </div>
+
+
+            <div class="footer-links">
+
+                <strong>
+                    Account
+                </strong>
+
+                <a href="dashboard.html">
+                    Dashboard
+                </a>
+
+                <a href="settings.html">
+                    Account Settings
+                </a>
+
+                <a href="quote.html">
+                    New Quote Request
+                </a>
+
+            </div>
+
         </div>
 
-        <div class="footer-links">
-            <strong>Website</strong>
-            <a href="index.html">Home</a>
-            <a href="services.html">Services</a>
-            <a href="quote.html">Request a Quote</a>
-            <a href="contact.html">Contact</a>
+
+        <div class="container footer-bottom">
+
+            ©
+            <span data-current-year></span>
+            Packaged Comfort. All rights reserved.
+
         </div>
 
-        <div class="footer-links">
-            <strong>Account</strong>
-            <a href="login.html">Log In</a>
-            <a href="signup.html">Sign Up</a>
-            <a href="dashboard.html">Customer Dashboard</a>
-        </div>
+    </footer>
+
+
+    <div
+        class="toast"
+        id="toast"
+    >
+        <span id="toastMessage"></span>
     </div>
 
-    <div class="container footer-bottom">
-        © <span data-current-year></span> Packaged Comfort. All rights reserved.
-    </div>
-</footer>
 
-<div class="toast" id="toast"><span id="toastMessage"></span></div>
-<script src="script.js"></script>
-
+    <script src="script.js"></script>
 </body>
 </html>
