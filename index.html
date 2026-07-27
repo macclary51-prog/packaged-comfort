@@ -2,176 +2,1060 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Packaged Comfort private hauling, delivery, and moving services.">
-    <title>Packaged Comfort | Move Your Package with Comfort</title>
-    <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="style.css">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Packaged Comfort provides dependable hauling, delivery, and moving assistance throughout Henderson, Nevada and surrounding areas."
+    >
+
+    <title>Packaged Comfort | Hauling, Delivery & Moving</title>
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="logo.png"
+    >
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <style>
+        .home-hero {
+            position: relative;
+            overflow: hidden;
+            padding: 92px 0;
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(23, 35, 59, 0.97),
+                    rgba(38, 60, 99, 0.94)
+                );
+            color: white;
+        }
+
+        .home-hero::before {
+            position: absolute;
+            top: -170px;
+            right: -130px;
+            width: 430px;
+            height: 430px;
+            border: 65px solid rgba(255, 255, 255, 0.045);
+            border-radius: 50%;
+            content: "";
+        }
+
+        .home-hero::after {
+            position: absolute;
+            bottom: -190px;
+            left: -145px;
+            width: 390px;
+            height: 390px;
+            border: 58px solid rgba(238, 108, 47, 0.08);
+            border-radius: 50%;
+            content: "";
+        }
+
+        .hero-layout {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns:
+                minmax(0, 1.15fr)
+                minmax(340px, 0.85fr);
+            gap: 55px;
+            align-items: center;
+        }
+
+        .hero-label {
+            display: inline-flex;
+            margin-bottom: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            border-radius: 999px;
+            padding: 8px 13px;
+            color: rgba(255, 255, 255, 0.86);
+            font-size: 0.82rem;
+            font-weight: 850;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .home-hero h1 {
+            max-width: 720px;
+            margin-bottom: 20px;
+            color: white;
+            font-size: clamp(2.8rem, 6vw, 5.4rem);
+            line-height: 1.02;
+        }
+
+        .hero-highlight {
+            color: #ff9a62;
+        }
+
+        .hero-description {
+            max-width: 690px;
+            color: rgba(255, 255, 255, 0.82);
+            font-size: 1.12rem;
+            line-height: 1.75;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 13px;
+            margin-top: 29px;
+        }
+
+        .hero-call-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+            background: white;
+            color: #17233b !important;
+            font-weight: 900;
+        }
+
+        .hero-call-button:visited {
+            color: #17233b !important;
+        }
+
+        .hero-call-button:hover,
+        .hero-call-button:focus {
+            border-color: #ee6c2f;
+            background: #ee6c2f;
+            color: white !important;
+        }
+
+        .hero-info-card {
+            border: 1px solid rgba(255, 255, 255, 0.17);
+            border-radius: 26px;
+            padding: 31px;
+            background: rgba(255, 255, 255, 0.09);
+            box-shadow: 0 26px 70px rgba(0, 0, 0, 0.18);
+            backdrop-filter: blur(16px);
+        }
+
+        .hero-logo {
+            display: block;
+            width: 110px;
+            height: 110px;
+            margin-bottom: 24px;
+            border-radius: 22px;
+            object-fit: contain;
+            box-shadow: 0 18px 42px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-info-card h2 {
+            margin-bottom: 9px;
+            color: white;
+        }
+
+        .hero-info-card > p {
+            margin-bottom: 24px;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.6;
+        }
+
+        .hero-detail-list {
+            display: grid;
+            gap: 13px;
+        }
+
+        .hero-detail {
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+            border-top: 1px solid rgba(255, 255, 255, 0.14);
+            padding-top: 13px;
+        }
+
+        .hero-detail:first-child {
+            border-top: 0;
+            padding-top: 0;
+        }
+
+        .hero-detail-icon {
+            display: grid;
+            width: 34px;
+            height: 34px;
+            flex: 0 0 34px;
+            place-items: center;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.11);
+        }
+
+        .hero-detail strong,
+        .hero-detail span {
+            display: block;
+        }
+
+        .hero-detail strong {
+            color: white;
+            font-size: 0.93rem;
+        }
+
+        .hero-detail span {
+            margin-top: 3px;
+            color: rgba(255, 255, 255, 0.69);
+            font-size: 0.86rem;
+            line-height: 1.45;
+        }
+
+        .home-intro {
+            max-width: 770px;
+            margin: 0 auto 38px;
+            text-align: center;
+        }
+
+        .home-intro h2 {
+            margin-bottom: 12px;
+        }
+
+        .home-intro p {
+            color: var(--muted);
+            font-size: 1.02rem;
+            line-height: 1.7;
+        }
+
+        .home-service-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .home-service-card {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(23, 35, 59, 0.09);
+            border-radius: 20px;
+            padding: 28px;
+            background: white;
+            box-shadow:
+                0 17px 45px rgba(23, 35, 59, 0.07);
+            transition:
+                transform 170ms ease,
+                border-color 170ms ease,
+                box-shadow 170ms ease;
+        }
+
+        .home-service-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(238, 108, 47, 0.3);
+            box-shadow:
+                0 22px 52px rgba(23, 35, 59, 0.12);
+        }
+
+        .home-service-card::after {
+            position: absolute;
+            right: -42px;
+            bottom: -45px;
+            width: 125px;
+            height: 125px;
+            border-radius: 50%;
+            background: rgba(238, 108, 47, 0.055);
+            content: "";
+        }
+
+        .home-service-icon {
+            display: grid;
+            width: 53px;
+            height: 53px;
+            margin-bottom: 20px;
+            place-items: center;
+            border-radius: 15px;
+            background: #fff1e9;
+            font-size: 1.35rem;
+        }
+
+        .home-service-card h3 {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 9px;
+        }
+
+        .home-service-card p {
+            position: relative;
+            z-index: 1;
+            color: var(--muted);
+            line-height: 1.65;
+        }
+
+        .home-service-card a {
+            position: relative;
+            z-index: 1;
+            display: inline-block;
+            margin-top: 19px;
+            color: var(--primary);
+            font-weight: 850;
+            text-decoration: none;
+        }
+
+        .home-steps {
+            display: grid;
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+            gap: 21px;
+        }
+
+        .home-step {
+            position: relative;
+            border-radius: 20px;
+            padding: 28px;
+            background: #f8f9fb;
+            box-shadow:
+                inset 0 0 0 1px rgba(23, 35, 59, 0.08);
+        }
+
+        .home-step-number {
+            display: grid;
+            width: 45px;
+            height: 45px;
+            margin-bottom: 18px;
+            place-items: center;
+            border-radius: 13px;
+            background: var(--navy);
+            color: white;
+            font-weight: 900;
+        }
+
+        .home-step h3 {
+            margin-bottom: 8px;
+        }
+
+        .home-step p {
+            color: var(--muted);
+            line-height: 1.62;
+        }
+
+        .home-contact-banner {
+            display: grid;
+            grid-template-columns:
+                minmax(0, 1fr)
+                auto;
+            gap: 28px;
+            align-items: center;
+            border-radius: 25px;
+            padding: 38px;
+            background:
+                linear-gradient(
+                    135deg,
+                    #fff3eb,
+                    #fffaf7
+                );
+            box-shadow:
+                inset 0 0 0 1px
+                rgba(238, 108, 47, 0.13);
+        }
+
+        .home-contact-banner h2 {
+            margin-bottom: 8px;
+        }
+
+        .home-contact-banner p {
+            max-width: 700px;
+            color: var(--muted);
+            line-height: 1.67;
+        }
+
+        .home-contact-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .footer-phone {
+            display: inline-block;
+            margin-top: 12px;
+            color: white !important;
+            font-weight: 850;
+            text-decoration: none;
+        }
+
+        .footer-phone:hover {
+            color: #ffb07a !important;
+        }
+
+        @media (max-width: 970px) {
+            .hero-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-info-card {
+                max-width: 620px;
+            }
+
+            .home-service-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+            .home-contact-banner {
+                grid-template-columns: 1fr;
+            }
+
+            .home-contact-actions {
+                justify-content: flex-start;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .home-hero {
+                padding: 70px 0;
+            }
+
+            .home-service-grid,
+            .home-steps {
+                grid-template-columns: 1fr;
+            }
+
+            .home-contact-actions {
+                flex-direction: column;
+            }
+
+            .home-contact-actions .button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .hero-actions {
+                flex-direction: column;
+            }
+
+            .hero-actions .button {
+                width: 100%;
+            }
+
+            .hero-info-card,
+            .home-contact-banner {
+                padding: 25px 20px;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-<header class="site-header">
-    <div class="container nav-wrap">
-        <a href="index.html" class="brand" aria-label="Packaged Comfort home">
-            <img src="logo.png" alt="Packaged Comfort logo">
-            <span class="brand-text">
-                <strong>Packaged</strong>
-                <span>Comfort</span>
-            </span>
-        </a>
+    <header class="site-header">
+        <div class="container nav-wrap">
 
-        <button class="menu-button" id="menuButton" type="button" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+            <a
+                href="index.html"
+                class="brand"
+                aria-label="Packaged Comfort home"
+            >
+                <img
+                    src="logo.png"
+                    alt="Packaged Comfort logo"
+                >
 
-        <nav class="main-nav" id="mainNav">
-            <a href="index.html">Home</a>
-            <a href="services.html">Services</a>
-            <a href="quote.html">Request a Quote</a>
-            <a href="contact.html">Contact</a>
+                <span class="brand-text">
+                    <strong>Packaged</strong>
+                    <span>Comfort</span>
+                </span>
+            </a>
 
-            <div class="nav-actions">
-                <a href="login.html" class="button button-secondary">Log In</a>
-                <a href="signup.html" class="button button-primary">Sign Up</a>
-            </div>
-        </nav>
-    </div>
-</header>
 
-<main>
+            <button
+                class="menu-button"
+                id="menuButton"
+                type="button"
+                aria-label="Open navigation menu"
+                aria-expanded="false"
+            >
+                ☰
+            </button>
 
-<section class="hero">
-    <div class="container hero-grid">
-        <div>
-            <span class="eyebrow">Private hauling and courier services</span>
-            <h1>Move Your Package <span>with Comfort.</span></h1>
-            <p>Dependable hauling, courier, delivery, and moving assistance for customers throughout Henderson, Nevada and surrounding areas.</p>
 
-            <div class="hero-actions">
-                <a href="quote.html" class="button button-primary">Request a Quote</a>
-                <a href="services.html" class="button button-secondary">View Services</a>
-            </div>
-        </div>
+            <nav
+                class="main-nav"
+                id="mainNav"
+            >
+                <a
+                    href="index.html"
+                    class="active"
+                >
+                    Home
+                </a>
 
-        <div class="hero-card">
-            <img src="logo.png" alt="Packaged Comfort Private Hauling and Courier Service">
-            <div class="hero-card-bottom">
-                <div>
-                    <strong>Packaged Comfort</strong>
-                    <span>Henderson, Nevada</span>
+                <a href="services.html">
+                    Services
+                </a>
+
+                <a href="quote.html">
+                    Request a Quote
+                </a>
+
+                <a href="contact.html">
+                    Contact
+                </a>
+
+
+                <div class="nav-actions">
+
+                    <a
+                        href="login.html"
+                        class="button button-secondary"
+                    >
+                        Log In
+                    </a>
+
+                    <a
+                        href="signup.html"
+                        class="button button-primary"
+                    >
+                        Sign Up
+                    </a>
+
                 </div>
-                <a href="tel:7257240012" class="button button-primary">Call Now</a>
-            </div>
+            </nav>
+
         </div>
-    </div>
-</section>
+    </header>
 
-<section class="section">
-    <div class="container">
-        <div class="section-heading center">
-            <span class="section-label">Popular services</span>
-            <h2>What can we help you move?</h2>
-            <p>Choose a service, then request a personalized quote based on your actual pickup, destination, and items.</p>
-        </div>
 
-        <div class="card-grid">
-            <article class="card">
-                <div class="card-icon">🚚</div>
-                <h3>Private Hauling</h3>
-                <p>Transportation for furniture, equipment, household items, supplies, and more.</p>
-                <a href="services.html">View details →</a>
-            </article>
+    <main>
 
-            <article class="card">
-                <div class="card-icon">📦</div>
-                <h3>Courier Service</h3>
-                <p>Private pickup and delivery for packages, purchases, supplies, and important items.</p>
-                <a href="services.html">View details →</a>
-            </article>
+        <section class="home-hero">
 
-            <article class="card">
-                <div class="card-icon">🛋️</div>
-                <h3>Furniture Delivery</h3>
-                <p>Pickup and delivery for furniture, appliances, and items too large for a regular vehicle.</p>
-                <a href="services.html">View details →</a>
-            </article>
-        </div>
-    </div>
-</section>
+            <div class="container hero-layout">
 
-<section class="section alt">
-    <div class="container">
-        <div class="section-heading center">
-            <span class="section-label">How it works</span>
-            <h2>Three simple steps</h2>
-        </div>
-
-        <div class="steps">
-            <article class="step">
-                <div class="step-number">01</div>
-                <h3>Describe your request</h3>
-                <p>Tell us what needs to be picked up, where it is going, and your preferred service date.</p>
-            </article>
-
-            <article class="step">
-                <div class="step-number">02</div>
-                <h3>Upload photos</h3>
-                <p>Add pictures of furniture, packages, equipment, rooms, or specialty items.</p>
-            </article>
-
-            <article class="step">
-                <div class="step-number">03</div>
-                <h3>Receive your quote</h3>
-                <p>Packaged Comfort reviews your details and responds with personalized pricing.</p>
-            </article>
-        </div>
-    </div>
-</section>
-
-<section class="section">
-    <div class="container">
-        <div class="cta">
-            <div class="cta-grid">
                 <div>
-                    <h2>Ready to request your quote?</h2>
-                    <p>Submit your service details and photos online.</p>
+
+                    <span class="hero-label">
+                        Henderson, Nevada
+                    </span>
+
+                    <h1>
+                        Move Your Package
+                        <span class="hero-highlight">
+                            with Comfort
+                        </span>
+                    </h1>
+
+                    <p class="hero-description">
+                        Dependable hauling, delivery, and moving assistance
+                        for customers throughout Henderson, Nevada and
+                        surrounding areas.
+                    </p>
+
+
+                    <div class="hero-actions">
+
+                        <a
+                            href="quote.html"
+                            class="button button-primary"
+                        >
+                            Request a Quote
+                        </a>
+
+                        <a
+                            href="tel:7257240012"
+                            class="button hero-call-button"
+                        >
+                            Call 725-724-0012
+                        </a>
+
+                    </div>
+
                 </div>
-                <a href="quote.html" class="button button-primary">Start Quote Request</a>
+
+
+                <aside class="hero-info-card">
+
+                    <img
+                        src="logo.png"
+                        alt="Packaged Comfort"
+                        class="hero-logo"
+                    >
+
+                    <h2>
+                        Transportation Made Easier
+                    </h2>
+
+                    <p>
+                        Tell us what needs to be moved, where it is going,
+                        and when you need assistance.
+                    </p>
+
+
+                    <div class="hero-detail-list">
+
+                        <div class="hero-detail">
+
+                            <div class="hero-detail-icon">
+                                📍
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Local Service
+                                </strong>
+
+                                <span>
+                                    Henderson, Nevada and surrounding areas
+                                </span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="hero-detail">
+
+                            <div class="hero-detail-icon">
+                                📦
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Flexible Assistance
+                                </strong>
+
+                                <span>
+                                    Packages, furniture, appliances,
+                                    household items, and business deliveries
+                                </span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="hero-detail">
+
+                            <div class="hero-detail-icon">
+                                ☎
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Call or Text
+                                </strong>
+
+                                <span>
+                                    725-724-0012
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </aside>
+
             </div>
+
+        </section>
+
+
+        <section class="section">
+
+            <div class="container">
+
+                <div class="home-intro">
+
+                    <span class="section-label">
+                        Our Services
+                    </span>
+
+                    <h2>
+                        Help for deliveries, hauling, and moves
+                    </h2>
+
+                    <p>
+                        Packaged Comfort provides flexible transportation
+                        and moving assistance based on your pickup location,
+                        destination, items, and preferred service date.
+                    </p>
+
+                </div>
+
+
+                <div class="home-service-grid">
+
+                    <article class="home-service-card">
+
+                        <div class="home-service-icon">
+                            🚚
+                        </div>
+
+                        <h3>
+                            Private Hauling
+                        </h3>
+
+                        <p>
+                            Transportation for personal items, equipment,
+                            furniture, appliances, and other approved loads.
+                        </p>
+
+                        <a href="quote.html">
+                            Request hauling assistance →
+                        </a>
+
+                    </article>
+
+
+                    <article class="home-service-card">
+
+                        <div class="home-service-icon">
+                            📦
+                        </div>
+
+                        <h3>
+                            Furniture Delivery
+                        </h3>
+
+                        <p>
+                            Pickup and delivery assistance for furniture,
+                            appliances, large purchases, and household items.
+                        </p>
+
+                        <a href="quote.html">
+                            Request delivery assistance →
+                        </a>
+
+                    </article>
+
+
+                    <article class="home-service-card">
+
+                        <div class="home-service-icon">
+                            🏠
+                        </div>
+
+                        <h3>
+                            Residential Moving
+                        </h3>
+
+                        <p>
+                            Moving assistance for apartments, homes,
+                            rooms, and smaller residential moves.
+                        </p>
+
+                        <a href="quote.html">
+                            Request moving assistance →
+                        </a>
+
+                    </article>
+
+
+                    <article class="home-service-card">
+
+                        <div class="home-service-icon">
+                            🏢
+                        </div>
+
+                        <h3>
+                            Business Deliveries
+                        </h3>
+
+                        <p>
+                            Delivery support for office items, equipment,
+                            products, supplies, and local business needs.
+                        </p>
+
+                        <a href="quote.html">
+                            Request business delivery →
+                        </a>
+
+                    </article>
+
+
+                    <article class="home-service-card">
+
+                        <div class="home-service-icon">
+                            💪
+                        </div>
+
+                        <h3>
+                            Loading and Unloading
+                        </h3>
+
+                        <p>
+                            Hands-on help loading or unloading trucks,
+                            trailers, storage units, and transported items.
+                        </p>
+
+                        <a href="quote.html">
+                            Request loading assistance →
+                        </a>
+
+                    </article>
+
+
+                    <article class="home-service-card">
+
+                        <div class="home-service-icon">
+                            📋
+                        </div>
+
+                        <h3>
+                            Custom Requests
+                        </h3>
+
+                        <p>
+                            Contact Packaged Comfort to discuss transportation
+                            or moving needs not listed above.
+                        </p>
+
+                        <a href="contact.html">
+                            Discuss your request →
+                        </a>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="section alt">
+
+            <div class="container">
+
+                <div class="home-intro">
+
+                    <span class="section-label">
+                        How It Works
+                    </span>
+
+                    <h2>
+                        A simple way to request service
+                    </h2>
+
+                    <p>
+                        Provide the details needed to review your request
+                        and prepare a personalized response.
+                    </p>
+
+                </div>
+
+
+                <div class="home-steps">
+
+                    <article class="home-step">
+
+                        <div class="home-step-number">
+                            1
+                        </div>
+
+                        <h3>
+                            Describe the Service
+                        </h3>
+
+                        <p>
+                            Tell us what needs to be transported and select
+                            the type of assistance you need.
+                        </p>
+
+                    </article>
+
+
+                    <article class="home-step">
+
+                        <div class="home-step-number">
+                            2
+                        </div>
+
+                        <h3>
+                            Add Locations and Date
+                        </h3>
+
+                        <p>
+                            Provide the pickup location, destination, and
+                            your preferred service date.
+                        </p>
+
+                    </article>
+
+
+                    <article class="home-step">
+
+                        <div class="home-step-number">
+                            3
+                        </div>
+
+                        <h3>
+                            Review Your Request
+                        </h3>
+
+                        <p>
+                            Packaged Comfort reviews the details and follows
+                            up regarding availability and service planning.
+                        </p>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="section">
+
+            <div class="container">
+
+                <div class="home-contact-banner">
+
+                    <div>
+
+                        <span class="section-label">
+                            Ready to Get Started?
+                        </span>
+
+                        <h2>
+                            Tell us what you need moved
+                        </h2>
+
+                        <p>
+                            Request a quote online or call Packaged Comfort
+                            directly at 725-724-0012 to discuss your delivery,
+                            hauling, or moving needs.
+                        </p>
+
+                    </div>
+
+
+                    <div class="home-contact-actions">
+
+                        <a
+                            href="quote.html"
+                            class="button button-primary"
+                        >
+                            Request a Quote
+                        </a>
+
+                        <a
+                            href="tel:7257240012"
+                            class="button button-secondary"
+                        >
+                            Call 725-724-0012
+                        </a>
+
+                        <a
+                            href="sms:7257240012"
+                            class="button button-secondary"
+                        >
+                            Send a Text
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer class="site-footer">
+
+        <div class="container footer-grid">
+
+            <div>
+
+                <img
+                    src="logo.png"
+                    alt="Packaged Comfort logo"
+                    class="footer-logo"
+                >
+
+                <p>
+                    Dependable hauling, delivery, and moving assistance
+                    throughout Henderson, Nevada and surrounding areas.
+                </p>
+
+                <a
+                    href="tel:7257240012"
+                    class="footer-phone"
+                >
+                    725-724-0012
+                </a>
+
+            </div>
+
+
+            <div class="footer-links">
+
+                <strong>
+                    Website
+                </strong>
+
+                <a href="index.html">
+                    Home
+                </a>
+
+                <a href="services.html">
+                    Services
+                </a>
+
+                <a href="quote.html">
+                    Request a Quote
+                </a>
+
+                <a href="contact.html">
+                    Contact
+                </a>
+
+            </div>
+
+
+            <div class="footer-links">
+
+                <strong>
+                    Account
+                </strong>
+
+                <a href="dashboard.html">
+                    Dashboard
+                </a>
+
+                <a href="settings.html">
+                    Account Settings
+                </a>
+
+                <a href="quote.html">
+                    New Quote Request
+                </a>
+
+            </div>
+
         </div>
+
+
+        <div class="container footer-bottom">
+
+            ©
+            <span data-current-year></span>
+            Packaged Comfort. All rights reserved.
+
+        </div>
+
+    </footer>
+
+
+    <div
+        class="toast"
+        id="toast"
+    >
+        <span id="toastMessage"></span>
     </div>
-</section>
 
-</main>
 
-<footer class="site-footer">
-    <div class="container footer-grid">
-        <div>
-            <img src="logo.png" alt="Packaged Comfort logo" class="footer-logo">
-            <p>Private hauling, courier, delivery, and moving assistance designed to move your package with comfort.</p>
-        </div>
-
-        <div class="footer-links">
-            <strong>Website</strong>
-            <a href="index.html">Home</a>
-            <a href="services.html">Services</a>
-            <a href="quote.html">Request a Quote</a>
-            <a href="contact.html">Contact</a>
-        </div>
-
-        <div class="footer-links">
-            <strong>Account</strong>
-            <a href="login.html">Log In</a>
-            <a href="signup.html">Sign Up</a>
-            <a href="dashboard.html">Customer Dashboard</a>
-        </div>
-    </div>
-
-    <div class="container footer-bottom">
-        © <span data-current-year></span> Packaged Comfort. All rights reserved.
-    </div>
-</footer>
-
-<div class="toast" id="toast"><span id="toastMessage"></span></div>
-<script src="script.js"></script>
-
+    <script src="script.js"></script>
 </body>
 </html>
