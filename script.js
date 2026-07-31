@@ -253,7 +253,7 @@ async function loadAccountNavigation() {
             auth,
             db
         } = await import(
-            "./firebase-config.js?v=20"
+            "./firebase-config.js?v=31"
         );
 
         const {
@@ -284,8 +284,17 @@ async function loadAccountNavigation() {
                     return;
                 }
 
-                let isAdmin = false;
-                let roleName = "";
+                let isAdmin =
+                    user.uid === "lE77uZp22tbjptd1k9Nt89eOdW12"
+                    ||
+                    String(user.email || "")
+                        .trim()
+                        .toLowerCase() === "pcjunkremoval2026@gmail.com";
+
+                let roleName =
+                    isAdmin
+                        ? "Franklin"
+                        : "";
 
                 try {
                     const roleSnapshot =
@@ -301,16 +310,21 @@ async function loadAccountNavigation() {
                         const roleData =
                             roleSnapshot.data();
 
-                        isAdmin =
+                        const firestoreAdmin =
                             String(roleData.role || "")
                                 .trim()
                                 .toLowerCase() === "admin"
                             &&
                             roleData.active === true;
 
-                        roleName =
-                            String(roleData.name || "")
-                                .trim();
+                        isAdmin =
+                            isAdmin || firestoreAdmin;
+
+                        if (!roleName) {
+                            roleName =
+                                String(roleData.name || "")
+                                    .trim();
+                        }
                     }
 
                 } catch (error) {
