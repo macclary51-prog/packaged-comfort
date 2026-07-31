@@ -6,8 +6,15 @@ import {
 
 import {
     getAuth,
-    onAuthStateChanged
+    onAuthStateChanged,
+    signOut
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
+import {
+    doc,
+    getDoc,
+    getFirestore
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 
 const accountServiceConfig = {
@@ -24,14 +31,18 @@ const app = getApps().length
     ? getApp()
     : initializeApp(accountServiceConfig);
 
-const auth = getAuth(app);
+const auth =
+    getAuth(app);
+
+const database =
+    getFirestore(app);
 
 
-const accountLoading =
-    document.getElementById("accountLoading");
+const dashboardLoading =
+    document.getElementById("dashboardLoading");
 
-const accountContent =
-    document.getElementById("accountContent");
+const dashboardContent =
+    document.getElementById("dashboardContent");
 
 const dashboardFullName =
     document.getElementById("dashboardFullName");
@@ -41,6 +52,47 @@ const dashboardEmail =
 
 const dashboardAvatar =
     document.getElementById("dashboardAvatar");
+
+const dashboardDate =
+    document.getElementById("dashboardDate");
+
+const dashboardGreeting =
+    document.getElementById("dashboardGreeting");
+
+const memberSince =
+    document.getElementById("memberSince");
+
+const dashboardLogoutButton =
+    document.getElementById(
+        "dashboardLogoutButton"
+    );
+
+
+async function isAdministrator(user) {
+    const roleReference =
+        doc(
+            database,
+            "roles",
+            user.uid
+        );
+
+    const roleSnapshot =
+        await getDoc(roleReference);
+
+    if (!roleSnapshot.exists()) {
+        return false;
+    }
+
+    const role =
+        roleSnapshot.data();
+
+    return (
+        String(role.role || "")
+            .trim()
+            .toLowerCase() === "admin" &&
+        role.active === true
+    );
+}
 
 
 function getDisplayName(user) {
@@ -63,7 +115,10 @@ function getFirstName(fullName) {
 }
 
 
-function getInitial(fullName, email) {
+function getInitial(
+    fullName,
+    email
+) {
     const source =
         fullName || email || "C";
 
@@ -74,12 +129,55 @@ function getInitial(fullName, email) {
 }
 
 
-onAuthStateChanged(auth, (user) => {
-    if (!user) {
-        window.location.replace("login.html");
-        return;
+function getGreeting() {
+    const hour =
+        new Date().getHours();
+
+    if (hour < 12) {
+        return "Good morning";
     }
 
+    if (hour < 18) {
+        return "Good afternoon";
+    }
+
+    return "Good evening";
+}
+
+
+function formatCurrentDate() {
+    return new Intl.DateTimeFormat(
+        "en-US",
+        {
+            weekday: "long",
+            month: "long",
+            day: "numeric"
+        }
+    ).format(new Date());
+}
+
+
+function formatMemberSince(user) {
+    const creationTime =
+        user.metadata?.creationTime;
+
+    if (!creationTime) {
+        return "Active";
+    }
+
+    return new Intl.DateTimeFormat(
+        "en-US",
+        {
+            month: "short",
+            year: "numeric"
+        }
+    ).format(
+        new Date(creationTime)
+    );
+}
+
+
+function displayDashboard(user) {
     const fullName =
         getDisplayName(user);
 
@@ -87,28 +185,129 @@ onAuthStateChanged(auth, (user) => {
         getFirstName(fullName);
 
     const email =
-        user.email || "Account email unavailable";
+        user.email ||
+        "Account email unavailable";
+
+
+    if (dashboardFullName) {
+        dashboardFullName.textContent =
+            fullName;
+    }
+
+    if (dashboardEmail) {
+        dashboardEmail.textContent =
+            email;
+    }
+
+    if (dashboardAvatar) {
+        dashboardAvatar.textContent =
+            getInitial(
+                fullName,
+                email
+            );
+    }
+
+    if (dashboardDate) {
+        dashboardDate.textContent =
+            formatCurrentDate();
+    }
+
+    if (dashboardGreeting) {
+        dashboardGreeting.textContent =
+            getGreeting();
+    }
+
+    if (memberSince) {
+        memberSince.textContent =
+            formatMemberSince(user);
+    }
 
 
     document
         .querySelectorAll(
-            "[data-dashboard-name], [data-user-name]"
+            "[data-dashboard-name], " +
+            "[data-user-name]"
         )
         .forEach((element) => {
-            element.textContent = firstName;
+            element.textContent =
+                firstName;
         });
 
 
-    dashboardFullName.textContent =
-        fullName;
+    if (dashboardLoading) {
+        dashboardLoading.hidden = true;
+    }
 
-    dashboardEmail.textContent =
-        email;
+    if (dashboardContent) {
+        dashboardContent.hidden = false;
+    }
+}
 
-    dashboardAvatar.textContent =
-        getInitial(fullName, email);
+
+onAuthStateChanged(
+    auth,
+    async (user) => {
+        if (!user) {
+            window.location.replace(
+                "login.html"
+            );
+
+            return;
+        }
+
+        try {
+            const administrator =
+                await isAdministrator(user);
+
+            if (administrator) {
+                window.location.replace(
+                    "admin.html"
+                );
+
+                return;
+            }
+
+            displayDashboard(user);
+
+        } catch (error) {
+            console.error(
+                "Dashboard role check failed:",
+                error
+            );
+
+            displayDashboard(user);
+        }
+    }
+);
 
 
-    accountLoading.hidden = true;
-    accountContent.hidden = false;
-});
+if (dashboardLogoutButton) {
+    dashboardLogoutButton.addEventListener(
+        "click",
+        async () => {
+            dashboardLogoutButton.disabled = true;
+
+            dashboardLogoutButton.textContent =
+                "Logging Out...";
+
+            try {
+                await signOut(auth);
+
+                window.location.href =
+                    "index.html";
+
+            } catch (error) {
+                console.error(
+                    "Account logout error:",
+                    error
+                );
+
+                dashboardLogoutButton.disabled =
+                    false;
+
+                dashboardLogoutButton.textContent =
+                    "Log Out";
+            }
+        }
+    );
+}
