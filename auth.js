@@ -1,22 +1,22 @@
 import {
-    auth
+    auth,
+    db
 } from "./firebase-config.js";
 
 import {
     createUserWithEmailAndPassword,
+    onAuthStateChanged,
     signInWithEmailAndPassword,
+    signOut,
     updateProfile
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
 import {
     doc,
     getDoc,
-    getFirestore
+    serverTimestamp,
+    setDoc
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
-
-const database =
-    getFirestore(auth.app);
 
 
 const signupForm =
@@ -28,6 +28,9 @@ const loginForm =
 const authMessage =
     document.getElementById("authMessage");
 
+let formIsSubmitting = false;
+let routeIsRunning = false;
+
 
 function showMessage(
     message,
@@ -37,7 +40,8 @@ function showMessage(
         return;
     }
 
-    authMessage.textContent = message;
+    authMessage.textContent =
+        message;
 
     authMessage.style.color =
         isError ? "#b42318" : "#176b46";
@@ -75,7 +79,7 @@ function friendlyError(error) {
 
         default:
             console.error(
-                "Account error:",
+                "Authentication error:",
                 error
             );
 
@@ -84,10 +88,10 @@ function friendlyError(error) {
 }
 
 
-async function getAccountRole(user) {
+async function getRoleRecord(user) {
     const roleReference =
         doc(
-            database,
+            db,
             "roles",
             user.uid
         );
@@ -97,26 +101,118 @@ async function getAccountRole(user) {
 
     if (!roleSnapshot.exists()) {
         return {
-            isAdmin: false
+            exists: false,
+            isAdmin: false,
+            data: null
         };
     }
 
     const roleData =
         roleSnapshot.data();
 
+    const roleName =
+        String(roleData.role || "")
+            .trim()
+            .toLowerCase();
+
     return {
+        exists: true,
+
         isAdmin:
-            String(roleData.role || "")
-                .trim()
-                .toLowerCase() === "admin"
-            &&
-            roleData.active === true
+            roleName === "admin" &&
+            roleData.active === true,
+
+        data:
+            roleData
     };
 }
 
 
+async function saveCustomerProfile(user) {
+    const customerReference =
+        doc(
+            db,
+            "customers",
+            user.uid
+        );
+
+    const customerSnapshot =
+        await getDoc(customerReference);
+
+    const customerData = {
+        name:
+            user.displayName?.trim() ||
+            user.email?.split("@")[0] ||
+            "Customer",
+
+        email:
+            user.email || "",
+
+        lastLoginAt:
+            serverTimestamp()
+    };
+
+    if (!customerSnapshot.exists()) {
+        customerData.createdAt =
+            serverTimestamp();
+    }
+
+    await setDoc(
+        customerReference,
+        customerData,
+        {
+            merge: true
+        }
+    );
+}
+
+
+async function routeSignedInUser(user) {
+    if (
+        !user ||
+        routeIsRunning
+    ) {
+        return;
+    }
+
+    routeIsRunning = true;
+
+    try {
+        const roleRecord =
+            await getRoleRecord(user);
+
+        if (roleRecord.isAdmin) {
+            window.location.replace(
+                "admin.html"
+            );
+
+            return;
+        }
+
+        await saveCustomerProfile(user);
+
+        window.location.replace(
+            "dashboard.html"
+        );
+
+    } catch (error) {
+        routeIsRunning = false;
+
+        console.error(
+            "Account routing failed:",
+            error
+        );
+
+        showMessage(
+            "The website could not verify this account. Check the Firebase project and administrator UID.",
+            true
+        );
+    }
+}
+
+
 /* ========================================
-   CREATE NORMAL CUSTOMER ACCOUNT
+   CUSTOMER SIGNUP
 ======================================== */
 
 if (signupForm) {
@@ -152,8 +248,9 @@ if (signupForm) {
                     "signupButton"
                 );
 
-            signupButton.disabled = true;
+            formIsSubmitting = true;
 
+            signupButton.disabled = true;
             signupButton.textContent =
                 "Creating Account...";
 
@@ -174,6 +271,10 @@ if (signupForm) {
                     }
                 );
 
+                await saveCustomerProfile(
+                    result.user
+                );
+
                 showMessage(
                     "Account created successfully."
                 );
@@ -182,16 +283,17 @@ if (signupForm) {
                     window.location.replace(
                         "dashboard.html"
                     );
-                }, 600);
+                }, 500);
 
             } catch (error) {
+                formIsSubmitting = false;
+
                 showMessage(
                     friendlyError(error),
                     true
                 );
 
                 signupButton.disabled = false;
-
                 signupButton.textContent =
                     "Create Account";
             }
@@ -201,7 +303,7 @@ if (signupForm) {
 
 
 /* ========================================
-   LOG IN CUSTOMER OR ADMINISTRATOR
+   CUSTOMER OR ADMIN LOGIN
 ======================================== */
 
 if (loginForm) {
@@ -231,8 +333,9 @@ if (loginForm) {
                     "loginButton"
                 );
 
-            loginButton.disabled = true;
+            formIsSubmitting = true;
 
+            loginButton.disabled = true;
             loginButton.textContent =
                 "Checking Account...";
 
@@ -246,12 +349,12 @@ if (loginForm) {
                         password
                     );
 
-                const accountRole =
-                    await getAccountRole(
+                const roleRecord =
+                    await getRoleRecord(
                         result.user
                     );
 
-                if (accountRole.isAdmin) {
+                if (roleRecord.isAdmin) {
                     showMessage(
                         "Administrator access confirmed."
                     );
@@ -265,6 +368,10 @@ if (loginForm) {
                     return;
                 }
 
+                await saveCustomerProfile(
+                    result.user
+                );
+
                 showMessage(
                     "Customer login successful."
                 );
@@ -276,16 +383,43 @@ if (loginForm) {
                 }, 350);
 
             } catch (error) {
+                formIsSubmitting = false;
+
                 showMessage(
                     friendlyError(error),
                     true
                 );
 
                 loginButton.disabled = false;
-
                 loginButton.textContent =
                     "Log In";
             }
         }
     );
+
+
+    onAuthStateChanged(
+        auth,
+        async (user) => {
+            if (
+                !user ||
+                formIsSubmitting
+            ) {
+                return;
+            }
+
+            await routeSignedInUser(user);
+        }
+    );
 }
+
+
+/*
+  This export is not required by the pages, but it makes
+  browser-console testing easier.
+*/
+export {
+    getRoleRecord,
+    routeSignedInUser,
+    signOut
+};
