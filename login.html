@@ -10,88 +10,229 @@
 
     <meta
         name="description"
-        content="Log in to your Packaged Comfort customer account."
+        content="Log in to your Packaged Comfort customer or administrator account."
     >
 
     <title>Log In | Packaged Comfort</title>
 
-    <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="icon"
+        type="image/png"
+        href="logo.png"
+    >
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <style>
+        .auth-page {
+            min-height: calc(100vh - 80px);
+            padding: 70px 0;
+            background:
+                linear-gradient(
+                    135deg,
+                    #f5f7fa,
+                    #fff7f1
+                );
+        }
+
+        .auth-card {
+            width: min(520px, 100%);
+            margin: 0 auto;
+            border: 1px solid rgba(23, 35, 59, 0.1);
+            border-radius: 24px;
+            padding: 34px;
+            background: white;
+            box-shadow:
+                0 24px 65px rgba(23, 35, 59, 0.12);
+        }
+
+        .auth-card h1 {
+            margin-bottom: 9px;
+            text-align: center;
+        }
+
+        .auth-card > p {
+            margin: 0 auto 26px;
+            color: var(--muted);
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .auth-logo {
+            display: block;
+            width: 84px;
+            height: 84px;
+            margin: 0 auto 18px;
+            border-radius: 18px;
+            object-fit: contain;
+        }
+
+        .auth-form {
+            display: grid;
+            gap: 17px;
+        }
+
+        .auth-field {
+            display: grid;
+            gap: 7px;
+        }
+
+        .auth-field label {
+            color: #17233b;
+            font-weight: 850;
+        }
+
+        .auth-field input {
+            width: 100%;
+            border: 1px solid #d9dde5;
+            border-radius: 11px;
+            padding: 13px 14px;
+            background: white;
+            color: #17233b;
+            font: inherit;
+        }
+
+        .auth-field input:focus {
+            outline: 3px solid rgba(238, 108, 47, 0.15);
+            border-color: #ee6c2f;
+        }
+
+        .auth-submit {
+            width: 100%;
+            margin-top: 4px;
+        }
+
+        .auth-message {
+            min-height: 24px;
+            margin: 0;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .auth-footer {
+            margin-top: 22px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .auth-footer a {
+            color: #ee6c2f;
+            font-weight: 850;
+        }
+    </style>
 </head>
 
 <body>
 
     <header class="site-header">
-    <div class="container nav-wrap">
-        <a href="index.html" class="brand" aria-label="Packaged Comfort home">
-            <img src="logo.png" alt="Packaged Comfort logo">
 
-            <span class="brand-text">
-                <strong>Packaged</strong>
-                <span>Comfort</span>
-            </span>
-        </a>
+        <div class="container nav-wrap">
 
-        <button
-            class="menu-button"
-            id="menuButton"
-            type="button"
-            aria-label="Open navigation menu"
-            aria-expanded="false"
-        >
-            ☰
-        </button>
+            <a
+                href="index.html"
+                class="brand"
+                aria-label="Packaged Comfort home"
+            >
+                <img
+                    src="logo.png"
+                    alt="Packaged Comfort logo"
+                >
 
-        <nav class="main-nav" id="mainNav">
-            <a href="index.html">Home</a>
-            <a href="services.html">Services</a>
-            <a href="quote.html">Request a Quote</a>
-            <a href="contact.html">Contact</a>
+                <span class="brand-text">
+                    <strong>Packaged</strong>
+                    <span>Comfort</span>
+                </span>
+            </a>
 
-            <div class="nav-actions">
-                <a href="login.html" class="button button-secondary">
-                    Log In
+
+            <button
+                class="menu-button"
+                id="menuButton"
+                type="button"
+                aria-label="Open navigation menu"
+                aria-expanded="false"
+            >
+                ☰
+            </button>
+
+
+            <nav
+                class="main-nav"
+                id="mainNav"
+            >
+                <a href="index.html">
+                    Home
                 </a>
 
-                <a href="signup.html" class="button button-primary">
-                    Sign Up
+                <a href="services.html">
+                    Services
                 </a>
-            </div>
-        </nav>
-    </div>
-</header>
+
+                <a href="quote.html">
+                    Request a Quote
+                </a>
+
+                <a href="contact.html">
+                    Contact
+                </a>
+
+                <div
+                    class="nav-actions"
+                    data-auth-guest
+                >
+                    <a
+                        href="login.html"
+                        class="button button-secondary"
+                    >
+                        Log In
+                    </a>
+
+                    <a
+                        href="signup.html"
+                        class="button button-primary"
+                    >
+                        Sign Up
+                    </a>
+                </div>
+            </nav>
+
+        </div>
+
+    </header>
 
 
-    <main>
+    <main class="auth-page">
 
-        <section class="page-hero">
-            <div class="container">
-                <span class="section-label">Customer account</span>
+        <div class="container">
 
-                <h1>Log in</h1>
+            <section class="auth-card">
+
+                <img
+                    src="logo.png"
+                    alt="Packaged Comfort"
+                    class="auth-logo"
+                >
+
+                <h1>
+                    Account Login
+                </h1>
 
                 <p>
-                    Access your saved quote requests and service updates.
+                    Customers and authorized administrators use this
+                    same secure login page.
                 </p>
-            </div>
-        </section>
 
-
-        <section class="section alt">
-            <div class="container auth-shell">
 
                 <form
-                    class="form-shell"
+                    class="auth-form"
                     id="loginForm"
-                    novalidate
                 >
-                    <img
-                        src="logo.png"
-                        alt="Packaged Comfort logo"
-                        class="auth-logo"
-                    >
 
-                    <div class="form-group">
+                    <div class="auth-field">
+
                         <label for="loginEmail">
                             Email address
                         </label>
@@ -99,16 +240,15 @@
                         <input
                             type="email"
                             id="loginEmail"
-                            name="email"
                             autocomplete="email"
                             required
                         >
+
                     </div>
 
-                    <div
-                        class="form-group"
-                        style="margin-top: 16px;"
-                    >
+
+                    <div class="auth-field">
+
                         <label for="loginPassword">
                             Password
                         </label>
@@ -116,237 +256,51 @@
                         <input
                             type="password"
                             id="loginPassword"
-                            name="password"
                             autocomplete="current-password"
                             minlength="6"
                             required
                         >
+
                     </div>
+
 
                     <button
                         type="submit"
-                        class="button button-primary form-submit"
+                        class="button button-primary auth-submit"
                         id="loginButton"
                     >
                         Log In
                     </button>
 
+
                     <p
-                        class="notice"
+                        class="auth-message"
                         id="authMessage"
                         aria-live="polite"
                     ></p>
 
-                    <p class="notice">
-                        Do not have an account?
-                        <a
-                            href="signup.html"
-                            style="color: #ee6c2f; font-weight: 800;"
-                        >
-                            Create one
-                        </a>
-                    </p>
                 </form>
 
-            </div>
-        </section>
+
+                <p class="auth-footer">
+                    Need a customer account?
+                    <a href="signup.html">
+                        Create one here
+                    </a>
+                </p>
+
+            </section>
+
+        </div>
 
     </main>
 
 
-    <footer class="site-footer">
-        <div class="container footer-grid">
-
-            <div>
-                <img
-                    src="logo.png"
-                    alt="Packaged Comfort logo"
-                    class="footer-logo"
-                >
-
-                <p>
-                    Private hauling, courier, delivery, and moving assistance
-                    designed to move your package with comfort.
-                </p>
-            </div>
-
-            <div class="footer-links">
-                <strong>Website</strong>
-                <a href="index.html">Home</a>
-                <a href="services.html">Services</a>
-                <a href="quote.html">Request a Quote</a>
-                <a href="contact.html">Contact</a>
-            </div>
-
-            <div class="footer-links">
-                <strong>Account</strong>
-                <a href="login.html">Log In</a>
-                <a href="signup.html">Sign Up</a>
-                <a href="dashboard.html">Customer Dashboard</a>
-            </div>
-
-        </div>
-
-        <div class="container footer-bottom">
-            © <span data-current-year></span>
-            Packaged Comfort. All rights reserved.
-        </div>
-    </footer>
-
-
-    <div class="toast" id="toast">
-        <span id="toastMessage"></span>
-    </div>
-
-
-    <script src="script.js"></script>
-
-    <script type="module">
-        import {
-            initializeApp,
-            getApp,
-            getApps
-        } from
-            "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-
-        import {
-            getAuth,
-            setPersistence,
-            browserLocalPersistence,
-            signInWithEmailAndPassword
-        } from
-            "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-
-
-        const accountServiceConfig = {
-            apiKey: "AIzaSyDMWaronfPi0cujdvzGIsieadLss_d4iMQ",
-            authDomain: "packaged-comfort-website.firebaseapp.com",
-            projectId: "packaged-comfort-website",
-            storageBucket: "packaged-comfort-website.firebasestorage.app",
-            messagingSenderId: "150317110708",
-            appId: "1:150317110708:web:dab83f056b04b1e0210ee1"
-        };
-
-
-        const app = getApps().length
-            ? getApp()
-            : initializeApp(accountServiceConfig);
-
-        const auth = getAuth(app);
-
-        const loginForm =
-            document.getElementById("loginForm");
-
-        const loginButton =
-            document.getElementById("loginButton");
-
-        const authMessage =
-            document.getElementById("authMessage");
-
-
-        function showMessage(message, isError = false) {
-            authMessage.textContent = message;
-
-            authMessage.style.color =
-                isError ? "#b42318" : "#1c7c54";
-        }
-
-
-        function showLoginError(error) {
-            console.error("Account login error:", error);
-
-            switch (error.code) {
-                case "auth/invalid-email":
-                    return "Enter a valid email address.";
-
-                case "auth/invalid-credential":
-                case "auth/user-not-found":
-                case "auth/wrong-password":
-                    return "The email address or password is incorrect.";
-
-                case "auth/user-disabled":
-                    return "This account has been disabled.";
-
-                case "auth/too-many-requests":
-                    return "Too many login attempts. Wait a moment and try again.";
-
-                case "auth/network-request-failed":
-                    return "Check your internet connection and try again.";
-
-                case "auth/operation-not-allowed":
-                    return "Sign-in is temporarily unavailable. Please try again later.";
-
-                case "auth/unauthorized-domain":
-                    return "Sign-in is not available from this web address.";
-
-                default:
-                    return `Login failed: ${error.code || error.message}`;
-            }
-        }
-
-
-        loginForm.addEventListener("submit", async (event) => {
-            event.preventDefault();
-
-            if (!loginForm.checkValidity()) {
-                loginForm.reportValidity();
-                return;
-            }
-
-            const email =
-                document
-                    .getElementById("loginEmail")
-                    .value
-                    .trim()
-                    .toLowerCase();
-
-            const password =
-                document
-                    .getElementById("loginPassword")
-                    .value;
-
-            loginButton.disabled = true;
-            loginButton.textContent = "Logging In...";
-
-            showMessage("");
-
-            try {
-                await setPersistence(
-                    auth,
-                    browserLocalPersistence
-                );
-
-                const userCredential =
-                    await signInWithEmailAndPassword(
-                        auth,
-                        email,
-                        password
-                    );
-
-                if (!userCredential.user) {
-                    throw new Error(
-                        "The account session could not be started."
-                    );
-                }
-
-                showMessage(
-                    "Login successful. Opening your dashboard..."
-                );
-
-                window.setTimeout(() => {
-                    window.location.assign("dashboard.html");
-                }, 700);
-            } catch (error) {
-                showMessage(
-                    showLoginError(error),
-                    true
-                );
-
-                loginButton.disabled = false;
-                loginButton.textContent = "Log In";
-            }
-        });
-    </script>
+    <script src="script.js?v=20"></script>
+    <script
+        type="module"
+        src="auth.js?v=20"
+    ></script>
 
 </body>
 </html>
