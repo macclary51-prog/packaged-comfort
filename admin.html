@@ -1,115 +1,1188 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex,nofollow">
-<title>Admin Dashboard | Packaged Comfort</title>
-<link rel="icon" href="logo.png">
-<link rel="stylesheet" href="style.css">
-<style>
-:root{--n:#17233b;--o:#ee6c2f;--m:#6b7587;--b:#e1e5eb;--bg:#f3f5f8}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--n)}
-button,input,select{font:inherit}.loading{display:grid;min-height:100vh;place-items:center;font-weight:800;color:var(--m)}
-.top{position:sticky;top:0;z-index:30;background:#fffffff2;border-bottom:1px solid var(--b);backdrop-filter:blur(14px)}
-.topin,.layout{width:min(1450px,calc(100% - 32px));margin:auto}.topin{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.brand{display:flex;align-items:center;gap:11px;color:var(--n);text-decoration:none}.brand img{width:48px;height:48px;border-radius:12px}.brand span,.user span{display:block}.brand small,.user small{color:var(--m)}
-.user{display:flex;align-items:center;gap:12px;text-align:right}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;border:1px solid var(--b);border-radius:10px;padding:10px 14px;background:white;color:var(--n);font-weight:850;text-decoration:none;cursor:pointer}
-.btn.primary{background:var(--o);border-color:var(--o);color:white}.btn.danger{color:#b42318}.layout{display:grid;grid-template-columns:255px minmax(0,1fr);gap:24px;padding:27px 0 55px}
-.side{position:sticky;top:103px;align-self:start;background:white;border:1px solid var(--b);border-radius:20px;overflow:hidden;box-shadow:0 14px 38px #17233b0f}
-.profile{text-align:center;padding:24px 18px;border-bottom:1px solid var(--b)}.avatar{display:grid;width:66px;height:66px;margin:0 auto 12px;place-items:center;border-radius:50%;background:#fff1e9;color:var(--o);font-size:1.5rem;font-weight:900}.profile small{display:block;margin-top:4px;color:var(--m);overflow-wrap:anywhere}.role{display:inline-flex;margin-top:11px;border-radius:999px;padding:6px 9px;background:#edf8f2;color:#18794e;font-size:.75rem;font-weight:850}
-.nav{display:grid;gap:5px;padding:12px}.nav button,.nav a{display:flex;align-items:center;gap:10px;width:100%;border:0;border-radius:11px;padding:12px 13px;background:transparent;color:var(--n);font-weight:800;text-align:left;text-decoration:none;cursor:pointer}.nav button:hover,.nav a:hover,.nav button.active{background:#fff1e9;color:var(--o)}
-.view{display:none}.view.active{display:block}.hero{margin-bottom:20px;border-radius:22px;padding:32px;background:linear-gradient(135deg,#17233b,#2a436d);color:white;box-shadow:0 20px 50px #17233b2a}.hero h1{margin:0 0 8px;color:white}.hero p{margin:0;max-width:750px;color:#ffffffc7;line-height:1.65}
-.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px;margin-bottom:20px}.stat,.panel{background:white;border:1px solid var(--b);box-shadow:0 14px 36px #17233b0d}.stat{border-radius:17px;padding:20px}.stat i{display:grid;width:42px;height:42px;margin-bottom:14px;place-items:center;border-radius:12px;background:#fff1e9;font-style:normal}.stat strong,.stat span{display:block}.stat strong{font-size:1.65rem}.stat span{margin-top:4px;color:var(--m);font-size:.86rem}
-.panel{margin-bottom:20px;border-radius:20px;overflow:hidden}.ph{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;padding:21px 23px 16px;border-bottom:1px solid var(--b)}.ph h2{margin:0 0 5px}.ph p{margin:0;color:var(--m)}.pb{padding:22px 23px 25px}
-.tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.tool{display:block;min-height:155px;border:1px solid var(--b);border-radius:15px;padding:18px;background:#fbfbfc;color:var(--n);text-decoration:none;cursor:pointer}.tool:hover{border-color:#ee6c2f55;background:white}.tool b,.tool span{display:block}.tool b{margin:12px 0 6px}.tool span{color:var(--m);font-size:.86rem;line-height:1.5}
-.filters{display:grid;grid-template-columns:minmax(220px,1fr) 190px;gap:11px}.input,.select{width:100%;border:1px solid var(--b);border-radius:10px;padding:11px 12px;background:white;color:var(--n)}
-.tablewrap{overflow:auto}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:13px 11px;border-bottom:1px solid var(--b);text-align:left;vertical-align:top}.table th{color:var(--m);font-size:.75rem;text-transform:uppercase}.table td{font-size:.9rem}.table strong,.table span,.table a{display:block}.table a{color:var(--n);font-weight:800;text-decoration:none}.sub{margin-top:4px;color:var(--m);font-size:.8rem;line-height:1.42}.status{display:inline-flex!important;border-radius:999px;padding:6px 9px;font-size:.74rem;font-weight:850;text-transform:capitalize}.new{background:#fff3d6;color:#946200}.contacted{background:#e8f1ff;color:#245ea8}.scheduled{background:#eee9ff;color:#5b43a8}.completed{background:#e8f7ef;color:#18794e}.canceled{background:#fff0ee;color:#b42318}.actions{display:flex;min-width:180px;flex-wrap:wrap;gap:7px}.small{border:1px solid var(--b);border-radius:8px;padding:7px 9px;background:white;color:var(--n);font-size:.78rem;font-weight:850;text-decoration:none;cursor:pointer}.small.delete{color:#b42318}
-.empty{padding:42px 20px;color:var(--m);text-align:center}.customers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:17px}.customer{border:1px solid var(--b);border-radius:15px;padding:18px;background:#fbfbfc}.customer .avatar{width:43px;height:43px;margin:0 0 12px;font-size:1rem}.customer a{display:block;margin-top:4px;color:var(--n);font-weight:750;text-decoration:none;overflow-wrap:anywhere}.customer small{display:block;margin-top:10px;color:var(--m)}
-.toast{position:fixed;right:22px;bottom:22px;z-index:60;max-width:390px;transform:translateY(20px);border-radius:11px;padding:14px 16px;background:var(--n);color:white;opacity:0;pointer-events:none;transition:.18s}.toast.show{transform:none;opacity:1}
-@media(max-width:1150px){.stats,.tools{grid-template-columns:repeat(2,1fr)}.customers{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:850px){.layout{grid-template-columns:1fr}.side{position:static}.profile{display:none}.nav{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:650px){.user div{display:none}.stats,.tools,.customers,.filters,.nav{grid-template-columns:1fr}.ph{flex-direction:column}.hero{padding:25px 20px}.brand>span{display:none}}
-</style>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta name="robots" content="noindex, nofollow">
+
+    <title>Admin Portal | Packaged Comfort</title>
+
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        :root {
+            --admin-navy: #17233b;
+            --admin-orange: #ee6c2f;
+            --admin-muted: #687386;
+            --admin-border: #dfe4eb;
+            --admin-bg: #f3f5f8;
+        }
+
+        body {
+            margin: 0;
+            background: var(--admin-bg);
+            color: var(--admin-navy);
+        }
+
+        .admin-loading {
+            display: grid;
+            min-height: 100vh;
+            place-items: center;
+            color: var(--admin-muted);
+            font-weight: 850;
+        }
+
+        .admin-topbar {
+            position: sticky;
+            z-index: 50;
+            top: 0;
+            border-bottom: 1px solid var(--admin-border);
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow:
+                0 9px 30px rgba(23, 35, 59, 0.07);
+            backdrop-filter: blur(15px);
+        }
+
+        .admin-topbar-inner {
+            display: flex;
+            min-height: 76px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            width: min(1450px, calc(100% - 32px));
+            margin: 0 auto;
+        }
+
+        .admin-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--admin-navy);
+            text-decoration: none;
+        }
+
+        .admin-brand img {
+            width: 49px;
+            height: 49px;
+            border-radius: 12px;
+            object-fit: contain;
+        }
+
+        .admin-brand strong,
+        .admin-brand span {
+            display: block;
+        }
+
+        .admin-brand span {
+            margin-top: 2px;
+            color: var(--admin-muted);
+            font-size: 0.78rem;
+            font-weight: 750;
+        }
+
+        .admin-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .admin-user-copy {
+            text-align: right;
+        }
+
+        .admin-user-copy strong,
+        .admin-user-copy span {
+            display: block;
+        }
+
+        .admin-user-copy span {
+            color: var(--admin-muted);
+            font-size: 0.8rem;
+        }
+
+        .admin-button {
+            display: inline-flex;
+            min-height: 42px;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--admin-border);
+            border-radius: 10px;
+            padding: 10px 14px;
+            background: white;
+            color: var(--admin-navy);
+            font-weight: 850;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .admin-button.primary {
+            border-color: var(--admin-orange);
+            background: var(--admin-orange);
+            color: white;
+        }
+
+        .admin-shell {
+            display: grid;
+            grid-template-columns:
+                250px minmax(0, 1fr);
+            gap: 24px;
+            width: min(1450px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 27px 0 60px;
+        }
+
+        .admin-sidebar {
+            position: sticky;
+            top: 103px;
+            align-self: start;
+            overflow: hidden;
+            border: 1px solid var(--admin-border);
+            border-radius: 20px;
+            background: white;
+            box-shadow:
+                0 15px 40px rgba(23, 35, 59, 0.07);
+        }
+
+        .admin-profile {
+            padding: 24px 18px;
+            border-bottom: 1px solid var(--admin-border);
+            text-align: center;
+        }
+
+        .admin-avatar {
+            display: grid;
+            width: 68px;
+            height: 68px;
+            margin: 0 auto 13px;
+            place-items: center;
+            border-radius: 50%;
+            background: #fff1e9;
+            color: var(--admin-orange);
+            font-size: 1.5rem;
+            font-weight: 900;
+        }
+
+        .admin-profile strong,
+        .admin-profile span {
+            display: block;
+        }
+
+        .admin-profile span {
+            margin-top: 4px;
+            color: var(--admin-muted);
+            font-size: 0.8rem;
+            overflow-wrap: anywhere;
+        }
+
+        .admin-badge {
+            display: inline-flex !important;
+            margin-top: 12px !important;
+            border-radius: 999px;
+            padding: 6px 9px;
+            background: #e8f7ef;
+            color: #18794e !important;
+            font-weight: 850;
+        }
+
+        .admin-nav {
+            display: grid;
+            gap: 5px;
+            padding: 12px;
+        }
+
+        .admin-nav button,
+        .admin-nav a {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            gap: 10px;
+            border: 0;
+            border-radius: 10px;
+            padding: 12px 13px;
+            background: transparent;
+            color: var(--admin-navy);
+            font-weight: 850;
+            text-align: left;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .admin-nav button.active,
+        .admin-nav button:hover,
+        .admin-nav a:hover {
+            background: #fff1e9;
+            color: var(--admin-orange);
+        }
+
+        .admin-view {
+            display: none;
+        }
+
+        .admin-view.active {
+            display: block;
+        }
+
+        .admin-hero {
+            margin-bottom: 20px;
+            border-radius: 23px;
+            padding: 33px;
+            background:
+                linear-gradient(
+                    135deg,
+                    #17233b,
+                    #2b4774
+                );
+            color: white;
+            box-shadow:
+                0 20px 54px rgba(23, 35, 59, 0.2);
+        }
+
+        .admin-hero h1 {
+            margin: 0 0 9px;
+            color: white;
+        }
+
+        .admin-hero p {
+            max-width: 760px;
+            margin: 0;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.65;
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .admin-stat,
+        .admin-panel {
+            border: 1px solid var(--admin-border);
+            background: white;
+            box-shadow:
+                0 14px 38px rgba(23, 35, 59, 0.06);
+        }
+
+        .admin-stat {
+            border-radius: 17px;
+            padding: 21px;
+        }
+
+        .admin-stat strong,
+        .admin-stat span {
+            display: block;
+        }
+
+        .admin-stat strong {
+            font-size: 1.7rem;
+        }
+
+        .admin-stat span {
+            margin-top: 5px;
+            color: var(--admin-muted);
+            font-size: 0.86rem;
+        }
+
+        .admin-panel {
+            overflow: hidden;
+            margin-bottom: 20px;
+            border-radius: 20px;
+        }
+
+        .admin-panel-heading {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 21px 23px 17px;
+            border-bottom: 1px solid var(--admin-border);
+        }
+
+        .admin-panel-heading h2 {
+            margin: 0 0 5px;
+        }
+
+        .admin-panel-heading p {
+            margin: 0;
+            color: var(--admin-muted);
+        }
+
+        .admin-panel-body {
+            padding: 22px 23px 25px;
+        }
+
+        .admin-tools {
+            display: grid;
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .admin-tool {
+            min-height: 150px;
+            border: 1px solid var(--admin-border);
+            border-radius: 15px;
+            padding: 18px;
+            background: #fbfbfc;
+            color: var(--admin-navy);
+            text-align: left;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .admin-tool strong,
+        .admin-tool span {
+            display: block;
+        }
+
+        .admin-tool strong {
+            margin: 13px 0 6px;
+        }
+
+        .admin-tool span {
+            color: var(--admin-muted);
+            font-size: 0.86rem;
+            line-height: 1.5;
+        }
+
+        .admin-filters {
+            display: grid;
+            grid-template-columns:
+                minmax(220px, 1fr) 190px;
+            gap: 11px;
+        }
+
+        .admin-input,
+        .admin-select {
+            width: 100%;
+            border: 1px solid var(--admin-border);
+            border-radius: 10px;
+            padding: 11px 12px;
+            background: white;
+            color: var(--admin-navy);
+            font: inherit;
+        }
+
+        .admin-table-wrap {
+            overflow-x: auto;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 13px 11px;
+            border-bottom: 1px solid var(--admin-border);
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .admin-table th {
+            color: var(--admin-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .admin-table strong,
+        .admin-table span,
+        .admin-table a {
+            display: block;
+        }
+
+        .admin-table a {
+            color: var(--admin-navy);
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .admin-subtext {
+            margin-top: 4px;
+            color: var(--admin-muted);
+            font-size: 0.8rem;
+        }
+
+        .admin-status {
+            display: inline-flex !important;
+            border-radius: 999px;
+            padding: 6px 9px;
+            font-size: 0.74rem;
+            font-weight: 850;
+            text-transform: capitalize;
+        }
+
+        .status-new {
+            background: #fff3d6;
+            color: #946200;
+        }
+
+        .status-contacted {
+            background: #e8f1ff;
+            color: #245ea8;
+        }
+
+        .status-scheduled {
+            background: #eee9ff;
+            color: #5b43a8;
+        }
+
+        .status-completed {
+            background: #e8f7ef;
+            color: #18794e;
+        }
+
+        .status-canceled {
+            background: #fff0ee;
+            color: #b42318;
+        }
+
+        .admin-row-actions {
+            display: flex;
+            min-width: 180px;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+
+        .admin-small-button {
+            border: 1px solid var(--admin-border);
+            border-radius: 8px;
+            padding: 7px 9px;
+            background: white;
+            color: var(--admin-navy);
+            font-size: 0.78rem;
+            font-weight: 850;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .admin-small-button.delete {
+            color: #b42318;
+        }
+
+        .admin-empty {
+            padding: 42px 20px;
+            color: var(--admin-muted);
+            text-align: center;
+        }
+
+        .admin-customers {
+            display: grid;
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .admin-customer {
+            border: 1px solid var(--admin-border);
+            border-radius: 15px;
+            padding: 18px;
+            background: #fbfbfc;
+        }
+
+        .admin-customer strong,
+        .admin-customer span,
+        .admin-customer a {
+            display: block;
+        }
+
+        .admin-customer a {
+            margin-top: 4px;
+            color: var(--admin-navy);
+            font-weight: 750;
+            text-decoration: none;
+            overflow-wrap: anywhere;
+        }
+
+        .admin-customer span {
+            margin-top: 10px;
+            color: var(--admin-muted);
+            font-size: 0.8rem;
+        }
+
+        .admin-toast {
+            position: fixed;
+            right: 22px;
+            bottom: 22px;
+            z-index: 80;
+            max-width: 390px;
+            transform: translateY(20px);
+            border-radius: 11px;
+            padding: 14px 16px;
+            background: var(--admin-navy);
+            color: white;
+            opacity: 0;
+            pointer-events: none;
+            transition: 180ms ease;
+        }
+
+        .admin-toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        @media (max-width: 1150px) {
+            .admin-stats,
+            .admin-tools {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+            .admin-customers {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 850px) {
+            .admin-shell {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-sidebar {
+                position: static;
+            }
+
+            .admin-profile {
+                display: none;
+            }
+
+            .admin-nav {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 650px) {
+            .admin-user-copy {
+                display: none;
+            }
+
+            .admin-stats,
+            .admin-tools,
+            .admin-customers,
+            .admin-filters,
+            .admin-nav {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-panel-heading {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
+
 <body>
-<div class="loading" id="adminLoading">Verifying administrator access...</div>
 
-<div id="adminApp" hidden>
-<header class="top">
-  <div class="topin">
-    <a class="brand" href="admin.html"><img src="logo.png" alt="Packaged Comfort"><span><b>Packaged Comfort</b><small>Business Administration</small></span></a>
-    <div class="user"><div><span id="adminTopName">Administrator</span><small id="adminTopEmail">Admin account</small></div><button class="btn" id="adminLogoutButton">Log Out</button></div>
-  </div>
-</header>
+    <div
+        class="admin-loading"
+        id="adminLoading"
+    >
+        Verifying administrator access...
+    </div>
 
-<div class="layout">
-<aside class="side">
-  <div class="profile"><div class="avatar" id="adminAvatar">A</div><b id="adminSideName">Administrator</b><small id="adminSideEmail">Admin account</small><span class="role">Authorized administrator</span></div>
-  <nav class="nav">
-    <button class="active" data-view="overview">▦ Overview</button>
-    <button data-view="requests">📦 Quote Requests</button>
-    <button data-view="customers">👥 Customers</button>
-    <button data-view="website">🌐 Website Tools</button>
-    <button data-view="account">⚙ Admin Account</button>
-    <a href="index.html">↗ Public Website</a>
-  </nav>
-</aside>
 
-<main>
-<section class="view active" data-section="overview">
-  <div class="hero"><h1>Welcome, <span id="adminFirstName">Administrator</span></h1><p>Review customer requests, update service progress, contact customers, and manage Packaged Comfort from one protected business dashboard.</p></div>
-  <div class="stats">
-    <article class="stat"><i>📦</i><strong id="totalCount">0</strong><span>Total requests</span></article>
-    <article class="stat"><i>●</i><strong id="newCount">0</strong><span>New requests</span></article>
-    <article class="stat"><i>✓</i><strong id="completedCount">0</strong><span>Completed requests</span></article>
-    <article class="stat"><i>👥</i><strong id="customerCount">0</strong><span>Customer accounts</span></article>
-  </div>
-  <section class="panel"><div class="ph"><div><h2>Administrator Tools</h2><p>Open the business areas that need your attention.</p></div></div><div class="pb"><div class="tools">
-    <button class="tool" data-open="requests">📋<b>Manage Requests</b><span>Review, contact, schedule, complete, or delete quote requests.</span></button>
-    <button class="tool" data-open="customers">👥<b>View Customers</b><span>Review registered customer names, emails, and account dates.</span></button>
-    <a class="tool" href="quote.html">📦<b>Test Quote Form</b><span>Open and test the public customer quote experience.</span></a>
-    <button class="tool" data-open="website">🌐<b>Website Tools</b><span>Review every important public and customer page.</span></button>
-  </div></div></section>
-  <section class="panel"><div class="ph"><div><h2>Newest Requests</h2><p>The most recent customer requests appear below.</p></div><button class="btn" data-open="requests">View All</button></div><div id="recentRequests"><div class="empty">No quote requests have been received.</div></div></section>
-</section>
+    <div
+        id="adminApplication"
+        hidden
+    >
 
-<section class="view" data-section="requests">
-  <section class="panel"><div class="ph"><div><h2>Quote Requests</h2><p>Search, contact customers, and update each request.</p></div><a class="btn primary" href="quote.html">Open Quote Page</a></div>
-  <div class="pb"><div class="filters"><input class="input" id="requestSearch" type="search" placeholder="Search name, phone, email, service, or location"><select class="select" id="statusFilter"><option value="all">All statuses</option><option value="new">New</option><option value="contacted">Contacted</option><option value="scheduled">Scheduled</option><option value="completed">Completed</option><option value="canceled">Canceled</option></select></div></div>
-  <div class="tablewrap"><table class="table"><thead><tr><th>Customer</th><th>Service</th><th>Route and date</th><th>Status</th><th>Actions</th></tr></thead><tbody id="requestRows"></tbody></table><div class="empty" id="requestEmpty">No requests match the selected filters.</div></div></section>
-</section>
+        <header class="admin-topbar">
 
-<section class="view" data-section="customers">
-  <section class="panel"><div class="ph"><div><h2>Customer Accounts</h2><p>Registered website customer profiles appear here.</p></div></div><div class="pb"><input class="input" id="customerSearch" type="search" placeholder="Search customer name or email"><div class="customers" id="customerGrid"></div><div class="empty" id="customerEmpty">No customer accounts were found.</div></div></section>
-</section>
+            <div class="admin-topbar-inner">
 
-<section class="view" data-section="website">
-  <section class="panel"><div class="ph"><div><h2>Website Tools</h2><p>Review the public and customer-facing pages.</p></div></div><div class="pb"><div class="tools">
-    <a class="tool" href="index.html">⌂<b>Homepage</b><span>Review the main company page and phone number.</span></a>
-    <a class="tool" href="services.html">🚚<b>Services</b><span>Review hauling, delivery, moving, and loading services.</span></a>
-    <a class="tool" href="quote.html">📦<b>Quote Page</b><span>Test customer quote submissions.</span></a>
-    <a class="tool" href="contact.html">☎<b>Contact Page</b><span>Review contact details and service area.</span></a>
-    <a class="tool" href="login.html">🔑<b>Login Page</b><span>Review customer and administrator login.</span></a>
-    <a class="tool" href="signup.html">＋<b>Customer Signup</b><span>Review new customer registration.</span></a>
-    <a class="tool" href="dashboard.html">▦<b>Customer Dashboard</b><span>Review the customer account experience.</span></a>
-    <a class="tool" href="settings.html">⚙<b>Account Settings</b><span>Update your name or password.</span></a>
-  </div></div></section>
-</section>
+                <a
+                    href="admin.html"
+                    class="admin-brand"
+                >
+                    <img
+                        src="logo.png"
+                        alt="Packaged Comfort logo"
+                    >
 
-<section class="view" data-section="account">
-  <section class="panel"><div class="ph"><div><h2>Administrator Account</h2><p>Manage administrator profile and security.</p></div></div><div class="pb"><div class="tools">
-    <a class="tool" href="settings.html">⚙<b>Profile and Password</b><span>Change account name, password, or send a reset email.</span></a>
-    <div class="tool">✓<b>Admin Permission Active</b><span>This account is verified against the private administrator role.</span></div>
-    <a class="tool" href="index.html">↗<b>Public Website</b><span>Leave the private portal and open the public website.</span></a>
-    <button class="tool" id="adminAccountLogoutButton">↪<b>End Admin Session</b><span>Log out of the administrator account on this device.</span></button>
-  </div></div></section>
-</section>
-</main>
-</div>
-</div>
+                    <div>
+                        <strong>
+                            Packaged Comfort
+                        </strong>
 
-<div class="toast" id="adminToast"></div>
-<script type="module" src="admin.js"></script>
+                        <span>
+                            Business Administration
+                        </span>
+                    </div>
+                </a>
+
+
+                <div class="admin-user">
+
+                    <div class="admin-user-copy">
+                        <strong id="adminTopName">
+                            Administrator
+                        </strong>
+
+                        <span id="adminTopEmail">
+                            Admin account
+                        </span>
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="admin-button"
+                        id="adminLogoutButton"
+                    >
+                        Log Out
+                    </button>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <div class="admin-shell">
+
+            <aside class="admin-sidebar">
+
+                <div class="admin-profile">
+
+                    <div
+                        class="admin-avatar"
+                        id="adminAvatar"
+                    >
+                        A
+                    </div>
+
+                    <strong id="adminProfileName">
+                        Administrator
+                    </strong>
+
+                    <span id="adminProfileEmail">
+                        Admin account
+                    </span>
+
+                    <span class="admin-badge">
+                        Administrator access
+                    </span>
+
+                </div>
+
+
+                <nav class="admin-nav">
+
+                    <button
+                        type="button"
+                        class="active"
+                        data-admin-view="overview"
+                    >
+                        Overview
+                    </button>
+
+                    <button
+                        type="button"
+                        data-admin-view="requests"
+                    >
+                        Quote Requests
+                    </button>
+
+                    <button
+                        type="button"
+                        data-admin-view="customers"
+                    >
+                        Customers
+                    </button>
+
+                    <button
+                        type="button"
+                        data-admin-view="website"
+                    >
+                        Website Tools
+                    </button>
+
+                    <a href="index.html">
+                        Public Website
+                    </a>
+
+                </nav>
+
+            </aside>
+
+
+            <main>
+
+                <section
+                    class="admin-view active"
+                    data-admin-section="overview"
+                >
+
+                    <div class="admin-hero">
+
+                        <h1>
+                            Welcome,
+                            <span id="adminFirstName">
+                                Administrator
+                            </span>
+                        </h1>
+
+                        <p>
+                            Manage quote requests, contact customers,
+                            update service progress, and review the
+                            Packaged Comfort website.
+                        </p>
+
+                    </div>
+
+
+                    <div class="admin-stats">
+
+                        <article class="admin-stat">
+                            <strong id="totalRequestCount">
+                                0
+                            </strong>
+
+                            <span>
+                                Total quote requests
+                            </span>
+                        </article>
+
+                        <article class="admin-stat">
+                            <strong id="newRequestCount">
+                                0
+                            </strong>
+
+                            <span>
+                                New requests
+                            </span>
+                        </article>
+
+                        <article class="admin-stat">
+                            <strong id="completedRequestCount">
+                                0
+                            </strong>
+
+                            <span>
+                                Completed requests
+                            </span>
+                        </article>
+
+                        <article class="admin-stat">
+                            <strong id="customerAccountCount">
+                                0
+                            </strong>
+
+                            <span>
+                                Customer accounts
+                            </span>
+                        </article>
+
+                    </div>
+
+
+                    <section class="admin-panel">
+
+                        <div class="admin-panel-heading">
+
+                            <div>
+                                <h2>
+                                    Administrator Tools
+                                </h2>
+
+                                <p>
+                                    Open the area you need to manage.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="admin-panel-body">
+
+                            <div class="admin-tools">
+
+                                <button
+                                    type="button"
+                                    class="admin-tool"
+                                    data-open-admin-view="requests"
+                                >
+                                    📋
+
+                                    <strong>
+                                        Manage Requests
+                                    </strong>
+
+                                    <span>
+                                        Review, contact, schedule,
+                                        complete, or delete requests.
+                                    </span>
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    class="admin-tool"
+                                    data-open-admin-view="customers"
+                                >
+                                    👥
+
+                                    <strong>
+                                        View Customers
+                                    </strong>
+
+                                    <span>
+                                        Review registered customer names
+                                        and email addresses.
+                                    </span>
+                                </button>
+
+
+                                <a
+                                    href="quote.html"
+                                    class="admin-tool"
+                                >
+                                    📦
+
+                                    <strong>
+                                        Test Quote Form
+                                    </strong>
+
+                                    <span>
+                                        Open the public quote page and
+                                        submit a test request.
+                                    </span>
+                                </a>
+
+
+                                <button
+                                    type="button"
+                                    class="admin-tool"
+                                    data-open-admin-view="website"
+                                >
+                                    🌐
+
+                                    <strong>
+                                        Website Tools
+                                    </strong>
+
+                                    <span>
+                                        Review the main customer-facing
+                                        pages.
+                                    </span>
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                </section>
+
+
+                <section
+                    class="admin-view"
+                    data-admin-section="requests"
+                >
+
+                    <section class="admin-panel">
+
+                        <div class="admin-panel-heading">
+
+                            <div>
+                                <h2>
+                                    Quote Requests
+                                </h2>
+
+                                <p>
+                                    Search requests, contact customers,
+                                    and update each status.
+                                </p>
+                            </div>
+
+
+                            <a
+                                href="quote.html"
+                                class="admin-button primary"
+                            >
+                                Open Quote Page
+                            </a>
+
+                        </div>
+
+
+                        <div class="admin-panel-body">
+
+                            <div class="admin-filters">
+
+                                <input
+                                    type="search"
+                                    class="admin-input"
+                                    id="requestSearch"
+                                    placeholder="Search customer, phone, service, or location"
+                                >
+
+                                <select
+                                    class="admin-select"
+                                    id="requestStatusFilter"
+                                >
+                                    <option value="all">
+                                        All statuses
+                                    </option>
+
+                                    <option value="new">
+                                        New
+                                    </option>
+
+                                    <option value="contacted">
+                                        Contacted
+                                    </option>
+
+                                    <option value="scheduled">
+                                        Scheduled
+                                    </option>
+
+                                    <option value="completed">
+                                        Completed
+                                    </option>
+
+                                    <option value="canceled">
+                                        Canceled
+                                    </option>
+                                </select>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="admin-table-wrap">
+
+                            <table class="admin-table">
+
+                                <thead>
+                                    <tr>
+                                        <th>Customer</th>
+                                        <th>Service</th>
+                                        <th>Route</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="requestTableBody"></tbody>
+
+                            </table>
+
+
+                            <div
+                                class="admin-empty"
+                                id="requestEmptyState"
+                            >
+                                No quote requests were found.
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                </section>
+
+
+                <section
+                    class="admin-view"
+                    data-admin-section="customers"
+                >
+
+                    <section class="admin-panel">
+
+                        <div class="admin-panel-heading">
+
+                            <div>
+                                <h2>
+                                    Customer Accounts
+                                </h2>
+
+                                <p>
+                                    Customers appear here after creating
+                                    an account or logging in.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="admin-panel-body">
+
+                            <input
+                                type="search"
+                                class="admin-input"
+                                id="customerSearch"
+                                placeholder="Search customer name or email"
+                            >
+
+
+                            <div
+                                class="admin-customers"
+                                id="customerGrid"
+                                style="margin-top: 17px;"
+                            ></div>
+
+
+                            <div
+                                class="admin-empty"
+                                id="customerEmptyState"
+                            >
+                                No customer accounts were found.
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                </section>
+
+
+                <section
+                    class="admin-view"
+                    data-admin-section="website"
+                >
+
+                    <section class="admin-panel">
+
+                        <div class="admin-panel-heading">
+
+                            <div>
+                                <h2>
+                                    Website Tools
+                                </h2>
+
+                                <p>
+                                    Open and review customer-facing pages.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="admin-panel-body">
+
+                            <div class="admin-tools">
+
+                                <a
+                                    href="index.html"
+                                    class="admin-tool"
+                                >
+                                    🏠
+
+                                    <strong>
+                                        Homepage
+                                    </strong>
+
+                                    <span>
+                                        Review the main company page.
+                                    </span>
+                                </a>
+
+
+                                <a
+                                    href="services.html"
+                                    class="admin-tool"
+                                >
+                                    🚚
+
+                                    <strong>
+                                        Services
+                                    </strong>
+
+                                    <span>
+                                        Review service descriptions.
+                                    </span>
+                                </a>
+
+
+                                <a
+                                    href="quote.html"
+                                    class="admin-tool"
+                                >
+                                    📦
+
+                                    <strong>
+                                        Quote Page
+                                    </strong>
+
+                                    <span>
+                                        Test customer quote submissions.
+                                    </span>
+                                </a>
+
+
+                                <a
+                                    href="contact.html"
+                                    class="admin-tool"
+                                >
+                                    ☎
+
+                                    <strong>
+                                        Contact Page
+                                    </strong>
+
+                                    <span>
+                                        Review phone and contact details.
+                                    </span>
+                                </a>
+
+
+                                <a
+                                    href="settings.html"
+                                    class="admin-tool"
+                                >
+                                    ⚙
+
+                                    <strong>
+                                        Account Settings
+                                    </strong>
+
+                                    <span>
+                                        Change the administrator name
+                                        or password.
+                                    </span>
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                </section>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="admin-toast"
+        id="adminToast"
+        aria-live="polite"
+    ></div>
+
+
+    <script
+        type="module"
+        src="admin.js?v=31"
+    ></script>
+
 </body>
 </html>
