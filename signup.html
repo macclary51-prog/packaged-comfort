@@ -8,90 +8,189 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <meta
-        name="description"
-        content="Create a Packaged Comfort customer account."
-    >
-
-    <title>Sign Up | Packaged Comfort</title>
+    <title>Create Account | Packaged Comfort</title>
 
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="style.css">
+
+    <style>
+        .auth-page {
+            min-height: calc(100vh - 80px);
+            padding: 70px 0;
+            background:
+                linear-gradient(
+                    135deg,
+                    #f5f7fa,
+                    #fff7f1
+                );
+        }
+
+        .auth-card {
+            width: min(540px, 100%);
+            margin: 0 auto;
+            border: 1px solid rgba(23, 35, 59, 0.1);
+            border-radius: 24px;
+            padding: 34px;
+            background: white;
+            box-shadow:
+                0 24px 65px rgba(23, 35, 59, 0.12);
+        }
+
+        .auth-logo {
+            display: block;
+            width: 84px;
+            height: 84px;
+            margin: 0 auto 18px;
+            border-radius: 18px;
+            object-fit: contain;
+        }
+
+        .auth-card h1,
+        .auth-card > p {
+            text-align: center;
+        }
+
+        .auth-card > p {
+            margin-bottom: 25px;
+            color: var(--muted);
+        }
+
+        .auth-form,
+        .auth-field {
+            display: grid;
+        }
+
+        .auth-form {
+            gap: 17px;
+        }
+
+        .auth-field {
+            gap: 7px;
+        }
+
+        .auth-field label {
+            font-weight: 850;
+        }
+
+        .auth-field input {
+            width: 100%;
+            border: 1px solid #d9dde5;
+            border-radius: 11px;
+            padding: 13px 14px;
+            font: inherit;
+        }
+
+        .auth-message {
+            min-height: 24px;
+            margin: 0;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .auth-submit {
+            width: 100%;
+        }
+
+        .auth-footer {
+            margin-top: 21px;
+            text-align: center;
+        }
+    </style>
 </head>
 
 <body>
 
     <header class="site-header">
-    <div class="container nav-wrap">
-        <a href="index.html" class="brand" aria-label="Packaged Comfort home">
-            <img src="logo.png" alt="Packaged Comfort logo">
+        <div class="container nav-wrap">
 
-            <span class="brand-text">
-                <strong>Packaged</strong>
-                <span>Comfort</span>
-            </span>
-        </a>
+            <a
+                href="index.html"
+                class="brand"
+            >
+                <img
+                    src="logo.png"
+                    alt="Packaged Comfort logo"
+                >
 
-        <button
-            class="menu-button"
-            id="menuButton"
-            type="button"
-            aria-label="Open navigation menu"
-            aria-expanded="false"
-        >
-            ☰
-        </button>
-
-        <nav class="main-nav" id="mainNav">
-            <a href="index.html">Home</a>
-            <a href="services.html">Services</a>
-            <a href="quote.html">Request a Quote</a>
-            <a href="contact.html">Contact</a>
-
-            <div class="nav-actions">
-                <a href="login.html" class="button button-secondary">
-                    Log In
-                </a>
-
-                <a href="signup.html" class="button button-primary">
-                    Sign Up
-                </a>
-            </div>
-        </nav>
-    </div>
-</header>
+                <span class="brand-text">
+                    <strong>Packaged</strong>
+                    <span>Comfort</span>
+                </span>
+            </a>
 
 
-    <main>
+            <button
+                class="menu-button"
+                id="menuButton"
+                type="button"
+                aria-label="Open navigation menu"
+                aria-expanded="false"
+            >
+                ☰
+            </button>
 
-        <section class="page-hero">
-            <div class="container">
-                <span class="section-label">Customer account</span>
 
-                <h1>Create your account</h1>
+            <nav
+                class="main-nav"
+                id="mainNav"
+            >
+                <a href="index.html">Home</a>
+                <a href="services.html">Services</a>
+                <a href="quote.html">Request a Quote</a>
+                <a href="contact.html">Contact</a>
+
+                <div
+                    class="nav-actions"
+                    data-auth-guest
+                >
+                    <a
+                        href="login.html"
+                        class="button button-secondary"
+                    >
+                        Log In
+                    </a>
+
+                    <a
+                        href="signup.html"
+                        class="button button-primary"
+                    >
+                        Sign Up
+                    </a>
+                </div>
+            </nav>
+
+        </div>
+    </header>
+
+
+    <main class="auth-page">
+
+        <div class="container">
+
+            <section class="auth-card">
+
+                <img
+                    src="logo.png"
+                    alt="Packaged Comfort"
+                    class="auth-logo"
+                >
+
+                <h1>
+                    Create Customer Account
+                </h1>
 
                 <p>
-                    Save quote requests, uploaded photos, and service updates.
+                    Create an account to manage your Packaged Comfort
+                    service requests.
                 </p>
-            </div>
-        </section>
 
-
-        <section class="section alt">
-            <div class="container auth-shell">
 
                 <form
-                    class="form-shell"
+                    class="auth-form"
                     id="signupForm"
-                    novalidate
                 >
-                    <img
-                        src="logo.png"
-                        alt="Packaged Comfort logo"
-                        class="auth-logo"
-                    >
 
-                    <div class="form-group">
+                    <div class="auth-field">
                         <label for="signupName">
                             Full name
                         </label>
@@ -99,16 +198,13 @@
                         <input
                             type="text"
                             id="signupName"
-                            name="fullName"
                             autocomplete="name"
                             required
                         >
                     </div>
 
-                    <div
-                        class="form-group"
-                        style="margin-top: 16px;"
-                    >
+
+                    <div class="auth-field">
                         <label for="signupEmail">
                             Email address
                         </label>
@@ -116,16 +212,13 @@
                         <input
                             type="email"
                             id="signupEmail"
-                            name="email"
                             autocomplete="email"
                             required
                         >
                     </div>
 
-                    <div
-                        class="form-group"
-                        style="margin-top: 16px;"
-                    >
+
+                    <div class="auth-field">
                         <label for="signupPassword">
                             Password
                         </label>
@@ -133,225 +226,50 @@
                         <input
                             type="password"
                             id="signupPassword"
-                            name="password"
                             autocomplete="new-password"
                             minlength="6"
                             required
                         >
                     </div>
 
+
                     <button
                         type="submit"
-                        class="button button-primary form-submit"
+                        class="button button-primary auth-submit"
                         id="signupButton"
                     >
                         Create Account
                     </button>
 
+
                     <p
-                        class="notice"
+                        class="auth-message"
                         id="authMessage"
                         aria-live="polite"
                     ></p>
 
-                    <p class="notice">
-                        Already have an account?
-                        <a
-                            href="login.html"
-                            style="color: #ee6c2f; font-weight: 800;"
-                        >
-                            Log in
-                        </a>
-                    </p>
                 </form>
 
-            </div>
-        </section>
+
+                <p class="auth-footer">
+                    Already have an account?
+                    <a href="login.html">
+                        Log in
+                    </a>
+                </p>
+
+            </section>
+
+        </div>
 
     </main>
 
 
-    <footer class="site-footer">
-        <div class="container footer-grid">
-
-            <div>
-                <img
-                    src="logo.png"
-                    alt="Packaged Comfort logo"
-                    class="footer-logo"
-                >
-
-                <p>
-                    Private hauling, courier, delivery, and moving assistance
-                    designed to move your package with comfort.
-                </p>
-            </div>
-
-            <div class="footer-links">
-                <strong>Website</strong>
-                <a href="index.html">Home</a>
-                <a href="services.html">Services</a>
-                <a href="quote.html">Request a Quote</a>
-                <a href="contact.html">Contact</a>
-            </div>
-
-            <div class="footer-links">
-                <strong>Account</strong>
-                <a href="login.html">Log In</a>
-                <a href="signup.html">Sign Up</a>
-                <a href="dashboard.html">Customer Dashboard</a>
-            </div>
-
-        </div>
-
-        <div class="container footer-bottom">
-            © <span data-current-year></span>
-            Packaged Comfort. All rights reserved.
-        </div>
-    </footer>
-
-
-    <div class="toast" id="toast">
-        <span id="toastMessage"></span>
-    </div>
-
-
-    <script src="script.js"></script>
-
-    <script type="module">
-        import { initializeApp } from
-            "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-
-        import {
-            getAuth,
-            createUserWithEmailAndPassword,
-            updateProfile
-        } from
-            "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-
-
-        const accountServiceConfig = {
-            apiKey: "AIzaSyDMWaronfPi0cujdvzGIsieadLss_d4iMQ",
-            authDomain: "packaged-comfort-website.firebaseapp.com",
-            projectId: "packaged-comfort-website",
-            storageBucket: "packaged-comfort-website.firebasestorage.app",
-            messagingSenderId: "150317110708",
-            appId: "1:150317110708:web:dab83f056b04b1e0210ee1"
-        };
-
-
-        const app = initializeApp(accountServiceConfig);
-        const auth = getAuth(app);
-
-        const signupForm =
-            document.getElementById("signupForm");
-
-        const signupButton =
-            document.getElementById("signupButton");
-
-        const authMessage =
-            document.getElementById("authMessage");
-
-
-        function showMessage(message, isError = false) {
-            authMessage.textContent = message;
-            authMessage.style.color =
-                isError ? "#b42318" : "#1c7c54";
-        }
-
-
-        function friendlyError(error) {
-            switch (error.code) {
-                case "auth/email-already-in-use":
-                    return "An account already exists with this email address.";
-
-                case "auth/invalid-email":
-                    return "Enter a valid email address.";
-
-                case "auth/weak-password":
-                    return "Use a password containing at least 6 characters.";
-
-                case "auth/too-many-requests":
-                    return "Too many attempts. Wait a moment and try again.";
-
-                case "auth/network-request-failed":
-                    return "Check your internet connection and try again.";
-
-                case "auth/operation-not-allowed":
-                    return "Account creation is temporarily unavailable. Please try again later.";
-
-                case "auth/unauthorized-domain":
-                    return "Account creation is not available from this web address.";
-
-                default:
-                    console.error("Account creation error:", error);
-                    return `Signup failed: ${error.code || "unknown error"}`;
-            }
-        }
-
-
-        signupForm.addEventListener("submit", async (event) => {
-            event.preventDefault();
-
-            if (!signupForm.checkValidity()) {
-                signupForm.reportValidity();
-                return;
-            }
-
-            const fullName =
-                document.getElementById("signupName")
-                    .value
-                    .trim();
-
-            const email =
-                document.getElementById("signupEmail")
-                    .value
-                    .trim();
-
-            const password =
-                document.getElementById("signupPassword")
-                    .value;
-
-            signupButton.disabled = true;
-            signupButton.textContent = "Creating Account...";
-            showMessage("");
-
-            try {
-                const userCredential =
-                    await createUserWithEmailAndPassword(
-                        auth,
-                        email,
-                        password
-                    );
-
-                try {
-                    await updateProfile(
-                        userCredential.user,
-                        {
-                            displayName: fullName
-                        }
-                    );
-                } catch (profileError) {
-                    console.warn(
-                        "Account created, but the name was not saved:",
-                        profileError
-                    );
-                }
-
-                showMessage(
-                    "Account created successfully. Opening your dashboard..."
-                );
-
-                window.setTimeout(() => {
-                    window.location.href = "dashboard.html";
-                }, 700);
-            } catch (error) {
-                showMessage(friendlyError(error), true);
-                signupButton.disabled = false;
-                signupButton.textContent = "Create Account";
-            }
-        });
-    </script>
+    <script src="script.js?v=20"></script>
+    <script
+        type="module"
+        src="auth.js?v=20"
+    ></script>
 
 </body>
 </html>
