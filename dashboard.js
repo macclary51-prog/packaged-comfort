@@ -1,7 +1,7 @@
 import {
     auth,
     db
-} from "./firebase-config.js";
+} from "./firebase-config.js?v=31";
 
 import {
     onAuthStateChanged
@@ -34,8 +34,24 @@ const dashboardFullName =
 const dashboardEmail =
     document.getElementById("dashboardEmail");
 
+const FRANKLIN_ADMIN_UID =
+    "lE77uZp22tbjptd1k9Nt89eOdW12";
+
+const FRANKLIN_ADMIN_EMAIL =
+    "pcjunkremoval2026@gmail.com";
+
 
 async function isAdministrator(user) {
+    if (
+        user.uid === FRANKLIN_ADMIN_UID
+        ||
+        String(user.email || "")
+            .trim()
+            .toLowerCase() === FRANKLIN_ADMIN_EMAIL
+    ) {
+        return true;
+    }
+
     const roleSnapshot =
         await getDoc(
             doc(
