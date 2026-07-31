@@ -1,7 +1,7 @@
 import {
     auth,
     db
-} from "./firebase-config.js";
+} from "./firebase-config.js?v=31";
 
 import {
     createUserWithEmailAndPassword,
@@ -30,6 +30,27 @@ const authMessage =
 
 let formIsSubmitting = false;
 let routeIsRunning = false;
+
+const FRANKLIN_ADMIN_UID =
+    "lE77uZp22tbjptd1k9Nt89eOdW12";
+
+const FRANKLIN_ADMIN_EMAIL =
+    "pcjunkremoval2026@gmail.com";
+
+
+function isFranklinAdministrator(user) {
+    return Boolean(
+        user
+        &&
+        (
+            user.uid === FRANKLIN_ADMIN_UID
+            ||
+            String(user.email || "")
+                .trim()
+                .toLowerCase() === FRANKLIN_ADMIN_EMAIL
+        )
+    );
+}
 
 
 function showMessage(
@@ -89,6 +110,19 @@ function friendlyError(error) {
 
 
 async function getRoleRecord(user) {
+    if (isFranklinAdministrator(user)) {
+        return {
+            exists: true,
+            isAdmin: true,
+            data: {
+                role: "admin",
+                active: true,
+                name: "Franklin",
+                email: FRANKLIN_ADMIN_EMAIL
+            }
+        };
+    }
+
     const roleReference =
         doc(
             db,
