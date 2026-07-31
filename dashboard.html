@@ -8,552 +8,121 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <meta
-        name="description"
-        content="Manage your Packaged Comfort account and service requests."
-    >
+    <meta name="robots" content="noindex, nofollow">
 
-    <title>Dashboard | Packaged Comfort</title>
+    <title>Customer Dashboard | Packaged Comfort</title>
 
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="style.css">
 
     <style>
-        .dashboard-shell {
+        .dashboard-page {
+            padding: 55px 0 75px;
+            background: #f4f6f9;
+        }
+
+        .dashboard-loading {
+            min-height: 55vh;
             display: grid;
-            grid-template-columns: 285px minmax(0, 1fr);
-            gap: 26px;
-            align-items: start;
-        }
-
-        .dashboard-sidebar,
-        .dashboard-panel,
-        .summary-card,
-        .action-card {
-            border: 1px solid rgba(23, 35, 59, 0.09);
-            background: white;
-            box-shadow: 0 18px 48px rgba(23, 35, 59, 0.075);
-        }
-
-        .dashboard-sidebar {
-            position: sticky;
-            top: 105px;
-            overflow: hidden;
-            border-radius: 22px;
-        }
-
-        .dashboard-profile {
-            padding: 30px 24px 25px;
-            border-bottom: 1px solid var(--border);
-            text-align: center;
-        }
-
-        .dashboard-avatar {
-            display: grid;
-            width: 78px;
-            height: 78px;
-            margin: 0 auto 17px;
             place-items: center;
-            border-radius: 50%;
-            background:
-                linear-gradient(
-                    145deg,
-                    #fff4ed,
-                    #ffe1cf
-                );
-            color: var(--primary);
-            font-size: 1.85rem;
-            font-weight: 900;
-            box-shadow:
-                inset 0 0 0 1px rgba(238, 108, 47, 0.15),
-                0 12px 28px rgba(238, 108, 47, 0.13);
-        }
-
-        .dashboard-profile h2 {
-            margin-bottom: 4px;
-            font-size: 1.2rem;
-        }
-
-        .dashboard-profile-email {
             color: var(--muted);
-            font-size: 0.9rem;
-            overflow-wrap: anywhere;
-        }
-
-        .dashboard-account-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            margin-top: 15px;
-            border-radius: 999px;
-            padding: 7px 11px;
-            background: #edf8f2;
-            color: #176b46;
-            font-size: 0.8rem;
             font-weight: 850;
         }
 
-        .dashboard-account-status::before {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #1f9d67;
-            content: "";
-        }
-
-        .dashboard-sidebar-nav {
-            display: grid;
-            gap: 5px;
-            padding: 13px;
-        }
-
-        .dashboard-sidebar-nav a,
-        .dashboard-sidebar-nav button {
-            display: flex;
-            width: 100%;
-            align-items: center;
-            gap: 12px;
-            border: 0;
-            border-radius: 12px;
-            padding: 13px 14px;
-            background: transparent;
-            color: var(--navy);
-            font: inherit;
-            font-weight: 800;
-            text-align: left;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .dashboard-sidebar-nav a:hover,
-        .dashboard-sidebar-nav button:hover,
-        .dashboard-sidebar-nav a.active {
-            background: #fff1e9;
-            color: var(--primary);
-        }
-
-        .dashboard-main {
-            display: grid;
-            gap: 24px;
-        }
-
-        .dashboard-welcome {
-            position: relative;
-            overflow: hidden;
+        .customer-banner {
             border-radius: 24px;
             padding: 34px;
             background:
                 linear-gradient(
                     135deg,
-                    #17233b 0%,
-                    #263c63 68%,
-                    #ee6c2f 155%
+                    #17233b,
+                    #2c4774
                 );
             color: white;
-            box-shadow: 0 20px 52px rgba(23, 35, 59, 0.2);
+            box-shadow:
+                0 22px 58px rgba(23, 35, 59, 0.2);
         }
 
-        .dashboard-welcome::after {
-            position: absolute;
-            top: -70px;
-            right: -70px;
-            width: 240px;
-            height: 240px;
-            border: 42px solid rgba(255, 255, 255, 0.055);
-            border-radius: 50%;
-            content: "";
-        }
-
-        .dashboard-date {
-            display: block;
-            margin-bottom: 12px;
-            color: rgba(255, 255, 255, 0.72);
-            font-size: 0.88rem;
-            font-weight: 800;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-        }
-
-        .dashboard-welcome h1 {
-            position: relative;
-            z-index: 1;
-            max-width: 690px;
-            margin-bottom: 10px;
+        .customer-banner h1 {
+            margin: 7px 0 10px;
             color: white;
-            font-size: clamp(2rem, 4vw, 3.25rem);
         }
 
-        .dashboard-welcome p {
-            position: relative;
-            z-index: 1;
-            max-width: 650px;
-            color: rgba(255, 255, 255, 0.82);
-            font-size: 1.02rem;
+        .customer-banner p {
+            max-width: 760px;
+            margin: 0;
+            color: rgba(255, 255, 255, 0.8);
             line-height: 1.65;
         }
 
-        .dashboard-welcome-actions {
-            position: relative;
-            z-index: 1;
+        .customer-date {
+            color: #ffb282;
+            font-weight: 850;
+        }
+
+        .customer-actions {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
             margin-top: 25px;
         }
 
-        .dashboard-welcome .button-secondary {
-            border-color: rgba(255, 255, 255, 0.45);
-            color: white;
+        .customer-view-services {
+            border: 2px solid white !important;
+            background: white !important;
+            color: #17233b !important;
         }
 
-        .dashboard-welcome .button-secondary:hover {
-            border-color: white;
-            background: white;
-            color: var(--navy);
+        .customer-view-services:hover {
+            border-color: #ee6c2f !important;
+            background: #ee6c2f !important;
+            color: white !important;
         }
 
-        .dashboard-summary-grid {
+        .customer-grid {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 16px;
-        }
-
-        .summary-card {
-            position: relative;
-            overflow: hidden;
-            border-radius: 18px;
-            padding: 21px;
-        }
-
-        .summary-card::after {
-            position: absolute;
-            right: -28px;
-            bottom: -32px;
-            width: 95px;
-            height: 95px;
-            border-radius: 50%;
-            background: rgba(238, 108, 47, 0.06);
-            content: "";
-        }
-
-        .summary-card-icon {
-            display: grid;
-            width: 42px;
-            height: 42px;
-            margin-bottom: 18px;
-            place-items: center;
-            border-radius: 12px;
-            background: #fff1e9;
-            font-size: 1.1rem;
-        }
-
-        .summary-card strong {
-            display: block;
-            margin-bottom: 4px;
-            color: var(--navy);
-            font-size: 1.75rem;
-            line-height: 1;
-        }
-
-        .summary-card span {
-            color: var(--muted);
-            font-size: 0.9rem;
-            font-weight: 700;
-        }
-
-        .dashboard-panel {
-            overflow: hidden;
-            border-radius: 22px;
-        }
-
-        .dashboard-panel-header {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
             gap: 18px;
-            padding: 24px 26px 18px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .dashboard-panel-header h2 {
-            margin-bottom: 5px;
-        }
-
-        .dashboard-panel-header p {
-            color: var(--muted);
-        }
-
-        .dashboard-panel-body {
-            padding: 25px 26px 27px;
-        }
-
-        .dashboard-action-grid {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 15px;
-        }
-
-        .action-card {
-            display: block;
-            min-height: 185px;
-            border-radius: 17px;
-            padding: 20px;
-            color: var(--navy);
-            text-decoration: none;
-            transition:
-                transform 170ms ease,
-                box-shadow 170ms ease,
-                border-color 170ms ease;
-        }
-
-        .action-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(238, 108, 47, 0.3);
-            box-shadow: 0 20px 46px rgba(23, 35, 59, 0.12);
-        }
-
-        .action-icon {
-            display: grid;
-            width: 46px;
-            height: 46px;
-            margin-bottom: 18px;
-            place-items: center;
-            border-radius: 13px;
-            background: #fff1e9;
-            font-size: 1.2rem;
-        }
-
-        .action-card strong {
-            display: block;
-            margin-bottom: 7px;
-            font-size: 1rem;
-        }
-
-        .action-card span {
-            display: block;
-            color: var(--muted);
-            font-size: 0.88rem;
-            line-height: 1.52;
-        }
-
-        .request-center {
-            display: grid;
-            grid-template-columns: minmax(0, 1.3fr) minmax(250px, 0.7fr);
-            gap: 20px;
-        }
-
-        .request-empty {
-            display: grid;
-            min-height: 285px;
-            place-items: center;
-            border: 1px dashed rgba(23, 35, 59, 0.22);
-            border-radius: 18px;
-            padding: 38px 24px;
-            background: #fbfbfc;
-            text-align: center;
-        }
-
-        .request-empty-icon {
-            display: grid;
-            width: 62px;
-            height: 62px;
-            margin: 0 auto 18px;
-            place-items: center;
-            border-radius: 50%;
-            background: #fff1e9;
-            font-size: 1.5rem;
-        }
-
-        .request-empty h3 {
-            margin-bottom: 8px;
-        }
-
-        .request-empty p {
-            max-width: 510px;
-            margin: 0 auto 22px;
-            color: var(--muted);
-            line-height: 1.6;
-        }
-
-        .support-card {
-            border-radius: 18px;
-            padding: 24px;
-            background:
-                linear-gradient(
-                    145deg,
-                    #fff5ef,
-                    #fffaf7
-                );
-            box-shadow: inset 0 0 0 1px rgba(238, 108, 47, 0.11);
-        }
-
-        .support-card-icon {
-            display: grid;
-            width: 48px;
-            height: 48px;
-            margin-bottom: 18px;
-            place-items: center;
-            border-radius: 14px;
-            background: white;
-            font-size: 1.2rem;
-            box-shadow: 0 8px 24px rgba(23, 35, 59, 0.07);
-        }
-
-        .support-card h3 {
-            margin-bottom: 8px;
-        }
-
-        .support-card p {
-            margin-bottom: 20px;
-            color: var(--muted);
-            line-height: 1.58;
-        }
-
-        .support-contact {
-            display: grid;
-            gap: 10px;
-        }
-
-        .support-contact a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--navy);
-            font-weight: 850;
-            text-decoration: none;
-        }
-
-        .service-area {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 18px;
-            border-top: 1px solid var(--border);
             margin-top: 23px;
-            padding-top: 20px;
         }
 
-        .service-area strong,
-        .service-area span {
-            display: block;
+        .customer-card {
+            border: 1px solid #dfe4eb;
+            border-radius: 18px;
+            padding: 23px;
+            background: white;
+            box-shadow:
+                0 14px 38px rgba(23, 35, 59, 0.07);
         }
 
-        .service-area span {
-            margin-top: 4px;
+        .customer-card h2 {
+            margin-bottom: 8px;
+            font-size: 1.15rem;
+        }
+
+        .customer-card p {
             color: var(--muted);
-            font-size: 0.9rem;
+            line-height: 1.55;
         }
 
-        .dashboard-loading {
-            padding: 75px 20px;
+        .customer-account {
+            display: grid;
+            gap: 9px;
+            margin-top: 16px;
+        }
+
+        .customer-account span {
             color: var(--muted);
-            text-align: center;
         }
 
-        @media (max-width: 1120px) {
-            .dashboard-action-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-
-            .request-center {
-                grid-template-columns: 1fr;
-            }
+        .customer-account strong {
+            overflow-wrap: anywhere;
         }
 
-        @media (max-width: 930px) {
-            .dashboard-shell {
+        @media (max-width: 850px) {
+            .customer-grid {
                 grid-template-columns: 1fr;
-            }
-
-            .dashboard-sidebar {
-                position: static;
-            }
-
-            .dashboard-profile {
-                display: grid;
-                grid-template-columns: auto minmax(0, 1fr);
-                column-gap: 18px;
-                text-align: left;
-            }
-
-            .dashboard-avatar {
-                grid-row: 1 / 4;
-                margin: 0;
-            }
-
-            .dashboard-account-status {
-                justify-self: start;
-            }
-
-            .dashboard-sidebar-nav {
-                grid-template-columns: repeat(4, minmax(0, 1fr));
-            }
-
-            .dashboard-sidebar-nav a,
-            .dashboard-sidebar-nav button {
-                justify-content: center;
-                text-align: center;
-            }
-
-            .dashboard-sidebar-nav span {
-                display: none;
-            }
-        }
-
-        @media (max-width: 720px) {
-            .dashboard-summary-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .dashboard-action-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .dashboard-sidebar-nav {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-
-            .dashboard-welcome {
-                padding: 28px 22px;
-            }
-
-            .dashboard-panel-header {
-                align-items: stretch;
-                flex-direction: column;
-            }
-
-            .dashboard-panel-header .button {
-                width: 100%;
-            }
-
-            .service-area {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .dashboard-profile {
-                display: block;
-                text-align: center;
-            }
-
-            .dashboard-avatar {
-                margin: 0 auto 17px;
-            }
-
-            .dashboard-account-status {
-                justify-self: center;
-            }
-
-            .dashboard-sidebar-nav {
-                grid-template-columns: 1fr;
-            }
-
-            .dashboard-panel-header,
-            .dashboard-panel-body {
-                padding-left: 19px;
-                padding-right: 19px;
             }
         }
     </style>
@@ -562,12 +131,12 @@
 <body>
 
     <header class="site-header">
+
         <div class="container nav-wrap">
 
             <a
                 href="index.html"
                 class="brand"
-                aria-label="Packaged Comfort home"
             >
                 <img
                     src="logo.png"
@@ -580,6 +149,7 @@
                 </span>
             </a>
 
+
             <button
                 class="menu-button"
                 id="menuButton"
@@ -590,475 +160,174 @@
                 ☰
             </button>
 
-            <nav class="main-nav" id="mainNav">
+
+            <nav
+                class="main-nav"
+                id="mainNav"
+            >
                 <a href="index.html">Home</a>
                 <a href="services.html">Services</a>
                 <a href="quote.html">Request a Quote</a>
                 <a href="contact.html">Contact</a>
-
-                <div class="nav-actions">
-                    <a
-                        href="login.html"
-                        class="button button-secondary"
-                    >
-                        Log In
-                    </a>
-
-                    <a
-                        href="signup.html"
-                        class="button button-primary"
-                    >
-                        Sign Up
-                    </a>
-                </div>
             </nav>
 
         </div>
+
     </header>
 
 
-    <main>
-
-        <section class="section alt">
-            <div class="container">
-
-                <div
-                    class="dashboard-loading"
-                    id="dashboardLoading"
-                >
-                    Loading your dashboard...
-                </div>
-
-
-                <div
-                    class="dashboard-shell"
-                    id="dashboardContent"
-                    hidden
-                >
-
-                    <aside class="dashboard-sidebar">
-
-                        <div class="dashboard-profile">
-
-                            <div
-                                class="dashboard-avatar"
-                                id="dashboardAvatar"
-                            >
-                                C
-                            </div>
-
-                            <h2 id="dashboardFullName">
-                                Customer
-                            </h2>
-
-                            <p
-                                class="dashboard-profile-email"
-                                id="dashboardEmail"
-                            >
-                                Account email
-                            </p>
-
-                            <span class="dashboard-account-status">
-                                Account active
-                            </span>
-
-                        </div>
-
-
-                        <nav class="dashboard-sidebar-nav">
-
-                            <a
-                                href="dashboard.html"
-                                class="active"
-                            >
-                                <span>▦</span>
-                                Overview
-                            </a>
-
-                            <a href="quote.html">
-                                <span>＋</span>
-                                New Quote
-                            </a>
-
-                            <a href="settings.html">
-                                <span>⚙</span>
-                                Settings
-                            </a>
-
-                            <button
-                                type="button"
-                                id="dashboardLogoutButton"
-                            >
-                                <span>↪</span>
-                                Log Out
-                            </button>
-
-                        </nav>
-
-                    </aside>
-
-
-                    <div class="dashboard-main">
-
-                        <section class="dashboard-welcome">
-
-                            <span
-                                class="dashboard-date"
-                                id="dashboardDate"
-                            >
-                                Today
-                            </span>
-
-                            <h1>
-                                <span id="dashboardGreeting">
-                                    Welcome back
-                                </span>,
-                                <span data-dashboard-name>
-                                    Customer
-                                </span>
-                            </h1>
-
-                            <p>
-                                Manage your account, begin a new service request,
-                                and quickly reach Packaged Comfort whenever you
-                                need assistance.
-                            </p>
-
-                            <div class="dashboard-welcome-actions">
-
-                                <a
-                                    href="quote.html"
-                                    class="button button-primary"
-                                >
-                                    Request a Quote
-                                </a>
-
-                                <a
-                                    href="services.html"
-                                    class="button button-secondary"
-                                >
-                                    View Services
-                                </a>
-
-                            </div>
-
-                        </section>
-
-
-                        <section class="dashboard-summary-grid">
-
-                            <article class="summary-card">
-
-                                <div class="summary-card-icon">
-                                    📦
-                                </div>
-
-                                <strong>0</strong>
-
-                                <span>
-                                    Active requests
-                                </span>
-
-                            </article>
-
-
-                            <article class="summary-card">
-
-                                <div class="summary-card-icon">
-                                    ✓
-                                </div>
-
-                                <strong>0</strong>
-
-                                <span>
-                                    Completed services
-                                </span>
-
-                            </article>
-
-
-                            <article class="summary-card">
-
-                                <div class="summary-card-icon">
-                                    ◷
-                                </div>
-
-                                <strong id="memberSince">
-                                    New
-                                </strong>
-
-                                <span>
-                                    Account member
-                                </span>
-
-                            </article>
-
-                        </section>
-
-
-                        <section class="dashboard-panel">
-
-                            <div class="dashboard-panel-header">
-
-                                <div>
-                                    <h2>Quick Actions</h2>
-
-                                    <p>
-                                        Start a request or manage your account.
-                                    </p>
-                                </div>
-
-                            </div>
-
-
-                            <div class="dashboard-panel-body">
-
-                                <div class="dashboard-action-grid">
-
-                                    <a
-                                        href="quote.html"
-                                        class="action-card"
-                                    >
-                                        <div class="action-icon">
-                                            📦
-                                        </div>
-
-                                        <strong>
-                                            Request a Quote
-                                        </strong>
-
-                                        <span>
-                                            Provide pickup, destination,
-                                            service, and item details.
-                                        </span>
-                                    </a>
-
-
-                                    <a
-                                        href="services.html"
-                                        class="action-card"
-                                    >
-                                        <div class="action-icon">
-                                            🚚
-                                        </div>
-
-                                        <strong>
-                                            Browse Services
-                                        </strong>
-
-                                        <span>
-                                            Review hauling, courier, delivery,
-                                            and moving options.
-                                        </span>
-                                    </a>
-
-
-                                    <a
-                                        href="settings.html"
-                                        class="action-card"
-                                    >
-                                        <div class="action-icon">
-                                            ⚙
-                                        </div>
-
-                                        <strong>
-                                            Account Settings
-                                        </strong>
-
-                                        <span>
-                                            Update your name, password, and
-                                            account access.
-                                        </span>
-                                    </a>
-
-
-                                    <a
-                                        href="contact.html"
-                                        class="action-card"
-                                    >
-                                        <div class="action-icon">
-                                            ☎
-                                        </div>
-
-                                        <strong>
-                                            Contact Us
-                                        </strong>
-
-                                        <span>
-                                            Call or text for service
-                                            availability and assistance.
-                                        </span>
-                                    </a>
-
-                                </div>
-
-                            </div>
-
-                        </section>
-
-
-                        <section class="dashboard-panel">
-
-                            <div class="dashboard-panel-header">
-
-                                <div>
-                                    <h2>Service Requests</h2>
-
-                                    <p>
-                                        Your active and completed requests
-                                        will appear here.
-                                    </p>
-                                </div>
-
-                                <a
-                                    href="quote.html"
-                                    class="button button-primary"
-                                >
-                                    New Request
-                                </a>
-
-                            </div>
-
-
-                            <div class="dashboard-panel-body">
-
-                                <div class="request-center">
-
-                                    <div class="request-empty">
-
-                                        <div>
-                                            <div class="request-empty-icon">
-                                                🚚
-                                            </div>
-
-                                            <h3>No active requests</h3>
-
-                                            <p>
-                                                Start a request for private
-                                                hauling, courier service,
-                                                delivery, or moving assistance.
-                                            </p>
-
-                                            <a
-                                                href="quote.html"
-                                                class="button button-secondary"
-                                            >
-                                                Start Your First Request
-                                            </a>
-                                        </div>
-
-                                    </div>
-
-
-                                    <aside class="support-card">
-
-                                        <div class="support-card-icon">
-                                            💬
-                                        </div>
-
-                                        <h3>Need Assistance?</h3>
-
-                                        <p>
-                                            Reach Packaged Comfort directly
-                                            for availability, service questions,
-                                            or help planning your request.
-                                        </p>
-
-                                        <div class="support-contact">
-
-                                            <a href="tel:7257240012">
-                                                ☎ 725-724-0012
-                                            </a>
-
-                                            <a href="sms:7257240012">
-                                                ✉ Send a text
-                                            </a>
-
-                                        </div>
-
-
-                                        <div class="service-area">
-
-                                            <div>
-                                                <strong>
-                                                    Service Area
-                                                </strong>
-
-                                                <span>
-                                                    Henderson, Nevada and
-                                                    surrounding areas
-                                                </span>
-                                            </div>
-
-                                        </div>
-
-                                    </aside>
-
-                                </div>
-
-                            </div>
-
-                        </section>
+    <main class="dashboard-page">
+
+        <div class="container">
+
+            <div
+                class="dashboard-loading"
+                id="dashboardLoading"
+            >
+                Loading customer account...
+            </div>
+
+
+            <div
+                id="dashboardContent"
+                hidden
+            >
+
+                <section class="customer-banner">
+
+                    <span
+                        class="customer-date"
+                        id="dashboardDate"
+                    >
+                        Today
+                    </span>
+
+                    <h1>
+                        <span id="dashboardGreeting">
+                            Welcome back
+                        </span>,
+                        <span id="dashboardFirstName">
+                            Customer
+                        </span>
+                    </h1>
+
+                    <p>
+                        Manage your customer account, begin a new service
+                        request, and quickly reach Packaged Comfort whenever
+                        you need assistance.
+                    </p>
+
+
+                    <div class="customer-actions">
+
+                        <a
+                            href="quote.html"
+                            class="button button-primary"
+                        >
+                            Request a Quote
+                        </a>
+
+                        <a
+                            href="services.html"
+                            class="button customer-view-services"
+                        >
+                            View Services
+                        </a>
 
                     </div>
 
-                </div>
+                </section>
+
+
+                <section class="customer-grid">
+
+                    <article class="customer-card">
+
+                        <h2>
+                            Customer Account
+                        </h2>
+
+                        <p>
+                            Your signed-in account information.
+                        </p>
+
+                        <div class="customer-account">
+
+                            <div>
+                                <span>Name</span>
+                                <strong id="dashboardFullName">
+                                    Customer
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Email</span>
+                                <strong id="dashboardEmail">
+                                    Account email
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="customer-card">
+
+                        <h2>
+                            New Service Request
+                        </h2>
+
+                        <p>
+                            Submit pickup, delivery, hauling, or moving
+                            details for review.
+                        </p>
+
+                        <a
+                            href="quote.html"
+                            class="button button-primary"
+                        >
+                            Start Request
+                        </a>
+
+                    </article>
+
+
+                    <article class="customer-card">
+
+                        <h2>
+                            Contact Packaged Comfort
+                        </h2>
+
+                        <p>
+                            Call or text the company directly when you
+                            need quick assistance.
+                        </p>
+
+                        <a
+                            href="tel:7257240012"
+                            class="button button-secondary"
+                        >
+                            Call 725-724-0012
+                        </a>
+
+                    </article>
+
+                </section>
 
             </div>
-        </section>
+
+        </div>
 
     </main>
 
 
-    <footer class="site-footer">
-        <div class="container footer-grid">
+    <script src="script.js?v=20"></script>
 
-            <div>
-                <img
-                    src="logo.png"
-                    alt="Packaged Comfort logo"
-                    class="footer-logo"
-                >
+    <script
+        type="module"
+        src="dashboard.js?v=20"
+    ></script>
 
-                <p>
-                    Private hauling, courier, delivery, and moving assistance
-                    designed to move your package with comfort.
-                </p>
-            </div>
-
-
-            <div class="footer-links">
-                <strong>Website</strong>
-                <a href="index.html">Home</a>
-                <a href="services.html">Services</a>
-                <a href="quote.html">Request a Quote</a>
-                <a href="contact.html">Contact</a>
-            </div>
-
-
-            <div class="footer-links">
-                <strong>Account</strong>
-                <a href="dashboard.html">Dashboard</a>
-                <a href="settings.html">Account Settings</a>
-                <a href="quote.html">New Quote Request</a>
-            </div>
-
-        </div>
-
-
-        <div class="container footer-bottom">
-            © <span data-current-year></span>
-            Packaged Comfort. All rights reserved.
-        </div>
-    </footer>
-
-
-    <div class="toast" id="toast">
-        <span id="toastMessage"></span>
-    </div>
-
-
-    <script src="script.js"></script>
-    <script type="module" src="dashboard.js"></script>
 </body>
 </html>
