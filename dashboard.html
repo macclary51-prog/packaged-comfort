@@ -17,6 +17,7 @@
 
     <style>
         .dashboard-page {
+            min-height: calc(100vh - 80px);
             padding: 55px 0 75px;
             background: #f4f6f9;
         }
@@ -25,8 +26,14 @@
             min-height: 55vh;
             display: grid;
             place-items: center;
-            color: var(--muted);
+            padding: 25px;
+            color: var(--muted, #687386);
             font-weight: 850;
+            text-align: center;
+        }
+
+        .dashboard-loading.error {
+            color: #b42318;
         }
 
         .customer-banner {
@@ -79,6 +86,19 @@
             color: white !important;
         }
 
+        .customer-logout {
+            border: 2px solid rgba(255, 255, 255, 0.55) !important;
+            background: transparent !important;
+            color: white !important;
+            cursor: pointer;
+        }
+
+        .customer-logout:hover {
+            border-color: white !important;
+            background: white !important;
+            color: #17233b !important;
+        }
+
         .customer-grid {
             display: grid;
             grid-template-columns:
@@ -102,21 +122,25 @@
         }
 
         .customer-card p {
-            color: var(--muted);
+            color: var(--muted, #687386);
             line-height: 1.55;
         }
 
         .customer-account {
             display: grid;
-            gap: 9px;
+            gap: 14px;
             margin-top: 16px;
         }
 
         .customer-account span {
-            color: var(--muted);
+            display: block;
+            margin-bottom: 3px;
+            color: var(--muted, #687386);
+            font-size: 0.82rem;
         }
 
         .customer-account strong {
+            display: block;
             overflow-wrap: anywhere;
         }
 
@@ -234,6 +258,21 @@
                             View Services
                         </a>
 
+                        <a
+                            href="settings.html"
+                            class="button customer-view-services"
+                        >
+                            Account Settings
+                        </a>
+
+                        <button
+                            type="button"
+                            class="button customer-logout"
+                            id="customerLogout"
+                        >
+                            Log Out
+                        </button>
+
                     </div>
 
                 </section>
@@ -322,12 +361,284 @@
     </main>
 
 
-    <script src="script.js?v=31"></script>
+    <script src="script.js?v=32"></script>
 
-    <script
-        type="module"
-        src="dashboard.js?v=31"
-    ></script>
+
+    <script type="module">
+
+        import {
+            initializeApp,
+            getApp,
+            getApps
+        } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+        import {
+            getAuth,
+            onAuthStateChanged,
+            signOut
+        } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
+
+        const firebaseConfig = {
+            apiKey:
+                "AIzaSyDMWaronfPi0cujdvzGIsieadLss_d4iMQ",
+
+            authDomain:
+                "packaged-comfort-website.firebaseapp.com",
+
+            projectId:
+                "packaged-comfort-website",
+
+            storageBucket:
+                "packaged-comfort-website.firebasestorage.app",
+
+            messagingSenderId:
+                "150317110708",
+
+            appId:
+                "1:150317110708:web:dab83f056b04b1e0210ee1"
+        };
+
+
+        const franklinAdminUid =
+            "lE77uZp22tbjptd1k9Nt89eOdW12";
+
+
+        const firebaseApp =
+            getApps().length > 0
+                ? getApp()
+                : initializeApp(firebaseConfig);
+
+
+        const auth =
+            getAuth(firebaseApp);
+
+
+        const dashboardLoading =
+            document.getElementById(
+                "dashboardLoading"
+            );
+
+        const dashboardContent =
+            document.getElementById(
+                "dashboardContent"
+            );
+
+        const dashboardDate =
+            document.getElementById(
+                "dashboardDate"
+            );
+
+        const dashboardGreeting =
+            document.getElementById(
+                "dashboardGreeting"
+            );
+
+        const dashboardFirstName =
+            document.getElementById(
+                "dashboardFirstName"
+            );
+
+        const dashboardFullName =
+            document.getElementById(
+                "dashboardFullName"
+            );
+
+        const dashboardEmail =
+            document.getElementById(
+                "dashboardEmail"
+            );
+
+        const customerLogout =
+            document.getElementById(
+                "customerLogout"
+            );
+
+
+        function getGreeting() {
+            const hour =
+                new Date().getHours();
+
+            if (hour < 12) {
+                return "Good morning";
+            }
+
+            if (hour < 18) {
+                return "Good afternoon";
+            }
+
+            return "Good evening";
+        }
+
+
+        function formatDate() {
+            return new Intl.DateTimeFormat(
+                "en-US",
+                {
+                    weekday: "long",
+                    month: "long",
+                    day: "numeric"
+                }
+            ).format(
+                new Date()
+            );
+        }
+
+
+        function getCustomerName(user) {
+            const displayName =
+                String(
+                    user.displayName || ""
+                ).trim();
+
+            if (displayName) {
+                return displayName;
+            }
+
+            const emailName =
+                String(
+                    user.email || ""
+                )
+                    .split("@")[0]
+                    .trim();
+
+            return emailName || "Customer";
+        }
+
+
+        function showCustomerAccount(user) {
+            const fullName =
+                getCustomerName(user);
+
+            const firstName =
+                fullName
+                    .split(/\s+/)[0];
+
+
+            dashboardDate.textContent =
+                formatDate();
+
+            dashboardGreeting.textContent =
+                getGreeting();
+
+            dashboardFirstName.textContent =
+                firstName;
+
+            dashboardFullName.textContent =
+                fullName;
+
+            dashboardEmail.textContent =
+                user.email ||
+                "Account email unavailable";
+
+
+            dashboardLoading.hidden =
+                true;
+
+            dashboardContent.hidden =
+                false;
+        }
+
+
+        function showError(message) {
+            dashboardLoading.textContent =
+                message;
+
+            dashboardLoading.classList.add(
+                "error"
+            );
+        }
+
+
+        customerLogout.addEventListener(
+            "click",
+            async () => {
+                customerLogout.disabled =
+                    true;
+
+                customerLogout.textContent =
+                    "Logging Out...";
+
+                try {
+                    await signOut(auth);
+
+                    window.location.replace(
+                        "login.html"
+                    );
+
+                } catch (error) {
+                    console.error(error);
+
+                    customerLogout.disabled =
+                        false;
+
+                    customerLogout.textContent =
+                        "Log Out";
+
+                    window.alert(
+                        "The account could not be logged out."
+                    );
+                }
+            }
+        );
+
+
+        window.setTimeout(
+            () => {
+                if (
+                    dashboardContent.hidden
+                    &&
+                    dashboardLoading.textContent
+                        .includes("Loading")
+                ) {
+                    showError(
+                        "The customer account took too long to load. Return to the login page and sign in again."
+                    );
+                }
+            },
+            10000
+        );
+
+
+        onAuthStateChanged(
+            auth,
+            (user) => {
+                if (!user) {
+                    window.location.replace(
+                        "login.html"
+                    );
+
+                    return;
+                }
+
+
+                if (
+                    user.uid ===
+                    franklinAdminUid
+                ) {
+                    window.location.replace(
+                        "admin.html"
+                    );
+
+                    return;
+                }
+
+
+                showCustomerAccount(user);
+            },
+            (error) => {
+                console.error(
+                    "Customer authentication failed:",
+                    error
+                );
+
+                showError(
+                    `Customer account error: ${error.code || error.message}`
+                );
+            }
+        );
+
+    </script>
 
 </body>
 </html>
