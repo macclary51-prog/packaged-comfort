@@ -1,41 +1,16 @@
 import {
-    initializeApp,
-    getApp,
-    getApps
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+    auth,
+    db
+} from "./firebase-config.js";
 
 import {
-    getAuth,
-    onAuthStateChanged,
-    signOut
+    onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
 import {
     doc,
-    getDoc,
-    getFirestore
+    getDoc
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
-
-const accountServiceConfig = {
-    apiKey: "AIzaSyDMWaronfPi0cujdvzGIsieadLss_d4iMQ",
-    authDomain: "packaged-comfort-website.firebaseapp.com",
-    projectId: "packaged-comfort-website",
-    storageBucket: "packaged-comfort-website.firebasestorage.app",
-    messagingSenderId: "150317110708",
-    appId: "1:150317110708:web:dab83f056b04b1e0210ee1"
-};
-
-
-const app = getApps().length
-    ? getApp()
-    : initializeApp(accountServiceConfig);
-
-const auth =
-    getAuth(app);
-
-const database =
-    getFirestore(app);
 
 
 const dashboardLoading =
@@ -44,88 +19,55 @@ const dashboardLoading =
 const dashboardContent =
     document.getElementById("dashboardContent");
 
-const dashboardFullName =
-    document.getElementById("dashboardFullName");
-
-const dashboardEmail =
-    document.getElementById("dashboardEmail");
-
-const dashboardAvatar =
-    document.getElementById("dashboardAvatar");
-
 const dashboardDate =
     document.getElementById("dashboardDate");
 
 const dashboardGreeting =
     document.getElementById("dashboardGreeting");
 
-const memberSince =
-    document.getElementById("memberSince");
+const dashboardFirstName =
+    document.getElementById("dashboardFirstName");
 
-const dashboardLogoutButton =
-    document.getElementById(
-        "dashboardLogoutButton"
-    );
+const dashboardFullName =
+    document.getElementById("dashboardFullName");
+
+const dashboardEmail =
+    document.getElementById("dashboardEmail");
 
 
 async function isAdministrator(user) {
-    const roleReference =
-        doc(
-            database,
-            "roles",
-            user.uid
-        );
-
     const roleSnapshot =
-        await getDoc(roleReference);
+        await getDoc(
+            doc(
+                db,
+                "roles",
+                user.uid
+            )
+        );
 
     if (!roleSnapshot.exists()) {
         return false;
     }
 
-    const role =
+    const roleData =
         roleSnapshot.data();
 
     return (
-        String(role.role || "")
+        String(roleData.role || "")
             .trim()
-            .toLowerCase() === "admin" &&
-        role.active === true
+            .toLowerCase() === "admin"
+        &&
+        roleData.active === true
     );
 }
 
 
-function getDisplayName(user) {
-    if (user.displayName?.trim()) {
-        return user.displayName.trim();
-    }
-
-    if (user.email) {
-        return user.email.split("@")[0];
-    }
-
-    return "Customer";
-}
-
-
-function getFirstName(fullName) {
-    return fullName
-        .trim()
-        .split(/\s+/)[0];
-}
-
-
-function getInitial(
-    fullName,
-    email
-) {
-    const source =
-        fullName || email || "C";
-
-    return source
-        .trim()
-        .charAt(0)
-        .toUpperCase();
+function getFullName(user) {
+    return (
+        user.displayName?.trim() ||
+        user.email?.split("@")[0] ||
+        "Customer"
+    );
 }
 
 
@@ -145,7 +87,7 @@ function getGreeting() {
 }
 
 
-function formatCurrentDate() {
+function formatDate() {
     return new Intl.DateTimeFormat(
         "en-US",
         {
@@ -153,94 +95,41 @@ function formatCurrentDate() {
             month: "long",
             day: "numeric"
         }
-    ).format(new Date());
-}
-
-
-function formatMemberSince(user) {
-    const creationTime =
-        user.metadata?.creationTime;
-
-    if (!creationTime) {
-        return "Active";
-    }
-
-    return new Intl.DateTimeFormat(
-        "en-US",
-        {
-            month: "short",
-            year: "numeric"
-        }
     ).format(
-        new Date(creationTime)
+        new Date()
     );
 }
 
 
-function displayDashboard(user) {
+function showCustomerDashboard(user) {
     const fullName =
-        getDisplayName(user);
+        getFullName(user);
 
     const firstName =
-        getFirstName(fullName);
+        fullName
+            .split(/\s+/)[0];
 
-    const email =
+    dashboardDate.textContent =
+        formatDate();
+
+    dashboardGreeting.textContent =
+        getGreeting();
+
+    dashboardFirstName.textContent =
+        firstName;
+
+    dashboardFullName.textContent =
+        fullName;
+
+    dashboardEmail.textContent =
         user.email ||
         "Account email unavailable";
 
+    dashboardLoading.hidden =
+        true;
 
-    if (dashboardFullName) {
-        dashboardFullName.textContent =
-            fullName;
-    }
-
-    if (dashboardEmail) {
-        dashboardEmail.textContent =
-            email;
-    }
-
-    if (dashboardAvatar) {
-        dashboardAvatar.textContent =
-            getInitial(
-                fullName,
-                email
-            );
-    }
-
-    if (dashboardDate) {
-        dashboardDate.textContent =
-            formatCurrentDate();
-    }
-
-    if (dashboardGreeting) {
-        dashboardGreeting.textContent =
-            getGreeting();
-    }
-
-    if (memberSince) {
-        memberSince.textContent =
-            formatMemberSince(user);
-    }
-
-
-    document
-        .querySelectorAll(
-            "[data-dashboard-name], " +
-            "[data-user-name]"
-        )
-        .forEach((element) => {
-            element.textContent =
-                firstName;
-        });
-
-
-    if (dashboardLoading) {
-        dashboardLoading.hidden = true;
-    }
-
-    if (dashboardContent) {
-        dashboardContent.hidden = false;
-    }
+    dashboardContent.hidden =
+        false;
 }
 
 
@@ -267,47 +156,16 @@ onAuthStateChanged(
                 return;
             }
 
-            displayDashboard(user);
+            showCustomerDashboard(user);
 
         } catch (error) {
             console.error(
-                "Dashboard role check failed:",
+                "Customer dashboard role check failed:",
                 error
             );
 
-            displayDashboard(user);
+            dashboardLoading.textContent =
+                "The account permission could not be verified. Check the Firebase configuration and administrator UID.";
         }
     }
 );
-
-
-if (dashboardLogoutButton) {
-    dashboardLogoutButton.addEventListener(
-        "click",
-        async () => {
-            dashboardLogoutButton.disabled = true;
-
-            dashboardLogoutButton.textContent =
-                "Logging Out...";
-
-            try {
-                await signOut(auth);
-
-                window.location.href =
-                    "index.html";
-
-            } catch (error) {
-                console.error(
-                    "Account logout error:",
-                    error
-                );
-
-                dashboardLogoutButton.disabled =
-                    false;
-
-                dashboardLogoutButton.textContent =
-                    "Log Out";
-            }
-        }
-    );
-}
