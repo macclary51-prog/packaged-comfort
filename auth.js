@@ -1,242 +1,81 @@
-import { auth } from "./firebase-config.js";
+import{auth}from"./firebase-config.js";
+import{createUserWithEmailAndPassword,onAuthStateChanged,signInWithEmailAndPassword,updateProfile}from"https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+import{doc,getDoc,getFirestore,serverTimestamp,setDoc}from"https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
-import {
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    updateProfile
-} from
-    "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+const db=getFirestore(auth.app),signupForm=document.getElementById("signupForm"),loginForm=document.getElementById("loginForm"),authMessage=document.getElementById("authMessage");
+let submitting=false,redirecting=false;
 
-
-const signupForm =
-    document.getElementById("signupForm");
-
-const loginForm =
-    document.getElementById("loginForm");
-
-const authMessage =
-    document.getElementById("authMessage");
-
-
-function displayMessage(message, isError = false) {
-    if (!authMessage) {
-        return;
-    }
-
-    authMessage.textContent = message;
-
-    authMessage.style.color =
-        isError ? "#b42318" : "#1c7c54";
+function message(text,error=false){if(!authMessage)return;authMessage.textContent=text;authMessage.style.color=error?"#b42318":"#176b46"}
+function friendly(error){
+  switch(error.code){
+    case"auth/email-already-in-use":return"An account already exists with this email.";
+    case"auth/invalid-email":return"Enter a valid email address.";
+    case"auth/weak-password":return"Your password must contain at least 6 characters.";
+    case"auth/invalid-credential":
+    case"auth/invalid-login-credentials":
+    case"auth/user-not-found":
+    case"auth/wrong-password":return"The email address or password is incorrect.";
+    case"auth/user-disabled":return"This account has been disabled.";
+    case"auth/too-many-requests":return"Too many attempts were made. Wait and try again.";
+    case"auth/network-request-failed":return"Check your internet connection and try again.";
+    default:console.error(error);return"Something went wrong. Please try again.";
+  }
 }
 
-
-function setButtonState(
-    button,
-    loading,
-    normalText,
-    loadingText
-) {
-    if (!button) {
-        return;
-    }
-
-    button.disabled = loading;
-
-    button.textContent =
-        loading ? loadingText : normalText;
-
-    button.style.opacity =
-        loading ? "0.72" : "1";
-
-    button.style.cursor =
-        loading ? "wait" : "pointer";
+async function isAdmin(user){
+  const snap=await getDoc(doc(db,"roles",user.uid));
+  if(!snap.exists())return false;
+  const role=snap.data();
+  return String(role.role||"").trim().toLowerCase()==="admin"&&role.active===true;
 }
 
-
-function friendlyFirebaseError(error) {
-    switch (error.code) {
-        case "auth/email-already-in-use":
-            return "An account already exists with this email address.";
-
-        case "auth/invalid-email":
-            return "Enter a valid email address.";
-
-        case "auth/weak-password":
-            return "Use a password containing at least 6 characters.";
-
-        case "auth/invalid-credential":
-            return "The email address or password is incorrect.";
-
-        case "auth/user-disabled":
-            return "This account has been disabled.";
-
-        case "auth/too-many-requests":
-            return "Too many attempts were made. Wait and try again.";
-
-        case "auth/network-request-failed":
-            return "Check your internet connection and try again.";
-
-        case "auth/operation-not-allowed":
-            return "Email and password login is not enabled in Firebase.";
-
-        default:
-            console.error(
-                "Firebase Authentication error:",
-                error
-            );
-
-            return "Something went wrong. Please try again.";
-    }
+async function saveCustomer(user){
+  const ref=doc(db,"customers",user.uid),snap=await getDoc(ref);
+  const data={name:user.displayName?.trim()||user.email?.split("@")[0]||"Customer",email:user.email||"",lastLoginAt:serverTimestamp()};
+  if(!snap.exists())data.createdAt=serverTimestamp();
+  await setDoc(ref,data,{merge:true});
 }
 
-
-/* Create an account */
-
-if (signupForm) {
-    signupForm.addEventListener(
-        "submit",
-        async (event) => {
-            event.preventDefault();
-
-            if (!signupForm.checkValidity()) {
-                signupForm.reportValidity();
-                return;
-            }
-
-            const fullName =
-                document
-                    .getElementById("signupName")
-                    .value
-                    .trim();
-
-            const email =
-                document
-                    .getElementById("signupEmail")
-                    .value
-                    .trim();
-
-            const password =
-                document
-                    .getElementById("signupPassword")
-                    .value;
-
-            const signupButton =
-                document.getElementById("signupButton");
-
-            displayMessage("");
-
-            setButtonState(
-                signupButton,
-                true,
-                "Create Account",
-                "Creating Account..."
-            );
-
-            try {
-                const userCredential =
-                    await createUserWithEmailAndPassword(
-                        auth,
-                        email,
-                        password
-                    );
-
-                await updateProfile(
-                    userCredential.user,
-                    {
-                        displayName: fullName
-                    }
-                );
-
-                displayMessage(
-                    "Account created successfully. Opening your dashboard..."
-                );
-
-                window.setTimeout(() => {
-                    window.location.href =
-                        "dashboard.html";
-                }, 900);
-            } catch (error) {
-                displayMessage(
-                    friendlyFirebaseError(error),
-                    true
-                );
-
-                setButtonState(
-                    signupButton,
-                    false,
-                    "Create Account",
-                    "Creating Account..."
-                );
-            }
-        }
-    );
+async function route(user){
+  if(!user||redirecting)return;
+  redirecting=true;
+  try{
+    if(await isAdmin(user)){location.replace("admin.html");return}
+    await saveCustomer(user);
+    location.replace("dashboard.html");
+  }catch(error){console.error(error);location.replace("dashboard.html")}
 }
 
+if(signupForm){
+  signupForm.addEventListener("submit",async event=>{
+    event.preventDefault();
+    if(!signupForm.checkValidity()){signupForm.reportValidity();return}
+    const name=document.getElementById("signupName").value.trim(),email=document.getElementById("signupEmail").value.trim(),password=document.getElementById("signupPassword").value,button=document.getElementById("signupButton");
+    submitting=true;button.disabled=true;button.textContent="Creating Account...";message("");
+    try{
+      const result=await createUserWithEmailAndPassword(auth,email,password);
+      await updateProfile(result.user,{displayName:name});
+      await saveCustomer(result.user);
+      message("Account created successfully.");
+      setTimeout(()=>location.replace("dashboard.html"),600);
+    }catch(error){submitting=false;message(friendly(error),true);button.disabled=false;button.textContent="Create Account"}
+  });
+}
 
-/* Log into an existing account */
+if(loginForm){
+  loginForm.addEventListener("submit",async event=>{
+    event.preventDefault();
+    if(!loginForm.checkValidity()){loginForm.reportValidity();return}
+    const email=document.getElementById("loginEmail").value.trim(),password=document.getElementById("loginPassword").value,button=document.getElementById("loginButton");
+    submitting=true;button.disabled=true;button.textContent="Checking Account...";message("");
+    try{
+      const result=await signInWithEmailAndPassword(auth,email,password);
+      const admin=await isAdmin(result.user);
+      if(!admin)await saveCustomer(result.user);
+      message(admin?"Administrator access confirmed.":"Login successful.");
+      setTimeout(()=>location.replace(admin?"admin.html":"dashboard.html"),500);
+    }catch(error){submitting=false;message(friendly(error),true);button.disabled=false;button.textContent="Log In"}
+  });
 
-if (loginForm) {
-    loginForm.addEventListener(
-        "submit",
-        async (event) => {
-            event.preventDefault();
-
-            if (!loginForm.checkValidity()) {
-                loginForm.reportValidity();
-                return;
-            }
-
-            const email =
-                document
-                    .getElementById("loginEmail")
-                    .value
-                    .trim();
-
-            const password =
-                document
-                    .getElementById("loginPassword")
-                    .value;
-
-            const loginButton =
-                document.getElementById("loginButton");
-
-            displayMessage("");
-
-            setButtonState(
-                loginButton,
-                true,
-                "Log In",
-                "Logging In..."
-            );
-
-            try {
-                await signInWithEmailAndPassword(
-                    auth,
-                    email,
-                    password
-                );
-
-                displayMessage(
-                    "Login successful. Opening your dashboard..."
-                );
-
-                window.setTimeout(() => {
-                    window.location.href =
-                        "dashboard.html";
-                }, 700);
-            } catch (error) {
-                displayMessage(
-                    friendlyFirebaseError(error),
-                    true
-                );
-
-                setButtonState(
-                    loginButton,
-                    false,
-                    "Log In",
-                    "Logging In..."
-                );
-            }
-        }
-    );
+  onAuthStateChanged(auth,async user=>{if(user&&!submitting)await route(user)});
 }
