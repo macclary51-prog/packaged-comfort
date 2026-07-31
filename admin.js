@@ -1,7 +1,7 @@
 import {
     auth,
     db
-} from "./firebase-config.js";
+} from "./firebase-config.js?v=31";
 
 import {
     onAuthStateChanged,
@@ -167,6 +167,21 @@ function showToast(message) {
 
 
 async function getAdministratorRecord(user) {
+    if (
+        user.uid === "lE77uZp22tbjptd1k9Nt89eOdW12"
+        ||
+        String(user.email || "")
+            .trim()
+            .toLowerCase() === "pcjunkremoval2026@gmail.com"
+    ) {
+        return {
+            role: "admin",
+            active: true,
+            name: "Franklin",
+            email: "pcjunkremoval2026@gmail.com"
+        };
+    }
+
     const roleSnapshot =
         await getDoc(
             doc(
