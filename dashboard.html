@@ -13,53 +13,187 @@
     <title>Customer Dashboard | Packaged Comfort</title>
 
     <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="style.css">
 
     <style>
-        .dashboard-page {
-            min-height: calc(100vh - 80px);
-            padding: 55px 0 75px;
-            background: #f4f6f9;
+        :root {
+            --navy: #17233b;
+            --navy-light: #2c4774;
+            --orange: #ee6c2f;
+            --background: #f4f6f9;
+            --white: #ffffff;
+            --border: #dfe4eb;
+            --muted: #687386;
+            --green: #176b46;
+            --red: #b42318;
         }
 
-        .dashboard-loading {
-            min-height: 55vh;
-            display: grid;
-            place-items: center;
-            padding: 25px;
-            color: var(--muted, #687386);
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: var(--background);
+            color: var(--navy);
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        .container {
+            width: min(1180px, calc(100% - 32px));
+            margin: 0 auto;
+        }
+
+        .site-header {
+            position: sticky;
+            z-index: 50;
+            top: 0;
+            border-bottom: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 8px 28px rgba(23, 35, 59, 0.07);
+            backdrop-filter: blur(14px);
+        }
+
+        .nav-wrap {
+            display: flex;
+            min-height: 76px;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            color: var(--navy);
+            text-decoration: none;
+        }
+
+        .brand img {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            object-fit: contain;
+        }
+
+        .brand-text strong,
+        .brand-text span {
+            display: block;
+        }
+
+        .brand-text strong {
+            font-size: 1.05rem;
+        }
+
+        .brand-text span {
+            margin-top: 2px;
+            color: var(--orange);
+            font-size: 0.85rem;
             font-weight: 850;
-            text-align: center;
         }
 
-        .dashboard-loading.error {
-            color: #b42318;
+        .main-nav {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .main-nav a {
+            border-radius: 9px;
+            padding: 10px 12px;
+            color: var(--navy);
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .main-nav a:hover {
+            background: #fff1e9;
+            color: var(--orange);
+        }
+
+        .menu-button {
+            display: none;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            padding: 8px 11px;
+            background: white;
+            color: var(--navy);
+            font-size: 1.25rem;
+            cursor: pointer;
+        }
+
+        .dashboard-page {
+            min-height: calc(100vh - 76px);
+            padding: 48px 0 75px;
+        }
+
+        .account-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 18px;
+            border: 1px solid #cfe3d8;
+            border-radius: 13px;
+            padding: 13px 16px;
+            background: #eef8f2;
+            color: var(--green);
+            font-size: 0.9rem;
+            font-weight: 800;
+        }
+
+        .account-status.checking {
+            border-color: #f1d7c7;
+            background: #fff6f0;
+            color: #99501f;
+        }
+
+        .account-status.error {
+            border-color: #f2c5bf;
+            background: #fff0ee;
+            color: var(--red);
         }
 
         .customer-banner {
+            overflow: hidden;
+            position: relative;
             border-radius: 24px;
-            padding: 34px;
+            padding: 36px;
             background:
                 linear-gradient(
                     135deg,
-                    #17233b,
-                    #2c4774
+                    var(--navy),
+                    var(--navy-light)
                 );
             color: white;
-            box-shadow:
-                0 22px 58px rgba(23, 35, 59, 0.2);
+            box-shadow: 0 22px 58px rgba(23, 35, 59, 0.2);
         }
 
-        .customer-banner h1 {
-            margin: 7px 0 10px;
-            color: white;
+        .customer-banner::after {
+            position: absolute;
+            right: -90px;
+            bottom: -120px;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            content: "";
         }
 
-        .customer-banner p {
-            max-width: 760px;
-            margin: 0;
-            color: rgba(255, 255, 255, 0.8);
-            line-height: 1.65;
+        .customer-banner-content {
+            position: relative;
+            z-index: 2;
         }
 
         .customer-date {
@@ -67,86 +201,216 @@
             font-weight: 850;
         }
 
+        .customer-banner h1 {
+            margin: 8px 0 10px;
+            color: white;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+        }
+
+        .customer-banner p {
+            max-width: 760px;
+            margin: 0;
+            color: rgba(255, 255, 255, 0.82);
+            line-height: 1.65;
+        }
+
         .customer-actions {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 25px;
+            gap: 11px;
+            margin-top: 26px;
         }
 
-        .customer-view-services {
-            border: 2px solid white !important;
-            background: white !important;
-            color: #17233b !important;
-        }
-
-        .customer-view-services:hover {
-            border-color: #ee6c2f !important;
-            background: #ee6c2f !important;
-            color: white !important;
-        }
-
-        .customer-logout {
-            border: 2px solid rgba(255, 255, 255, 0.55) !important;
-            background: transparent !important;
-            color: white !important;
+        .button {
+            display: inline-flex;
+            min-height: 44px;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-weight: 850;
+            text-decoration: none;
             cursor: pointer;
         }
 
-        .customer-logout:hover {
-            border-color: white !important;
-            background: white !important;
-            color: #17233b !important;
+        .button-primary {
+            border-color: var(--orange);
+            background: var(--orange);
+            color: white;
+        }
+
+        .button-primary:hover {
+            border-color: white;
+            background: white;
+            color: var(--navy);
+        }
+
+        .button-light {
+            border-color: white;
+            background: white;
+            color: var(--navy);
+        }
+
+        .button-light:hover {
+            border-color: var(--orange);
+            background: var(--orange);
+            color: white;
+        }
+
+        .button-outline {
+            border-color: rgba(255, 255, 255, 0.65);
+            background: transparent;
+            color: white;
+        }
+
+        .button-outline:hover {
+            border-color: white;
+            background: white;
+            color: var(--navy);
         }
 
         .customer-grid {
             display: grid;
-            grid-template-columns:
-                repeat(3, minmax(0, 1fr));
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 18px;
             margin-top: 23px;
         }
 
         .customer-card {
-            border: 1px solid #dfe4eb;
+            border: 1px solid var(--border);
             border-radius: 18px;
             padding: 23px;
             background: white;
-            box-shadow:
-                0 14px 38px rgba(23, 35, 59, 0.07);
+            box-shadow: 0 14px 38px rgba(23, 35, 59, 0.07);
+        }
+
+        .card-icon {
+            display: grid;
+            width: 46px;
+            height: 46px;
+            place-items: center;
+            border-radius: 12px;
+            background: #fff1e9;
+            font-size: 1.3rem;
         }
 
         .customer-card h2 {
-            margin-bottom: 8px;
+            margin: 15px 0 8px;
             font-size: 1.15rem;
         }
 
         .customer-card p {
-            color: var(--muted, #687386);
+            margin: 0;
+            color: var(--muted);
             line-height: 1.55;
+        }
+
+        .customer-card .card-button {
+            display: inline-flex;
+            min-height: 42px;
+            align-items: center;
+            justify-content: center;
+            margin-top: 19px;
+            border: 1px solid var(--orange);
+            border-radius: 9px;
+            padding: 9px 13px;
+            background: var(--orange);
+            color: white;
+            font-weight: 850;
+            text-decoration: none;
+        }
+
+        .customer-card .card-button:hover {
+            border-color: var(--navy);
+            background: var(--navy);
         }
 
         .customer-account {
             display: grid;
-            gap: 14px;
-            margin-top: 16px;
+            gap: 15px;
+            margin-top: 17px;
         }
 
-        .customer-account span {
+        .customer-account-item {
+            border-top: 1px solid var(--border);
+            padding-top: 13px;
+        }
+
+        .customer-account-item span {
             display: block;
-            margin-bottom: 3px;
-            color: var(--muted, #687386);
-            font-size: 0.82rem;
+            margin-bottom: 4px;
+            color: var(--muted);
+            font-size: 0.8rem;
         }
 
-        .customer-account strong {
+        .customer-account-item strong {
             display: block;
             overflow-wrap: anywhere;
         }
 
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 24px 0;
+            background: white;
+            color: var(--muted);
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
         @media (max-width: 850px) {
+            .menu-button {
+                display: block;
+            }
+
+            .main-nav {
+                display: none;
+                position: absolute;
+                top: 76px;
+                right: 16px;
+                left: 16px;
+                flex-direction: column;
+                align-items: stretch;
+                border: 1px solid var(--border);
+                border-radius: 14px;
+                padding: 10px;
+                background: white;
+                box-shadow: 0 18px 45px rgba(23, 35, 59, 0.15);
+            }
+
+            .main-nav.open {
+                display: flex;
+            }
+
             .customer-grid {
                 grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .dashboard-page {
+                padding-top: 28px;
+            }
+
+            .customer-banner {
+                padding: 27px 22px;
+            }
+
+            .customer-actions {
+                display: grid;
+            }
+
+            .customer-actions .button {
+                width: 100%;
+            }
+
+            .account-status {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .brand-text {
+                display: none;
             }
         }
     </style>
@@ -158,26 +422,25 @@
 
         <div class="container nav-wrap">
 
-            <a
-                href="index.html"
-                class="brand"
-            >
+            <a href="index.html" class="brand">
+
                 <img
                     src="logo.png"
                     alt="Packaged Comfort logo"
                 >
 
                 <span class="brand-text">
-                    <strong>Packaged</strong>
-                    <span>Comfort</span>
+                    <strong>Packaged Comfort</strong>
+                    <span>Move Your Package with Comfort</span>
                 </span>
+
             </a>
 
 
             <button
+                type="button"
                 class="menu-button"
                 id="menuButton"
-                type="button"
                 aria-label="Open navigation menu"
                 aria-expanded="false"
             >
@@ -185,14 +448,24 @@
             </button>
 
 
-            <nav
-                class="main-nav"
-                id="mainNav"
-            >
-                <a href="index.html">Home</a>
-                <a href="services.html">Services</a>
-                <a href="quote.html">Request a Quote</a>
-                <a href="contact.html">Contact</a>
+            <nav class="main-nav" id="mainNav">
+
+                <a href="index.html">
+                    Home
+                </a>
+
+                <a href="services.html">
+                    Services
+                </a>
+
+                <a href="quote.html">
+                    Request a Quote
+                </a>
+
+                <a href="contact.html">
+                    Contact
+                </a>
+
             </nav>
 
         </div>
@@ -205,19 +478,19 @@
         <div class="container">
 
             <div
-                class="dashboard-loading"
-                id="dashboardLoading"
+                class="account-status checking"
+                id="accountStatus"
+                aria-live="polite"
             >
-                Loading customer account...
+                <span id="accountStatusText">
+                    Checking your signed-in account...
+                </span>
             </div>
 
 
-            <div
-                id="dashboardContent"
-                hidden
-            >
+            <section class="customer-banner">
 
-                <section class="customer-banner">
+                <div class="customer-banner-content">
 
                     <span
                         class="customer-date"
@@ -228,7 +501,7 @@
 
                     <h1>
                         <span id="dashboardGreeting">
-                            Welcome back
+                            Welcome
                         </span>,
                         <span id="dashboardFirstName">
                             Customer
@@ -253,21 +526,21 @@
 
                         <a
                             href="services.html"
-                            class="button customer-view-services"
+                            class="button button-light"
                         >
                             View Services
                         </a>
 
                         <a
                             href="settings.html"
-                            class="button customer-view-services"
+                            class="button button-light"
                         >
                             Account Settings
                         </a>
 
                         <button
                             type="button"
-                            class="button customer-logout"
+                            class="button button-outline"
                             id="customerLogout"
                         >
                             Log Out
@@ -275,93 +548,210 @@
 
                     </div>
 
-                </section>
+                </div>
+
+            </section>
 
 
-                <section class="customer-grid">
+            <section class="customer-grid">
 
-                    <article class="customer-card">
+                <article class="customer-card">
 
-                        <h2>
-                            Customer Account
-                        </h2>
+                    <div class="card-icon">
+                        👤
+                    </div>
 
-                        <p>
-                            Your signed-in account information.
-                        </p>
+                    <h2>
+                        Customer Account
+                    </h2>
 
-                        <div class="customer-account">
+                    <p>
+                        Your signed-in Packaged Comfort account information.
+                    </p>
 
-                            <div>
-                                <span>Name</span>
-                                <strong id="dashboardFullName">
-                                    Customer
-                                </strong>
-                            </div>
 
-                            <div>
-                                <span>Email</span>
-                                <strong id="dashboardEmail">
-                                    Account email
-                                </strong>
-                            </div>
+                    <div class="customer-account">
+
+                        <div class="customer-account-item">
+
+                            <span>
+                                Name
+                            </span>
+
+                            <strong id="dashboardFullName">
+                                Customer
+                            </strong>
 
                         </div>
 
-                    </article>
+
+                        <div class="customer-account-item">
+
+                            <span>
+                                Email
+                            </span>
+
+                            <strong id="dashboardEmail">
+                                Checking account email...
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </article>
 
 
-                    <article class="customer-card">
+                <article class="customer-card">
 
-                        <h2>
-                            New Service Request
-                        </h2>
+                    <div class="card-icon">
+                        📦
+                    </div>
 
-                        <p>
-                            Submit pickup, delivery, hauling, or moving
-                            details for review.
-                        </p>
+                    <h2>
+                        New Service Request
+                    </h2>
 
-                        <a
-                            href="quote.html"
-                            class="button button-primary"
-                        >
-                            Start Request
-                        </a>
+                    <p>
+                        Submit pickup, delivery, hauling, courier, or moving
+                        details for Packaged Comfort to review.
+                    </p>
 
-                    </article>
+                    <a
+                        href="quote.html"
+                        class="card-button"
+                    >
+                        Start Request
+                    </a>
+
+                </article>
 
 
-                    <article class="customer-card">
+                <article class="customer-card">
 
-                        <h2>
-                            Contact Packaged Comfort
-                        </h2>
+                    <div class="card-icon">
+                        ☎
+                    </div>
 
-                        <p>
-                            Call or text the company directly when you
-                            need quick assistance.
-                        </p>
+                    <h2>
+                        Contact Packaged Comfort
+                    </h2>
 
-                        <a
-                            href="tel:7257240012"
-                            class="button button-secondary"
-                        >
-                            Call 725-724-0012
-                        </a>
+                    <p>
+                        Call the company directly whenever you need quick
+                        assistance with a request.
+                    </p>
 
-                    </article>
+                    <a
+                        href="tel:7257240012"
+                        class="card-button"
+                    >
+                        Call 725-724-0012
+                    </a>
 
-                </section>
+                </article>
 
-            </div>
+            </section>
 
         </div>
 
     </main>
 
 
-    <script src="script.js?v=32"></script>
+    <footer class="footer">
+
+        <div class="container">
+            © <span id="currentYear"></span>
+            Packaged Comfort. All rights reserved.
+        </div>
+
+    </footer>
+
+
+    <script>
+        const menuButton =
+            document.getElementById("menuButton");
+
+        const mainNav =
+            document.getElementById("mainNav");
+
+
+        menuButton.addEventListener(
+            "click",
+            () => {
+                const isOpen =
+                    mainNav.classList.toggle("open");
+
+                menuButton.setAttribute(
+                    "aria-expanded",
+                    String(isOpen)
+                );
+            }
+        );
+
+
+        mainNav
+            .querySelectorAll("a")
+            .forEach((link) => {
+                link.addEventListener(
+                    "click",
+                    () => {
+                        mainNav.classList.remove("open");
+
+                        menuButton.setAttribute(
+                            "aria-expanded",
+                            "false"
+                        );
+                    }
+                );
+            });
+
+
+        document.getElementById(
+            "currentYear"
+        ).textContent =
+            new Date().getFullYear();
+
+
+        function getGreeting() {
+            const hour =
+                new Date().getHours();
+
+            if (hour < 12) {
+                return "Good morning";
+            }
+
+            if (hour < 18) {
+                return "Good afternoon";
+            }
+
+            return "Good evening";
+        }
+
+
+        function getFormattedDate() {
+            return new Intl.DateTimeFormat(
+                "en-US",
+                {
+                    weekday: "long",
+                    month: "long",
+                    day: "numeric"
+                }
+            ).format(new Date());
+        }
+
+
+        document.getElementById(
+            "dashboardGreeting"
+        ).textContent =
+            getGreeting();
+
+
+        document.getElementById(
+            "dashboardDate"
+        ).textContent =
+            getFormattedDate();
+    </script>
 
 
     <script type="module">
@@ -371,6 +761,7 @@
             getApp,
             getApps
         } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
 
         import {
             getAuth,
@@ -414,24 +805,14 @@
             getAuth(firebaseApp);
 
 
-        const dashboardLoading =
+        const accountStatus =
             document.getElementById(
-                "dashboardLoading"
+                "accountStatus"
             );
 
-        const dashboardContent =
+        const accountStatusText =
             document.getElementById(
-                "dashboardContent"
-            );
-
-        const dashboardDate =
-            document.getElementById(
-                "dashboardDate"
-            );
-
-        const dashboardGreeting =
-            document.getElementById(
-                "dashboardGreeting"
+                "accountStatusText"
             );
 
         const dashboardFirstName =
@@ -455,36 +836,6 @@
             );
 
 
-        function getGreeting() {
-            const hour =
-                new Date().getHours();
-
-            if (hour < 12) {
-                return "Good morning";
-            }
-
-            if (hour < 18) {
-                return "Good afternoon";
-            }
-
-            return "Good evening";
-        }
-
-
-        function formatDate() {
-            return new Intl.DateTimeFormat(
-                "en-US",
-                {
-                    weekday: "long",
-                    month: "long",
-                    day: "numeric"
-                }
-            ).format(
-                new Date()
-            );
-        }
-
-
         function getCustomerName(user) {
             const displayName =
                 String(
@@ -495,6 +846,7 @@
                 return displayName;
             }
 
+
             const emailName =
                 String(
                     user.email || ""
@@ -502,11 +854,16 @@
                     .split("@")[0]
                     .trim();
 
-            return emailName || "Customer";
+            if (emailName) {
+                return emailName;
+            }
+
+
+            return "Customer";
         }
 
 
-        function showCustomerAccount(user) {
+        function showSignedInCustomer(user) {
             const fullName =
                 getCustomerName(user);
 
@@ -514,12 +871,6 @@
                 fullName
                     .split(/\s+/)[0];
 
-
-            dashboardDate.textContent =
-                formatDate();
-
-            dashboardGreeting.textContent =
-                getGreeting();
 
             dashboardFirstName.textContent =
                 firstName;
@@ -529,24 +880,23 @@
 
             dashboardEmail.textContent =
                 user.email ||
-                "Account email unavailable";
+                "Email unavailable";
 
 
-            dashboardLoading.hidden =
-                true;
+            accountStatus.className =
+                "account-status";
 
-            dashboardContent.hidden =
-                false;
+            accountStatusText.textContent =
+                "Customer account signed in successfully.";
         }
 
 
-        function showError(message) {
-            dashboardLoading.textContent =
-                message;
+        function showAuthenticationError(message) {
+            accountStatus.className =
+                "account-status error";
 
-            dashboardLoading.classList.add(
-                "error"
-            );
+            accountStatusText.textContent =
+                message;
         }
 
 
@@ -567,7 +917,10 @@
                     );
 
                 } catch (error) {
-                    console.error(error);
+                    console.error(
+                        "Logout failed:",
+                        error
+                    );
 
                     customerLogout.disabled =
                         false;
@@ -575,7 +928,7 @@
                     customerLogout.textContent =
                         "Log Out";
 
-                    window.alert(
+                    showAuthenticationError(
                         "The account could not be logged out."
                     );
                 }
@@ -583,26 +936,30 @@
         );
 
 
-        window.setTimeout(
-            () => {
-                if (
-                    dashboardContent.hidden
-                    &&
-                    dashboardLoading.textContent
-                        .includes("Loading")
-                ) {
-                    showError(
-                        "The customer account took too long to load. Return to the login page and sign in again."
-                    );
-                }
-            },
-            10000
-        );
+        const authenticationTimeout =
+            window.setTimeout(
+                () => {
+                    if (
+                        accountStatus.classList
+                            .contains("checking")
+                    ) {
+                        showAuthenticationError(
+                            "The sign-in check is taking longer than expected. Return to the login page and sign in again."
+                        );
+                    }
+                },
+                10000
+            );
 
 
         onAuthStateChanged(
             auth,
             (user) => {
+                window.clearTimeout(
+                    authenticationTimeout
+                );
+
+
                 if (!user) {
                     window.location.replace(
                         "login.html"
@@ -624,16 +981,23 @@
                 }
 
 
-                showCustomerAccount(user);
+                showSignedInCustomer(user);
             },
             (error) => {
+                window.clearTimeout(
+                    authenticationTimeout
+                );
+
                 console.error(
-                    "Customer authentication failed:",
+                    "Authentication failed:",
                     error
                 );
 
-                showError(
-                    `Customer account error: ${error.code || error.message}`
+                showAuthenticationError(
+                    `Customer account error: ${
+                        error.code ||
+                        error.message
+                    }`
                 );
             }
         );
