@@ -2,52 +2,56 @@
 
 
 /* ========================================
-   Packaged Comfort
-   Shared Website JavaScript
-======================================== */
-
-
-/* ========================================
    MOBILE NAVIGATION
 ======================================== */
 
-const menuButton = document.getElementById("menuButton");
-const mainNav = document.getElementById("mainNav");
+const menuButton =
+    document.getElementById("menuButton");
+
+const mainNav =
+    document.getElementById("mainNav");
 
 
 if (menuButton && mainNav) {
-    menuButton.addEventListener("click", () => {
-        const menuIsOpen =
-            mainNav.classList.toggle("open");
+    menuButton.addEventListener(
+        "click",
+        () => {
+            const isOpen =
+                mainNav.classList.toggle("open");
 
-        menuButton.setAttribute(
-            "aria-expanded",
-            String(menuIsOpen)
-        );
+            menuButton.setAttribute(
+                "aria-expanded",
+                String(isOpen)
+            );
 
-        menuButton.textContent =
-            menuIsOpen ? "×" : "☰";
-    });
+            menuButton.textContent =
+                isOpen ? "×" : "☰";
+        }
+    );
 
 
     mainNav
         .querySelectorAll("a")
         .forEach((link) => {
-            link.addEventListener("click", () => {
-                closeMobileMenu();
-            });
+            link.addEventListener(
+                "click",
+                closeMobileMenu
+            );
         });
 
 
-    document.addEventListener("click", (event) => {
-        const clickedInsideMenu =
-            mainNav.contains(event.target) ||
-            menuButton.contains(event.target);
+    document.addEventListener(
+        "click",
+        (event) => {
+            const clickedInside =
+                mainNav.contains(event.target) ||
+                menuButton.contains(event.target);
 
-        if (!clickedInsideMenu) {
-            closeMobileMenu();
+            if (!clickedInside) {
+                closeMobileMenu();
+            }
         }
-    });
+    );
 }
 
 
@@ -63,7 +67,8 @@ function closeMobileMenu() {
         "false"
     );
 
-    menuButton.textContent = "☰";
+    menuButton.textContent =
+        "☰";
 }
 
 
@@ -80,29 +85,27 @@ document
 
 
 /* ========================================
-   TOAST MESSAGES
+   PREVENT PAST SERVICE DATES
 ======================================== */
 
-const toast = document.getElementById("toast");
-const toastMessage =
-    document.getElementById("toastMessage");
-
-let toastTimer;
+const serviceDateInput =
+    document.getElementById("serviceDate");
 
 
-function showToast(message) {
-    if (!toast || !toastMessage) {
-        return;
-    }
+if (serviceDateInput) {
+    const now =
+        new Date();
 
-    window.clearTimeout(toastTimer);
+    const localToday =
+        new Date(
+            now.getTime() -
+            now.getTimezoneOffset() * 60000
+        )
+            .toISOString()
+            .split("T")[0];
 
-    toastMessage.textContent = message;
-    toast.classList.add("show");
-
-    toastTimer = window.setTimeout(() => {
-        toast.classList.remove("show");
-    }, 4200);
+    serviceDateInput.min =
+        localToday;
 }
 
 
@@ -123,15 +126,14 @@ if (photoInput && photoPreview) {
     photoInput.addEventListener(
         "change",
         (event) => {
-            const incomingFiles =
-                Array.from(event.target.files);
-
             const imageFiles =
-                incomingFiles.filter((file) => {
-                    return file.type.startsWith(
-                        "image/"
-                    );
-                });
+                Array
+                    .from(event.target.files)
+                    .filter((file) => {
+                        return file.type.startsWith(
+                            "image/"
+                        );
+                    });
 
             const spacesRemaining =
                 12 - selectedPhotos.length;
@@ -159,151 +161,114 @@ function renderPhotoPreview() {
 
     photoPreview.innerHTML = "";
 
-    selectedPhotos.forEach((file, index) => {
-        const previewItem =
-            document.createElement("div");
+    selectedPhotos.forEach(
+        (file, index) => {
+            const previewItem =
+                document.createElement("div");
 
-        previewItem.className =
-            "preview-item";
+            previewItem.className =
+                "preview-item";
 
-        const image =
-            document.createElement("img");
+            const image =
+                document.createElement("img");
 
-        image.alt =
-            `Selected item photo ${index + 1}`;
+            image.alt =
+                `Selected item photo ${index + 1}`;
 
-        const objectUrl =
-            URL.createObjectURL(file);
+            const objectUrl =
+                URL.createObjectURL(file);
 
-        image.src = objectUrl;
+            image.src =
+                objectUrl;
 
-        image.addEventListener(
-            "load",
-            () => {
-                URL.revokeObjectURL(
-                    objectUrl
-                );
-            },
-            { once: true }
-        );
+            image.addEventListener(
+                "load",
+                () => {
+                    URL.revokeObjectURL(
+                        objectUrl
+                    );
+                },
+                {
+                    once: true
+                }
+            );
 
-        const removeButton =
-            document.createElement("button");
+            const removeButton =
+                document.createElement("button");
 
-        removeButton.type = "button";
-        removeButton.textContent = "×";
+            removeButton.type =
+                "button";
 
-        removeButton.setAttribute(
-            "aria-label",
-            `Remove photo ${index + 1}`
-        );
+            removeButton.textContent =
+                "×";
 
-        removeButton.addEventListener(
-            "click",
-            () => {
-                selectedPhotos.splice(
-                    index,
-                    1
-                );
+            removeButton.setAttribute(
+                "aria-label",
+                `Remove photo ${index + 1}`
+            );
 
-                renderPhotoPreview();
-            }
-        );
+            removeButton.addEventListener(
+                "click",
+                () => {
+                    selectedPhotos.splice(
+                        index,
+                        1
+                    );
 
-        previewItem.append(
-            image,
-            removeButton
-        );
+                    renderPhotoPreview();
+                }
+            );
 
-        photoPreview.appendChild(
-            previewItem
-        );
-    });
+            previewItem.append(
+                image,
+                removeButton
+            );
+
+            photoPreview.appendChild(
+                previewItem
+            );
+        }
+    );
 }
 
 
 /* ========================================
-   PREVENT PAST SERVICE DATES
+   ACCOUNT-AWARE NAVIGATION
 ======================================== */
-
-const serviceDateInput =
-    document.getElementById("serviceDate");
-
-
-if (serviceDateInput) {
-    const now = new Date();
-
-    const localToday = new Date(
-        now.getTime() -
-        now.getTimezoneOffset() * 60000
-    )
-        .toISOString()
-        .split("T")[0];
-
-    serviceDateInput.min = localToday;
-}
-
-
-/* ========================================
-   ACCOUNT NAVIGATION
-======================================== */
-
-const accountServiceConfig = {
-    apiKey:
-        "AIzaSyDMWaronfPi0cujdvzGIsieadLss_d4iMQ",
-
-    authDomain:
-        "packaged-comfort-website.firebaseapp.com",
-
-    projectId:
-        "packaged-comfort-website",
-
-    storageBucket:
-        "packaged-comfort-website.firebasestorage.app",
-
-    messagingSenderId:
-        "150317110708",
-
-    appId:
-        "1:150317110708:web:dab83f056b04b1e0210ee1"
-};
-
 
 loadAccountNavigation();
 
 
 async function loadAccountNavigation() {
+    const navigation =
+        document.getElementById("mainNav") ||
+        document.querySelector(".main-nav");
+
+    if (!navigation) {
+        return;
+    }
+
     try {
-        const appModule = await import(
-            "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js"
+        const {
+            auth,
+            db
+        } = await import(
+            "./firebase-config.js?v=20"
         );
 
-        const authModule = await import(
+        const {
+            onAuthStateChanged,
+            signOut
+        } = await import(
             "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js"
         );
 
-
         const {
-            initializeApp,
-            getApp,
-            getApps
-        } = appModule;
-
-
-        const {
-            getAuth,
-            onAuthStateChanged,
-            signOut
-        } = authModule;
-
-
-        const app =
-            getApps().length > 0
-                ? getApp()
-                : initializeApp(accountServiceConfig);
-
-
-        const auth = getAuth(app);
+            doc,
+            getDoc
+        } = await import(
+            "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js"
+        );
 
 
         addAccountNavigationStyles();
@@ -311,16 +276,60 @@ async function loadAccountNavigation() {
 
         onAuthStateChanged(
             auth,
-            (user) => {
-                if (user) {
-                    showLoggedInNavigation(
-                        user,
-                        auth,
-                        signOut
-                    );
-                } else {
-                    showLoggedOutNavigation();
+            async (user) => {
+                removeGeneratedAccountNavigation();
+
+                if (!user) {
+                    showGuestNavigation();
+                    return;
                 }
+
+                let isAdmin = false;
+                let roleName = "";
+
+                try {
+                    const roleSnapshot =
+                        await getDoc(
+                            doc(
+                                db,
+                                "roles",
+                                user.uid
+                            )
+                        );
+
+                    if (roleSnapshot.exists()) {
+                        const roleData =
+                            roleSnapshot.data();
+
+                        isAdmin =
+                            String(roleData.role || "")
+                                .trim()
+                                .toLowerCase() === "admin"
+                            &&
+                            roleData.active === true;
+
+                        roleName =
+                            String(roleData.name || "")
+                                .trim();
+                    }
+
+                } catch (error) {
+                    console.error(
+                        "Navigation role check failed:",
+                        error
+                    );
+                }
+
+                hideGuestNavigation();
+
+                createAccountNavigation({
+                    user,
+                    isAdmin,
+                    roleName,
+                    auth,
+                    signOut,
+                    navigation
+                });
             }
         );
 
@@ -333,81 +342,36 @@ async function loadAccountNavigation() {
 }
 
 
-/* ========================================
-   GET CUSTOMER NAME
-======================================== */
-
-function getCustomerName(user) {
-    if (
-        user.displayName &&
-        user.displayName.trim()
-    ) {
-        return user.displayName
-            .trim()
-            .split(/\s+/)[0];
-    }
-
-
-    if (user.email) {
-        return user.email.split("@")[0];
-    }
-
-
-    return "Customer";
-}
-
-
-/* ========================================
-   FIND WEBSITE NAVIGATION
-======================================== */
-
-function getWebsiteNavigation() {
-    return (
-        document.getElementById("mainNav") ||
-        document.querySelector(".main-nav")
-    );
-}
-
-
-/* ========================================
-   FIND LOGIN AND SIGNUP BUTTONS
-======================================== */
-
 function getGuestNavigationElements() {
     const navigation =
-        getWebsiteNavigation();
-
+        document.getElementById("mainNav") ||
+        document.querySelector(".main-nav");
 
     if (!navigation) {
         return [];
     }
 
-
-    const markedGuestSections =
+    const marked =
         Array.from(
             navigation.querySelectorAll(
                 "[data-auth-guest]"
             )
         );
 
-
-    if (markedGuestSections.length > 0) {
-        return markedGuestSections;
+    if (marked.length > 0) {
+        return marked;
     }
 
-
-    const navActionSections =
+    const actions =
         Array.from(
             navigation.querySelectorAll(
                 ".nav-actions"
             )
         );
 
-
-    if (navActionSections.length > 0) {
-        return navActionSections;
+    if (actions.length > 0) {
+        return actions;
     }
-
 
     return Array.from(
         navigation.querySelectorAll(
@@ -418,277 +382,126 @@ function getGuestNavigationElements() {
 }
 
 
-/* ========================================
-   LOGGED-OUT NAVIGATION
-======================================== */
-
-function showLoggedOutNavigation() {
+function showGuestNavigation() {
     getGuestNavigationElements()
         .forEach((element) => {
             element.classList.remove(
-                "account-auth-hidden"
-            );
-        });
-
-
-    document
-        .querySelectorAll(
-            ".account-dashboard-link"
-        )
-        .forEach((link) => {
-            link.remove();
-        });
-
-
-    document
-        .querySelectorAll(
-            ".account-menu"
-        )
-        .forEach((menu) => {
-            menu.remove();
-        });
-
-
-    document
-        .querySelectorAll(
-            "[data-auth-user]"
-        )
-        .forEach((element) => {
-            element.classList.add(
-                "account-auth-hidden"
+                "account-hidden"
             );
         });
 }
 
 
-/* ========================================
-   LOGGED-IN NAVIGATION
-======================================== */
-
-function showLoggedInNavigation(
-    user,
-    auth,
-    signOut
-) {
-    const customerName =
-        getCustomerName(user);
-
-
+function hideGuestNavigation() {
     getGuestNavigationElements()
         .forEach((element) => {
             element.classList.add(
-                "account-auth-hidden"
+                "account-hidden"
             );
         });
+}
 
 
-    createDashboardNavigationLink();
-
-
+function removeGeneratedAccountNavigation() {
     document
         .querySelectorAll(
-            "[data-user-name], " +
-            "[data-dashboard-name]"
+            ".generated-account-link, " +
+            ".generated-account-menu"
         )
         .forEach((element) => {
-            element.textContent =
-                customerName;
+            element.remove();
         });
-
-
-    document
-        .querySelectorAll(
-            ".user-greeting, " +
-            ".account-name"
-        )
-        .forEach((link) => {
-            link.href = "settings.html";
-            link.setAttribute(
-                "aria-label",
-                "Open account settings"
-            );
-        });
-
-
-    const existingUserSections =
-        document.querySelectorAll(
-            "[data-auth-user]"
-        );
-
-
-    if (existingUserSections.length > 0) {
-        existingUserSections.forEach(
-            (section) => {
-                section.classList.remove(
-                    "hidden",
-                    "account-auth-hidden"
-                );
-
-
-                connectExistingLogoutButtons(
-                    section,
-                    auth,
-                    signOut
-                );
-            }
-        );
-
-        return;
-    }
-
-
-    createAccountMenu(
-        customerName,
-        auth,
-        signOut
-    );
 }
 
 
-/* ========================================
-   CREATE DASHBOARD LINK
-======================================== */
+function getDisplayName(
+    user,
+    roleName
+) {
+    const source =
+        roleName ||
+        user.displayName ||
+        user.email?.split("@")[0] ||
+        "Account";
 
-function createDashboardNavigationLink() {
-    const navigation =
-        getWebsiteNavigation();
+    return source
+        .trim()
+        .split(/\s+/)[0];
+}
 
 
-    if (!navigation) {
-        return;
-    }
+function createAccountNavigation({
+    user,
+    isAdmin,
+    roleName,
+    auth,
+    signOut,
+    navigation
+}) {
+    const destination =
+        isAdmin
+            ? "admin.html"
+            : "dashboard.html";
 
+    const mainLabel =
+        isAdmin
+            ? "Admin Portal"
+            : "Dashboard";
 
-    const existingDashboardLink =
-        navigation.querySelector(
-            ".account-dashboard-link"
+    const displayName =
+        getDisplayName(
+            user,
+            roleName
         );
 
 
-    if (existingDashboardLink) {
-        return;
-    }
-
-
-    const dashboardLink =
+    const mainLink =
         document.createElement("a");
 
+    mainLink.href =
+        destination;
 
-    dashboardLink.href =
-        "dashboard.html";
+    mainLink.textContent =
+        mainLabel;
 
+    mainLink.className =
+        "generated-account-link";
 
-    dashboardLink.textContent =
-        "Dashboard";
-
-
-    dashboardLink.className =
-        "account-dashboard-link";
-
-
-    const firstActionSection =
-        navigation.querySelector(
-            ".nav-actions, " +
-            "[data-auth-guest], " +
-            "[data-auth-user], " +
-            ".account-menu"
-        );
-
-
-    if (firstActionSection) {
-        navigation.insertBefore(
-            dashboardLink,
-            firstActionSection
-        );
-    } else {
-        navigation.appendChild(
-            dashboardLink
-        );
-    }
-
-
-    dashboardLink.addEventListener(
-        "click",
-        () => {
-            closeMobileMenu();
-        }
+    navigation.appendChild(
+        mainLink
     );
-}
-
-
-/* ========================================
-   CREATE ACCOUNT MENU
-======================================== */
-
-function createAccountMenu(
-    customerName,
-    auth,
-    signOut
-) {
-    const navigation =
-        getWebsiteNavigation();
-
-
-    if (!navigation) {
-        return;
-    }
-
-
-    document
-        .querySelectorAll(
-            ".account-menu"
-        )
-        .forEach((menu) => {
-            menu.remove();
-        });
 
 
     const accountMenu =
         document.createElement("div");
 
     accountMenu.className =
-        "account-menu";
+        "generated-account-menu";
 
 
     const accountLink =
         document.createElement("a");
 
-    accountLink.className =
-        "account-name";
-
     accountLink.href =
-        "settings.html";
+        destination;
 
-    accountLink.setAttribute(
-        "aria-label",
-        "Open account settings"
-    );
+    accountLink.className =
+        "generated-account-name";
 
-
-    accountLink.append(
-        document.createTextNode("Hi, ")
-    );
-
-
-    const nameText =
-        document.createElement("strong");
-
-    nameText.textContent =
-        customerName;
-
-
-    accountLink.appendChild(
-        nameText
-    );
+    accountLink.textContent =
+        isAdmin
+            ? `Admin: ${displayName}`
+            : `Hi, ${displayName}`;
 
 
     const logoutButton =
         document.createElement("button");
 
-    logoutButton.type = "button";
+    logoutButton.type =
+        "button";
 
     logoutButton.className =
-        "account-logout-button";
+        "generated-logout-button";
 
     logoutButton.textContent =
         "Log Out";
@@ -702,21 +515,20 @@ function createAccountMenu(
             logoutButton.textContent =
                 "Logging Out...";
 
-
             try {
                 await signOut(auth);
 
-                window.location.href =
-                    "index.html";
+                window.location.replace(
+                    "index.html"
+                );
 
             } catch (error) {
                 console.error(
-                    "Account logout error:",
+                    "Logout failed:",
                     error
                 );
 
                 logoutButton.disabled = false;
-
                 logoutButton.textContent =
                     "Log Out";
             }
@@ -729,169 +541,99 @@ function createAccountMenu(
         logoutButton
     );
 
-
     navigation.appendChild(
         accountMenu
     );
 }
 
 
-/* ========================================
-   EXISTING LOGOUT BUTTONS
-======================================== */
-
-function connectExistingLogoutButtons(
-    section,
-    auth,
-    signOut
-) {
-    section
-        .querySelectorAll("[data-logout]")
-        .forEach((button) => {
-
-            if (
-                button.dataset
-                    .logoutConnected === "true"
-            ) {
-                return;
-            }
-
-
-            button.dataset.logoutConnected =
-                "true";
-
-
-            button.addEventListener(
-                "click",
-                async () => {
-                    button.disabled = true;
-
-                    button.textContent =
-                        "Logging Out...";
-
-
-                    try {
-                        await signOut(auth);
-
-                        window.location.href =
-                            "index.html";
-
-                    } catch (error) {
-                        console.error(
-                            "Account logout error:",
-                            error
-                        );
-
-                        button.disabled = false;
-
-                        button.textContent =
-                            "Log Out";
-                    }
-                }
-            );
-        });
-}
-
-
-/* ========================================
-   ACCOUNT MENU STYLES
-======================================== */
-
 function addAccountNavigationStyles() {
     if (
         document.getElementById(
-            "accountMenuStyles"
+            "accountNavigationStyles"
         )
     ) {
         return;
     }
 
-
     const style =
         document.createElement("style");
 
-
     style.id =
-        "accountMenuStyles";
-
+        "accountNavigationStyles";
 
     style.textContent = `
-        .account-auth-hidden {
+        .account-hidden {
             display: none !important;
         }
 
-        .account-dashboard-link {
+        .generated-account-link {
             display: inline-flex;
+            min-height: 44px;
             align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            padding: 10px 14px;
+            background: #ee6c2f;
+            color: white !important;
+            font-weight: 850;
+            text-decoration: none;
         }
 
-        .account-menu {
+        .generated-account-link:hover {
+            background: #17233b;
+            color: white !important;
+        }
+
+        .generated-account-menu {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .account-name {
+        .generated-account-name {
             display: inline-flex;
             min-height: 44px;
             align-items: center;
             border-radius: 10px;
-            padding: 8px 13px;
+            padding: 9px 13px;
             background: #fff1e9;
-            color: #17233b;
-            font-weight: 800;
+            color: #17233b !important;
+            font-weight: 850;
             text-decoration: none;
         }
 
-        .account-name strong {
-            margin-left: 4px;
-            color: #ee6c2f;
-        }
-
-        .account-logout-button {
+        .generated-logout-button {
             min-height: 44px;
             border: 1px solid #17233b;
             border-radius: 10px;
-            padding: 10px 16px;
-            background: transparent;
+            padding: 10px 15px;
+            background: white;
             color: #17233b;
             font-family: inherit;
-            font-size: inherit;
-            font-weight: 800;
+            font-weight: 850;
             cursor: pointer;
         }
 
-        .account-logout-button:hover {
+        .generated-logout-button:hover {
             background: #17233b;
             color: white;
         }
 
-        .account-logout-button:disabled {
-            cursor: wait;
-            opacity: 0.7;
-        }
-
         @media (max-width: 980px) {
-            .account-dashboard-link {
+            .generated-account-link,
+            .generated-account-menu,
+            .generated-account-name,
+            .generated-logout-button {
                 width: 100%;
             }
 
-            .account-menu {
-                width: 100%;
+            .generated-account-menu {
                 align-items: stretch;
                 flex-direction: column;
-                margin-top: 8px;
-                padding-top: 12px;
-                border-top: 1px solid #d9dde5;
-            }
-
-            .account-name,
-            .account-logout-button {
-                width: 100%;
             }
         }
     `;
-
 
     document.head.appendChild(
         style
