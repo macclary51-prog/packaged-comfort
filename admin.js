@@ -1,4 +1,5 @@
 import {
+    app,
     auth,
     db
 } from "./firebase-config.js?v=31";
@@ -18,73 +19,48 @@ import {
     updateDoc
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
+import {
+    deleteObject,
+    getStorage,
+    ref
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
 
-const adminLoading =
-    document.getElementById("adminLoading");
 
-const adminApplication =
-    document.getElementById("adminApplication");
+const FRANKLIN_ADMIN_UID =
+    "lE77uZp22tbjptd1k9Nt89eOdW12";
 
-const adminTopName =
-    document.getElementById("adminTopName");
+const storage =
+    getStorage(app);
 
-const adminTopEmail =
-    document.getElementById("adminTopEmail");
+const byId = (id) =>
+    document.getElementById(id);
 
-const adminProfileName =
-    document.getElementById("adminProfileName");
+const pageStatus = byId("pageStatus");
+const application = byId("application");
+const requestSearch = byId("search");
+const requestFilter = byId("filter");
+const requestRows = byId("rows");
+const requestEmpty = byId("empty");
+const customerSearch = byId("customerSearch");
+const customerFilter = byId("customerFilter");
+const customerRows = byId("customerRows");
+const customerEmpty = byId("customerEmpty");
+const customerRemovalNotice = byId("customerRemovalNotice");
+const toastElement = byId("toast");
 
-const adminProfileEmail =
-    document.getElementById("adminProfileEmail");
-
-const adminAvatar =
-    document.getElementById("adminAvatar");
-
-const adminFirstName =
-    document.getElementById("adminFirstName");
-
-const totalRequestCount =
-    document.getElementById("totalRequestCount");
-
-const newRequestCount =
-    document.getElementById("newRequestCount");
-
-const completedRequestCount =
-    document.getElementById("completedRequestCount");
-
-const customerAccountCount =
-    document.getElementById("customerAccountCount");
-
-const requestSearch =
-    document.getElementById("requestSearch");
-
-const requestStatusFilter =
-    document.getElementById("requestStatusFilter");
-
-const requestTableBody =
-    document.getElementById("requestTableBody");
-
-const requestEmptyState =
-    document.getElementById("requestEmptyState");
-
-const customerSearch =
-    document.getElementById("customerSearch");
-
-const customerGrid =
-    document.getElementById("customerGrid");
-
-const customerEmptyState =
-    document.getElementById("customerEmptyState");
-
-const adminLogoutButton =
-    document.getElementById("adminLogoutButton");
-
-const adminToast =
-    document.getElementById("adminToast");
-
-let quoteRequests = [];
-let customerAccounts = [];
+let requests = [];
+let customers = [];
 let toastTimer = null;
+
+const statusLabels = {
+    new: "Submitted",
+    submitted: "Submitted",
+    "under-review": "Under Review",
+    contacted: "Contacted",
+    scheduled: "Scheduled",
+    completed: "Completed",
+    canceled: "Canceled"
+};
 
 
 function escapeHtml(value) {
@@ -97,22 +73,37 @@ function escapeHtml(value) {
 }
 
 
+function normalizeStatus(value) {
+    return value === "new"
+        ? "submitted"
+        : value || "submitted";
+}
+
+
 function timestampMilliseconds(value) {
     if (value?.toMillis) {
         return value.toMillis();
     }
 
-    if (value?.toDate) {
-        return value.toDate().getTime();
+    if (value instanceof Date) {
+        return value.getTime();
     }
 
-    return 0;
+    const parsed =
+        Date.parse(value || "");
+
+    return Number.isNaN(parsed)
+        ? 0
+        : parsed;
 }
 
 
-function formatTimestamp(value) {
-    if (!value?.toDate) {
-        return "Date unavailable";
+function formatTimestamp(value, fallback = "Unavailable") {
+    const milliseconds =
+        timestampMilliseconds(value);
+
+    if (!milliseconds) {
+        return fallback;
     }
 
     return new Intl.DateTimeFormat(
@@ -120,65 +111,548 @@ function formatTimestamp(value) {
         {
             month: "short",
             day: "numeric",
-            year: "numeric",
-            hour: "numeric",
-            minute: "2-digit"
+            year: "numeric"
         }
-    ).format(
-        value.toDate()
-    );
-}
-
-
-function normalizeStatus(value) {
-    const allowedStatuses = [
-        "new",
-        "contacted",
-        "scheduled",
-        "completed",
-        "canceled"
-    ];
-
-    return allowedStatuses.includes(value)
-        ? value
-        : "new";
+    ).format(milliseconds);
 }
 
 
 function showToast(message) {
-    adminToast.textContent =
+    toastElement.textContent =
         message;
 
-    adminToast.classList.add(
-        "show"
-    );
+    toastElement.classList.add("show");
 
-    window.clearTimeout(
-        toastTimer
-    );
+    window.clearTimeout(toastTimer);
 
     toastTimer =
         window.setTimeout(() => {
-            adminToast.classList.remove(
-                "show"
+            toastElement.classList.remove("show");
+        }, 3000);
+}
+
+
+function openView(viewName) {
+    const allowedViews = [
+        "overview",
+        "requests",
+        "customers"
+    ];
+
+    const resolvedView =
+        allowedViews.includes(viewName)
+            ? viewName
+            : "overview";
+
+    document
+        .querySelectorAll("[data-section]")
+        .forEach((section) => {
+            section.classList.toggle(
+                "active",
+                section.dataset.section === resolvedView
             );
-        }, 2800);
+        });
+
+    document
+        .querySelectorAll("[data-view]")
+        .forEach((button) => {
+            button.classList.toggle(
+                "active",
+                button.dataset.view === resolvedView
+            );
+        });
+
+    window.history.replaceState(
+        null,
+        "",
+        `#${resolvedView}`
+    );
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+
+function requestOwnerUid(request) {
+    return String(
+        request.customerUid ||
+        request.createdBy ||
+        ""
+    );
+}
+
+
+function requestsForCustomer(customerUid) {
+    return requests
+        .filter((request) => {
+            return requestOwnerUid(request) === customerUid;
+        })
+        .sort((a, b) => {
+            return (
+                timestampMilliseconds(b.createdAt) -
+                timestampMilliseconds(a.createdAt)
+            );
+        });
+}
+
+
+function customerSummary(customer) {
+    const customerRequests =
+        requestsForCustomer(customer.id);
+
+    const latestRequest =
+        customerRequests[0] || null;
+
+    return {
+        customerRequests,
+        latestRequest,
+        phone:
+            customer.phone ||
+            latestRequest?.phone ||
+            "",
+        requestCount:
+            customerRequests.length,
+        lastRequestAt:
+            latestRequest?.createdAt || null
+    };
+}
+
+
+function updateStatistics() {
+    byId("total").textContent =
+        String(requests.length);
+
+    byId("submitted").textContent =
+        String(
+            requests.filter((request) => {
+                return normalizeStatus(request.status) === "submitted";
+            }).length
+        );
+
+    byId("scheduled").textContent =
+        String(
+            requests.filter((request) => {
+                return normalizeStatus(request.status) === "scheduled";
+            }).length
+        );
+
+    byId("customersCount").textContent =
+        String(
+            customers.filter((customer) => {
+                return customer.archived !== true;
+            }).length
+        );
+}
+
+
+function requestMatchesFilters(request) {
+    const term =
+        requestSearch.value
+            .trim()
+            .toLowerCase();
+
+    const selectedStatus =
+        requestFilter.value;
+
+    const searchableText = [
+        request.fullName,
+        request.customerName,
+        request.phone,
+        request.email,
+        request.service,
+        request.pickup,
+        request.destination
+    ]
+        .join(" ")
+        .toLowerCase();
+
+    return (
+        (!term || searchableText.includes(term)) &&
+        (
+            selectedStatus === "all" ||
+            normalizeStatus(request.status) === selectedStatus
+        )
+    );
+}
+
+
+function requestStatusOptions(currentStatus) {
+    return [
+        ["submitted", "Submitted"],
+        ["under-review", "Under Review"],
+        ["contacted", "Contacted"],
+        ["scheduled", "Scheduled"],
+        ["completed", "Completed"],
+        ["canceled", "Canceled"]
+    ]
+        .map(([value, label]) => {
+            const selected =
+                value === currentStatus
+                    ? "selected"
+                    : "";
+
+            return `
+                <option value="${value}" ${selected}>
+                    ${label}
+                </option>
+            `;
+        })
+        .join("");
+}
+
+
+async function deleteRequestData(request) {
+    for (const path of request.photoPaths || []) {
+        try {
+            await deleteObject(
+                ref(storage, path)
+            );
+        } catch (error) {
+            if (error.code !== "storage/object-not-found") {
+                throw error;
+            }
+        }
+    }
+
+    await deleteDoc(
+        doc(
+            db,
+            "quoteRequests",
+            request.id
+        )
+    );
+}
+
+
+function renderRequests() {
+    const shownRequests =
+        requests.filter(requestMatchesFilters);
+
+    requestEmpty.hidden =
+        shownRequests.length > 0;
+
+    requestRows.innerHTML =
+        shownRequests
+            .map((request) => {
+                const currentStatus =
+                    normalizeStatus(request.status);
+
+                return `
+                    <tr>
+                        <td>
+                            <strong>${escapeHtml(request.fullName || request.customerName || "Customer")}</strong>
+                            <a class="sub" href="tel:${escapeHtml(request.phone || "")}">${escapeHtml(request.phone || "No phone")}</a>
+                            <a class="sub" href="mailto:${escapeHtml(request.email || "")}">${escapeHtml(request.email || "No email")}</a>
+                        </td>
+                        <td>
+                            <strong>${escapeHtml(request.service || "Service Request")}</strong>
+                            <span class="sub">${escapeHtml(request.amount || "No item summary")}</span>
+                            <span class="sub">${Array.isArray(request.photoPaths) ? request.photoPaths.length : 0} photo(s)</span>
+                        </td>
+                        <td>
+                            <strong>${escapeHtml(request.pickup || "Pickup unavailable")}</strong>
+                            <span class="sub">to ${escapeHtml(request.destination || "Destination unavailable")}</span>
+                        </td>
+                        <td>
+                            <span class="status status-${escapeHtml(currentStatus)}">${escapeHtml(statusLabels[currentStatus] || "Submitted")}</span>
+                            <select class="filter-control quick-status" data-id="${escapeHtml(request.id)}" style="margin-top: 7px; min-width: 145px;">
+                                ${requestStatusOptions(currentStatus)}
+                            </select>
+                        </td>
+                        <td>
+                            <div class="row-actions">
+                                <a class="button button-primary" href="request-details.html?id=${encodeURIComponent(request.id)}">View / Quote</a>
+                                <button class="button button-danger delete-request" data-id="${escapeHtml(request.id)}" type="button">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            })
+            .join("");
+
+    document
+        .querySelectorAll(".quick-status")
+        .forEach((select) => {
+            select.addEventListener(
+                "change",
+                async () => {
+                    select.disabled = true;
+
+                    try {
+                        await updateDoc(
+                            doc(
+                                db,
+                                "quoteRequests",
+                                select.dataset.id
+                            ),
+                            {
+                                status: select.value,
+                                updatedAt: serverTimestamp()
+                            }
+                        );
+
+                        showToast("Status updated.");
+                    } catch (error) {
+                        showToast(error.code || error.message);
+                        select.disabled = false;
+                    }
+                }
+            );
+        });
+
+    document
+        .querySelectorAll(".delete-request")
+        .forEach((button) => {
+            button.addEventListener(
+                "click",
+                async () => {
+                    const request =
+                        requests.find((item) => {
+                            return item.id === button.dataset.id;
+                        });
+
+                    if (
+                        !request ||
+                        !window.confirm(
+                            "Delete this request and its uploaded photos permanently?"
+                        )
+                    ) {
+                        return;
+                    }
+
+                    button.disabled = true;
+
+                    try {
+                        await deleteRequestData(request);
+                        showToast("Request deleted.");
+                    } catch (error) {
+                        console.error(error);
+                        showToast(error.code || error.message || "Request deletion failed.");
+                        button.disabled = false;
+                    }
+                }
+            );
+        });
+}
+
+
+function customerMatchesFilters(customer) {
+    const term =
+        customerSearch.value
+            .trim()
+            .toLowerCase();
+
+    const selectedFilter =
+        customerFilter.value;
+
+    const summary =
+        customerSummary(customer);
+
+    const searchableText = [
+        customer.name,
+        customer.email,
+        summary.phone
+    ]
+        .join(" ")
+        .toLowerCase();
+
+    const matchesArchiveFilter =
+        selectedFilter === "all" ||
+        (
+            selectedFilter === "archived"
+                ? customer.archived === true
+                : customer.archived !== true
+        );
+
+    return (
+        matchesArchiveFilter &&
+        (!term || searchableText.includes(term))
+    );
+}
+
+
+function showRemovalReminder(customerUid) {
+    const intro =
+        document.createTextNode(
+            "Customer website data removed. Now delete this UID from Firebase Authentication:"
+        );
+
+    const code =
+        document.createElement("code");
+
+    code.textContent =
+        customerUid;
+
+    customerRemovalNotice.replaceChildren(
+        intro,
+        document.createElement("br"),
+        code
+    );
+
+    customerRemovalNotice.hidden =
+        false;
+
+    customerRemovalNotice.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest"
+    });
+}
+
+
+async function removeCustomer(customerUid, button) {
+    const customer =
+        customers.find((item) => {
+            return item.id === customerUid;
+        });
+
+    if (!customer) {
+        showToast("This customer could not be found.");
+        return;
+    }
+
+    const customerRequests =
+        requestsForCustomer(customerUid);
+
+    const customerName =
+        customer.name ||
+        customer.email ||
+        "this customer";
+
+    const confirmed =
+        window.confirm(
+            `Permanently remove ${customerName}'s Firestore profile, ${customerRequests.length} request(s), and uploaded photos? Their Firebase Authentication login must still be deleted manually.`
+        );
+
+    if (!confirmed) {
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Removing...";
+
+    try {
+        for (const request of customerRequests) {
+            await deleteRequestData(request);
+        }
+
+        await deleteDoc(
+            doc(
+                db,
+                "customers",
+                customerUid
+            )
+        );
+
+        showRemovalReminder(customerUid);
+        showToast("Customer website data removed.");
+    } catch (error) {
+        console.error(error);
+        showToast(error.code || error.message || "Customer removal failed.");
+        button.disabled = false;
+        button.textContent = "Remove Customer";
+    }
+}
+
+
+function renderCustomers() {
+    const shownCustomers =
+        customers
+            .filter(customerMatchesFilters)
+            .sort((a, b) => {
+                const aTime =
+                    timestampMilliseconds(
+                        customerSummary(a).lastRequestAt ||
+                        a.createdAt
+                    );
+
+                const bTime =
+                    timestampMilliseconds(
+                        customerSummary(b).lastRequestAt ||
+                        b.createdAt
+                    );
+
+                return bTime - aTime;
+            });
+
+    customerEmpty.hidden =
+        shownCustomers.length > 0;
+
+    customerRows.innerHTML =
+        shownCustomers
+            .map((customer) => {
+                const summary =
+                    customerSummary(customer);
+
+                const customerName =
+                    customer.name ||
+                    customer.email?.split("@")[0] ||
+                    "Customer";
+
+                const archiveBadge =
+                    customer.archived === true
+                        ? '<span class="badge badge-archived">Archived</span>'
+                        : '<span class="badge badge-active">Active</span>';
+
+                const emailAction =
+                    customer.email
+                        ? `<a class="button" href="mailto:${escapeHtml(customer.email)}">Email</a>`
+                        : '<span class="button" aria-disabled="true">No Email</span>';
+
+                return `
+                    <tr class="${customer.archived === true ? "is-archived" : ""}">
+                        <td>
+                            <div class="customer-name">
+                                <strong>${escapeHtml(customerName)}</strong>
+                                ${archiveBadge}
+                            </div>
+                            <span class="sub">UID: ${escapeHtml(customer.id)}</span>
+                        </td>
+                        <td>
+                            <a href="mailto:${escapeHtml(customer.email || "")}">${escapeHtml(customer.email || "No email")}</a>
+                        </td>
+                        <td>
+                            <a href="tel:${escapeHtml(summary.phone)}">${escapeHtml(summary.phone || "No phone")}</a>
+                        </td>
+                        <td>${escapeHtml(formatTimestamp(customer.createdAt))}</td>
+                        <td>${summary.requestCount}</td>
+                        <td>${escapeHtml(formatTimestamp(summary.lastRequestAt, "No requests"))}</td>
+                        <td>
+                            <div class="row-actions">
+                                <a class="button button-primary" href="customer-profile.html?uid=${encodeURIComponent(customer.id)}">View Profile</a>
+                                ${emailAction}
+                                <button class="button button-danger remove-customer" data-customer-uid="${escapeHtml(customer.id)}" type="button">Remove Customer</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            })
+            .join("");
+
+    document
+        .querySelectorAll(".remove-customer")
+        .forEach((button) => {
+            button.addEventListener(
+                "click",
+                () => {
+                    removeCustomer(
+                        button.dataset.customerUid,
+                        button
+                    );
+                }
+            );
+        });
 }
 
 
 async function getAdministratorRecord(user) {
-    if (
-        user.uid === "lE77uZp22tbjptd1k9Nt89eOdW12"
-        ||
-        String(user.email || "")
-            .trim()
-            .toLowerCase() === "pcjunkremoval2026@gmail.com"
-    ) {
+    if (user.uid === FRANKLIN_ADMIN_UID) {
         return {
             role: "admin",
             active: true,
             name: "Franklin",
-            email: "pcjunkremoval2026@gmail.com"
+            email: user.email || ""
         };
     }
 
@@ -198,740 +672,143 @@ async function getAdministratorRecord(user) {
     const roleData =
         roleSnapshot.data();
 
-    const isAdmin =
+    return (
         String(roleData.role || "")
             .trim()
-            .toLowerCase() === "admin"
-        &&
-        roleData.active === true;
-
-    return isAdmin
+            .toLowerCase() === "admin" &&
+        roleData.active === true
+    )
         ? roleData
         : null;
 }
 
 
-function getAdministratorName(
-    user,
-    roleData
-) {
-    return (
+function showAdministrator(user, roleData) {
+    const name =
         String(roleData.name || "").trim() ||
         user.displayName?.trim() ||
-        user.email?.split("@")[0] ||
-        "Administrator"
-    );
-}
+        "Franklin";
 
-
-function showAdministrator(
-    user,
-    roleData
-) {
-    const administratorName =
-        getAdministratorName(
-            user,
-            roleData
-        );
-
-    const administratorEmail =
+    const email =
         user.email ||
         String(roleData.email || "").trim() ||
-        "Administrator account";
+        "Administrator";
 
-    const firstName =
-        administratorName
-            .split(/\s+/)[0];
+    byId("topName").textContent = name;
+    byId("profileName").textContent = name;
+    byId("profileEmail").textContent = email;
+    byId("profileAvatar").textContent = name.charAt(0).toUpperCase();
+    byId("firstName").textContent = name.split(/\s+/)[0];
 
-    const initial =
-        administratorName
-            .charAt(0)
-            .toUpperCase();
+    pageStatus.className =
+        "status-box success";
 
+    pageStatus.textContent =
+        "Administrator access verified.";
 
-    adminTopName.textContent =
-        administratorName;
-
-    adminTopEmail.textContent =
-        administratorEmail;
-
-    adminProfileName.textContent =
-        administratorName;
-
-    adminProfileEmail.textContent =
-        administratorEmail;
-
-    adminAvatar.textContent =
-        initial;
-
-    adminFirstName.textContent =
-        firstName;
-
-    adminLoading.hidden =
-        true;
-
-    adminApplication.hidden =
+    application.hidden =
         false;
-}
-
-
-function openAdminView(viewName) {
-    document
-        .querySelectorAll(
-            "[data-admin-section]"
-        )
-        .forEach((section) => {
-            section.classList.toggle(
-                "active",
-                section.dataset.adminSection ===
-                    viewName
-            );
-        });
-
-
-    document
-        .querySelectorAll(
-            "[data-admin-view]"
-        )
-        .forEach((button) => {
-            button.classList.toggle(
-                "active",
-                button.dataset.adminView ===
-                    viewName
-            );
-        });
-
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-}
-
-
-document
-    .querySelectorAll("[data-admin-view]")
-    .forEach((button) => {
-        button.addEventListener(
-            "click",
-            () => {
-                openAdminView(
-                    button.dataset.adminView
-                );
-            }
-        );
-    });
-
-
-document
-    .querySelectorAll(
-        "[data-open-admin-view]"
-    )
-    .forEach((button) => {
-        button.addEventListener(
-            "click",
-            () => {
-                openAdminView(
-                    button.dataset.openAdminView
-                );
-            }
-        );
-    });
-
-
-function updateStatistics() {
-    totalRequestCount.textContent =
-        String(
-            quoteRequests.length
-        );
-
-    newRequestCount.textContent =
-        String(
-            quoteRequests.filter(
-                (request) => {
-                    return normalizeStatus(
-                        request.status
-                    ) === "new";
-                }
-            ).length
-        );
-
-    completedRequestCount.textContent =
-        String(
-            quoteRequests.filter(
-                (request) => {
-                    return normalizeStatus(
-                        request.status
-                    ) === "completed";
-                }
-            ).length
-        );
-
-    customerAccountCount.textContent =
-        String(
-            customerAccounts.length
-        );
-}
-
-
-function requestMatchesFilters(request) {
-    const searchText =
-        requestSearch.value
-            .trim()
-            .toLowerCase();
-
-    const selectedStatus =
-        requestStatusFilter.value;
-
-    const searchableText = [
-        request.fullName,
-        request.phone,
-        request.email,
-        request.service,
-        request.amount,
-        request.pickup,
-        request.destination,
-        request.details
-    ]
-        .join(" ")
-        .toLowerCase();
-
-    const matchesSearch =
-        !searchText ||
-        searchableText.includes(
-            searchText
-        );
-
-    const matchesStatus =
-        selectedStatus === "all" ||
-        normalizeStatus(
-            request.status
-        ) === selectedStatus;
-
-    return (
-        matchesSearch &&
-        matchesStatus
-    );
-}
-
-
-function statusOptions(currentStatus) {
-    const statuses = [
-        ["new", "New"],
-        ["contacted", "Contacted"],
-        ["scheduled", "Scheduled"],
-        ["completed", "Completed"],
-        ["canceled", "Canceled"]
-    ];
-
-    return statuses
-        .map(([value, label]) => {
-            const selected =
-                value === normalizeStatus(
-                    currentStatus
-                )
-                    ? "selected"
-                    : "";
-
-            return `
-                <option
-                    value="${value}"
-                    ${selected}
-                >
-                    ${label}
-                </option>
-            `;
-        })
-        .join("");
-}
-
-
-function createRequestRow(request) {
-    const status =
-        normalizeStatus(
-            request.status
-        );
-
-    return `
-        <tr>
-
-            <td>
-                <strong>
-                    ${escapeHtml(
-                        request.fullName ||
-                        "Customer"
-                    )}
-                </strong>
-
-                <a href="tel:${escapeHtml(request.phone || "")}">
-                    ${escapeHtml(
-                        request.phone ||
-                        "No phone"
-                    )}
-                </a>
-
-                <a href="mailto:${escapeHtml(request.email || "")}">
-                    ${escapeHtml(
-                        request.email ||
-                        "No email"
-                    )}
-                </a>
-
-                <span class="admin-subtext">
-                    Received
-                    ${escapeHtml(
-                        formatTimestamp(
-                            request.createdAt
-                        )
-                    )}
-                </span>
-            </td>
-
-
-            <td>
-                <strong>
-                    ${escapeHtml(
-                        request.service ||
-                        "Not selected"
-                    )}
-                </strong>
-
-                <span class="admin-subtext">
-                    ${escapeHtml(
-                        request.amount ||
-                        "Amount not provided"
-                    )}
-                </span>
-
-                <span class="admin-subtext">
-                    ${escapeHtml(
-                        request.details ||
-                        "No additional details"
-                    )}
-                </span>
-            </td>
-
-
-            <td>
-                <strong>
-                    ${escapeHtml(
-                        request.pickup ||
-                        "Pickup unavailable"
-                    )}
-                </strong>
-
-                <span class="admin-subtext">
-                    to
-                    ${escapeHtml(
-                        request.destination ||
-                        "Destination unavailable"
-                    )}
-                </span>
-
-                <span class="admin-subtext">
-                    Preferred date:
-                    ${escapeHtml(
-                        request.serviceDate ||
-                        "Not provided"
-                    )}
-                </span>
-            </td>
-
-
-            <td>
-                <span
-                    class="admin-status status-${status}"
-                >
-                    ${escapeHtml(status)}
-                </span>
-
-                <select
-                    class="admin-select request-status-select"
-                    data-request-id="${escapeHtml(request.id)}"
-                    style="margin-top: 8px; min-width: 135px;"
-                >
-                    ${statusOptions(status)}
-                </select>
-            </td>
-
-
-            <td>
-                <div class="admin-row-actions">
-
-                    <a
-                        href="tel:${escapeHtml(request.phone || "")}"
-                        class="admin-small-button"
-                    >
-                        Call
-                    </a>
-
-                    <a
-                        href="sms:${escapeHtml(request.phone || "")}"
-                        class="admin-small-button"
-                    >
-                        Text
-                    </a>
-
-                    <a
-                        href="mailto:${escapeHtml(request.email || "")}"
-                        class="admin-small-button"
-                    >
-                        Email
-                    </a>
-
-                    <button
-                        type="button"
-                        class="admin-small-button delete"
-                        data-delete-request="${escapeHtml(request.id)}"
-                    >
-                        Delete
-                    </button>
-
-                </div>
-            </td>
-
-        </tr>
-    `;
-}
-
-
-function renderQuoteRequests() {
-    const filteredRequests =
-        quoteRequests.filter(
-            requestMatchesFilters
-        );
-
-    requestTableBody.innerHTML =
-        filteredRequests
-            .map(createRequestRow)
-            .join("");
-
-    requestEmptyState.hidden =
-        filteredRequests.length > 0;
-
-    connectRequestControls();
-}
-
-
-function connectRequestControls() {
-    document
-        .querySelectorAll(
-            ".request-status-select"
-        )
-        .forEach((select) => {
-            select.addEventListener(
-                "change",
-                async () => {
-                    select.disabled =
-                        true;
-
-                    try {
-                        await updateDoc(
-                            doc(
-                                db,
-                                "quoteRequests",
-                                select.dataset.requestId
-                            ),
-                            {
-                                status:
-                                    select.value,
-
-                                updatedAt:
-                                    serverTimestamp()
-                            }
-                        );
-
-                        showToast(
-                            "Request status updated."
-                        );
-
-                    } catch (error) {
-                        console.error(
-                            "Status update failed:",
-                            error
-                        );
-
-                        showToast(
-                            "The request status could not be updated."
-                        );
-
-                        select.disabled =
-                            false;
-                    }
-                }
-            );
-        });
-
-
-    document
-        .querySelectorAll(
-            "[data-delete-request]"
-        )
-        .forEach((button) => {
-            button.addEventListener(
-                "click",
-                async () => {
-                    const confirmed =
-                        window.confirm(
-                            "Delete this quote request permanently?"
-                        );
-
-                    if (!confirmed) {
-                        return;
-                    }
-
-                    button.disabled =
-                        true;
-
-                    try {
-                        await deleteDoc(
-                            doc(
-                                db,
-                                "quoteRequests",
-                                button.dataset
-                                    .deleteRequest
-                            )
-                        );
-
-                        showToast(
-                            "Quote request deleted."
-                        );
-
-                    } catch (error) {
-                        console.error(
-                            "Request deletion failed:",
-                            error
-                        );
-
-                        showToast(
-                            "The quote request could not be deleted."
-                        );
-
-                        button.disabled =
-                            false;
-                    }
-                }
-            );
-        });
-}
-
-
-function customerMatchesSearch(customer) {
-    const searchText =
-        customerSearch.value
-            .trim()
-            .toLowerCase();
-
-    const searchableText = [
-        customer.name,
-        customer.email
-    ]
-        .join(" ")
-        .toLowerCase();
-
-    return (
-        !searchText ||
-        searchableText.includes(
-            searchText
-        )
-    );
-}
-
-
-function renderCustomerAccounts() {
-    const filteredCustomers =
-        customerAccounts.filter(
-            customerMatchesSearch
-        );
-
-    customerGrid.innerHTML =
-        filteredCustomers
-            .map((customer) => {
-                const customerName =
-                    customer.name ||
-                    customer.email?.split("@")[0] ||
-                    "Customer";
-
-                return `
-                    <article class="admin-customer">
-
-                        <strong>
-                            ${escapeHtml(customerName)}
-                        </strong>
-
-                        <a href="mailto:${escapeHtml(customer.email || "")}">
-                            ${escapeHtml(
-                                customer.email ||
-                                "No email"
-                            )}
-                        </a>
-
-                        <span>
-                            Joined:
-                            ${escapeHtml(
-                                formatTimestamp(
-                                    customer.createdAt
-                                )
-                            )}
-                        </span>
-
-                        <span>
-                            Last login:
-                            ${escapeHtml(
-                                formatTimestamp(
-                                    customer.lastLoginAt
-                                )
-                            )}
-                        </span>
-
-                    </article>
-                `;
-            })
-            .join("");
-
-    customerEmptyState.hidden =
-        filteredCustomers.length > 0;
 }
 
 
 function startDatabaseListeners() {
     onSnapshot(
-        collection(
-            db,
-            "quoteRequests"
-        ),
+        collection(db, "quoteRequests"),
         (snapshot) => {
-            quoteRequests =
+            requests =
                 snapshot.docs
                     .map((documentSnapshot) => {
                         return {
-                            id:
-                                documentSnapshot.id,
-
+                            id: documentSnapshot.id,
                             ...documentSnapshot.data()
                         };
                     })
                     .sort((a, b) => {
                         return (
-                            timestampMilliseconds(
-                                b.createdAt
-                            )
-                            -
-                            timestampMilliseconds(
-                                a.createdAt
-                            )
+                            timestampMilliseconds(b.createdAt) -
+                            timestampMilliseconds(a.createdAt)
                         );
                     });
 
             updateStatistics();
-            renderQuoteRequests();
+            renderRequests();
+            renderCustomers();
         },
         (error) => {
-            console.error(
-                "Quote request listener failed:",
-                error
-            );
-
-            showToast(
-                "Quote requests could not be loaded."
-            );
+            console.error(error);
+            showToast(error.code || error.message);
         }
     );
 
-
     onSnapshot(
-        collection(
-            db,
-            "customers"
-        ),
+        collection(db, "customers"),
         (snapshot) => {
-            customerAccounts =
-                snapshot.docs
-                    .map((documentSnapshot) => {
-                        return {
-                            id:
-                                documentSnapshot.id,
-
-                            ...documentSnapshot.data()
-                        };
-                    })
-                    .sort((a, b) => {
-                        return (
-                            timestampMilliseconds(
-                                b.createdAt
-                            )
-                            -
-                            timestampMilliseconds(
-                                a.createdAt
-                            )
-                        );
-                    });
+            customers =
+                snapshot.docs.map((documentSnapshot) => {
+                    return {
+                        id: documentSnapshot.id,
+                        ...documentSnapshot.data()
+                    };
+                });
 
             updateStatistics();
-            renderCustomerAccounts();
+            renderCustomers();
         },
         (error) => {
-            console.error(
-                "Customer account listener failed:",
-                error
-            );
-
-            showToast(
-                "Customer accounts could not be loaded."
-            );
+            console.error(error);
+            showToast(error.code || error.message);
         }
     );
 }
 
 
+document
+    .querySelectorAll("[data-view]")
+    .forEach((button) => {
+        button.addEventListener(
+            "click",
+            () => {
+                openView(button.dataset.view);
+            }
+        );
+    });
+
+document
+    .querySelectorAll("[data-open]")
+    .forEach((button) => {
+        button.addEventListener(
+            "click",
+            () => {
+                openView(button.dataset.open);
+            }
+        );
+    });
+
 requestSearch.addEventListener(
     "input",
-    renderQuoteRequests
+    renderRequests
 );
 
-requestStatusFilter.addEventListener(
+requestFilter.addEventListener(
     "change",
-    renderQuoteRequests
+    renderRequests
 );
 
 customerSearch.addEventListener(
     "input",
-    renderCustomerAccounts
+    renderCustomers
 );
 
+customerFilter.addEventListener(
+    "change",
+    renderCustomers
+);
 
-adminLogoutButton.addEventListener(
+byId("logout").addEventListener(
     "click",
     async () => {
-        adminLogoutButton.disabled =
-            true;
-
-        adminLogoutButton.textContent =
-            "Logging Out...";
-
-        try {
-            await signOut(auth);
-
-            window.location.replace(
-                "index.html"
-            );
-
-        } catch (error) {
-            console.error(
-                "Administrator logout failed:",
-                error
-            );
-
-            adminLogoutButton.disabled =
-                false;
-
-            adminLogoutButton.textContent =
-                "Log Out";
-
-            showToast(
-                "The administrator could not be logged out."
-            );
-        }
+        await signOut(auth);
+        window.location.replace("login.html");
     }
 );
 
@@ -940,42 +817,30 @@ onAuthStateChanged(
     auth,
     async (user) => {
         if (!user) {
-            window.location.replace(
-                "login.html"
-            );
-
+            window.location.replace("login.html");
             return;
         }
 
         try {
             const roleData =
-                await getAdministratorRecord(
-                    user
-                );
+                await getAdministratorRecord(user);
 
             if (!roleData) {
-                window.location.replace(
-                    "dashboard.html"
-                );
-
+                window.location.replace("dashboard.html");
                 return;
             }
 
-            showAdministrator(
-                user,
-                roleData
+            showAdministrator(user, roleData);
+            openView(
+                window.location.hash.slice(1) ||
+                "overview"
             );
-
             startDatabaseListeners();
-
         } catch (error) {
-            console.error(
-                "Administrator verification failed:",
-                error
-            );
-
-            adminLoading.textContent =
-                "Administrator permission could not be verified. Check that this website uses the Packaged Comfort Firebase project and that the roles document ID matches this account's UID.";
+            console.error(error);
+            pageStatus.className = "status-box error";
+            pageStatus.textContent =
+                "Administrator permission could not be verified. Check the Firebase project and administrator role document.";
         }
     }
 );
