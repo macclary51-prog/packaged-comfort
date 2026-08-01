@@ -6,7 +6,7 @@
     <meta name="robots" content="noindex, nofollow">
     <title>Admin Portal | Packaged Comfort</title>
     <link rel="icon" href="logo.png">
-    <link rel="stylesheet" href="admin.css?v=1">
+    <link rel="stylesheet" href="admin.css?v=2">
 </head>
 <body>
     <header class="site-header">
@@ -73,6 +73,14 @@
                                 <strong id="customersCount">0</strong>
                                 <span>Active customers</span>
                             </article>
+                            <article class="card stat">
+                                <strong id="attentionCount">0</strong>
+                                <span>Needs attention</span>
+                            </article>
+                            <article class="card stat">
+                                <strong id="pipelineValue">$0</strong>
+                                <span>Estimate pipeline</span>
+                            </article>
                         </div>
 
                         <section class="panel">
@@ -97,6 +105,34 @@
                                 </a>
                             </div>
                         </section>
+
+                        <div class="grid grid-2 operations-grid">
+                            <section class="panel">
+                                <div class="panel-heading">
+                                    <div>
+                                        <h2>Upcoming Jobs</h2>
+                                        <p>Scheduled work and customer-preferred dates.</p>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="operations-list" id="upcomingJobs"></div>
+                                    <div class="empty" id="upcomingJobsEmpty">No upcoming jobs.</div>
+                                </div>
+                            </section>
+
+                            <section class="panel">
+                                <div class="panel-heading">
+                                    <div>
+                                        <h2>Attention Queue</h2>
+                                        <p>Priority requests and follow-ups due now.</p>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="operations-list" id="attentionQueue"></div>
+                                    <div class="empty" id="attentionQueueEmpty">Nothing needs immediate attention.</div>
+                                </div>
+                            </section>
+                        </div>
                     </section>
 
                     <section class="view" data-section="requests">
@@ -104,12 +140,13 @@
                             <div class="panel-heading">
                                 <div>
                                     <h2>Quote Requests</h2>
-                                    <p>Search, filter, and open the full response screen.</p>
+                                    <p>Prioritize, schedule follow-ups, update statuses in bulk, and export operational data.</p>
                                 </div>
+                                <button class="button" id="exportRequests" type="button">Export Requests CSV</button>
                             </div>
 
                             <div class="panel-body">
-                                <div class="filters">
+                                <div class="filters filters-3">
                                     <input class="filter-control" id="search" type="search" placeholder="Search customer, phone, service, or location">
                                     <select class="filter-control" id="filter">
                                         <option value="all">All statuses</option>
@@ -120,6 +157,23 @@
                                         <option value="completed">Completed</option>
                                         <option value="canceled">Canceled</option>
                                     </select>
+                                    <select class="filter-control" id="serviceFilter">
+                                        <option value="all">All services</option>
+                                    </select>
+                                </div>
+
+                                <div class="bulk-toolbar" id="bulkToolbar">
+                                    <strong><span id="selectedRequestCount">0</span> selected</strong>
+                                    <select class="filter-control" id="bulkStatus">
+                                        <option value="">Choose bulk status</option>
+                                        <option value="submitted">Submitted</option>
+                                        <option value="under-review">Under Review</option>
+                                        <option value="contacted">Contacted</option>
+                                        <option value="scheduled">Scheduled</option>
+                                        <option value="completed">Completed</option>
+                                        <option value="canceled">Canceled</option>
+                                    </select>
+                                    <button class="button button-primary" id="applyBulkStatus" type="button" disabled>Apply Status</button>
                                 </div>
                             </div>
 
@@ -127,10 +181,12 @@
                                 <table>
                                     <thead>
                                         <tr>
+                                            <th><input id="selectAllRequests" type="checkbox" aria-label="Select all visible requests"></th>
                                             <th>Customer</th>
                                             <th>Service</th>
                                             <th>Route</th>
                                             <th>Status</th>
+                                            <th>Priority &amp; follow-up</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -148,6 +204,7 @@
                                     <h2>Customer Accounts</h2>
                                     <p>Contact customers, review complete histories, keep private notes, archive accounts, or remove website data.</p>
                                 </div>
+                                <button class="button" id="exportCustomers" type="button">Export Customers CSV</button>
                             </div>
 
                             <div class="panel-body">
@@ -188,6 +245,6 @@
     </main>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script type="module" src="admin.js?v=42"></script>
+    <script type="module" src="admin.js?v=43"></script>
 </body>
 </html>

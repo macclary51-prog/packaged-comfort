@@ -39,8 +39,13 @@ const pageStatus = byId("pageStatus");
 const application = byId("application");
 const requestSearch = byId("search");
 const requestFilter = byId("filter");
+const serviceFilter = byId("serviceFilter");
 const requestRows = byId("rows");
 const requestEmpty = byId("empty");
+const selectAllRequests = byId("selectAllRequests");
+const selectedRequestCount = byId("selectedRequestCount");
+const bulkStatus = byId("bulkStatus");
+const applyBulkStatus = byId("applyBulkStatus");
 const customerSearch = byId("customerSearch");
 const customerFilter = byId("customerFilter");
 const customerRows = byId("customerRows");
@@ -51,6 +56,7 @@ const toastElement = byId("toast");
 let requests = [];
 let customers = [];
 let toastTimer = null;
+const selectedRequestIds = new Set();
 
 const statusLabels = {
     new: "Submitted",
@@ -114,6 +120,110 @@ function formatTimestamp(value, fallback = "Unavailable") {
             year: "numeric"
         }
     ).format(milliseconds);
+}
+
+
+function formatMoney(value) {
+    return new Intl.NumberFormat(
+        "en-US",
+        {
+            style: "currency",
+            currency: "USD",
+            maximumFractionDigits: 0
+        }
+    ).format(Number(value) || 0);
+}
+
+
+function dateInputValue(value) {
+    if (!value) {
+        return "";
+    }
+
+    const milliseconds =
+        timestampMilliseconds(value);
+
+    return milliseconds
+        ? new Date(milliseconds).toISOString().slice(0, 10)
+        : "";
+}
+
+
+function requestScheduleMilliseconds(request) {
+    return timestampMilliseconds(
+        request.scheduledDate ||
+        request.serviceDate
+    );
+}
+
+
+function requestNeedsAttention(request) {
+    const status =
+        normalizeStatus(request.status);
+
+    if (["completed", "canceled"].includes(status)) {
+        return false;
+    }
+
+    if (request.priority === "high") {
+        return true;
+    }
+
+    const followUp =
+        timestampMilliseconds(request.followUpDate);
+
+    return Boolean(
+        followUp &&
+        followUp <= Date.now()
+    );
+}
+
+
+function csvCell(value) {
+    return `"${String(value ?? "").replaceAll('"', '""')}"`;
+}
+
+
+function timestampForExport(value) {
+    const milliseconds =
+        timestampMilliseconds(value);
+
+    return milliseconds
+        ? new Date(milliseconds).toISOString()
+        : "";
+}
+
+
+function downloadCsv(filename, headers, rows) {
+    const csv = [
+        headers.map(csvCell).join(","),
+        ...rows.map((row) => {
+            return row.map(csvCell).join(",");
+        })
+    ].join("\r\n");
+
+    const blob =
+        new Blob(
+            [csv],
+            {
+                type: "text/csv;charset=utf-8"
+            }
+        );
+
+    const url =
+        URL.createObjectURL(blob);
+
+    const link =
+        document.createElement("a");
+
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => {
+        URL.revokeObjectURL(url);
+    }, 1000);
 }
 
 
@@ -220,6 +330,152 @@ function customerSummary(customer) {
 }
 
 
+function refreshServiceFilter() {
+    const selectedValue =
+        serviceFilter.value;
+
+    const services =
+        [...new Set(
+            requests
+                .map((request) => {
+                    return String(request.service || "").trim();
+                })
+                .filter(Boolean)
+        )]
+            .sort((a, b) => {
+                return a.localeCompare(b);
+            });
+
+    serviceFilter.innerHTML = [
+        '<option value="all">All services</option>',
+        ...services.map((service) => {
+            return `<option value="${escapeHtml(service)}">${escapeHtml(service)}</option>`;
+        })
+    ].join("");
+
+    serviceFilter.value =
+        services.includes(selectedValue)
+            ? selectedValue
+            : "all";
+}
+
+
+function renderOperationsQueues() {
+    const now =
+        new Date();
+
+    now.setHours(0, 0, 0, 0);
+
+    const upcoming =
+        requests
+            .filter((request) => {
+                const status =
+                    normalizeStatus(request.status);
+
+                const scheduledAt =
+                    requestScheduleMilliseconds(request);
+
+                return (
+                    !["completed", "canceled"].includes(status) &&
+                    scheduledAt >= now.getTime()
+                );
+            })
+            .sort((a, b) => {
+                return (
+                    requestScheduleMilliseconds(a) -
+                    requestScheduleMilliseconds(b)
+                );
+            })
+            .slice(0, 6);
+
+    const attention =
+        requests
+            .filter(requestNeedsAttention)
+            .sort((a, b) => {
+                if (a.priority === "high" && b.priority !== "high") {
+                    return -1;
+                }
+
+                if (b.priority === "high" && a.priority !== "high") {
+                    return 1;
+                }
+
+                return (
+                    timestampMilliseconds(a.followUpDate || a.createdAt) -
+                    timestampMilliseconds(b.followUpDate || b.createdAt)
+                );
+            })
+            .slice(0, 6);
+
+    byId("upcomingJobsEmpty").hidden =
+        upcoming.length > 0;
+
+    byId("upcomingJobs").innerHTML =
+        upcoming
+            .map((request) => {
+                return `
+                    <article class="operations-item">
+                        <div>
+                            <strong>${escapeHtml(request.fullName || request.customerName || "Customer")} · ${escapeHtml(request.service || "Service Request")}</strong>
+                            <span>${escapeHtml(formatTimestamp(request.scheduledDate || request.serviceDate))} · ${escapeHtml(request.pickup || "Pickup unavailable")}</span>
+                        </div>
+                        <a class="button" href="request-details.html?id=${encodeURIComponent(request.id)}">Open</a>
+                    </article>
+                `;
+            })
+            .join("");
+
+    byId("attentionQueueEmpty").hidden =
+        attention.length > 0;
+
+    byId("attentionQueue").innerHTML =
+        attention
+            .map((request) => {
+                const reason =
+                    request.priority === "high"
+                        ? "High priority"
+                        : `Follow-up due ${formatTimestamp(request.followUpDate)}`;
+
+                return `
+                    <article class="operations-item">
+                        <div>
+                            <strong>${escapeHtml(request.fullName || request.customerName || "Customer")} · ${escapeHtml(request.service || "Service Request")}</strong>
+                            <span>${escapeHtml(reason)}</span>
+                        </div>
+                        <a class="button" href="request-details.html?id=${encodeURIComponent(request.id)}">Open</a>
+                    </article>
+                `;
+            })
+            .join("");
+}
+
+
+function renderBulkState(shownRequests) {
+    const visibleIds =
+        shownRequests.map((request) => request.id);
+
+    const visibleSelectedCount =
+        visibleIds.filter((id) => {
+            return selectedRequestIds.has(id);
+        }).length;
+
+    selectedRequestCount.textContent =
+        String(selectedRequestIds.size);
+
+    applyBulkStatus.disabled =
+        selectedRequestIds.size === 0 ||
+        !bulkStatus.value;
+
+    selectAllRequests.checked =
+        visibleIds.length > 0 &&
+        visibleSelectedCount === visibleIds.length;
+
+    selectAllRequests.indeterminate =
+        visibleSelectedCount > 0 &&
+        visibleSelectedCount < visibleIds.length;
+}
+
+
 function updateStatistics() {
     byId("total").textContent =
         String(requests.length);
@@ -244,6 +500,29 @@ function updateStatistics() {
                 return customer.archived !== true;
             }).length
         );
+
+    byId("attentionCount").textContent =
+        String(
+            requests.filter(requestNeedsAttention).length
+        );
+
+    const pipeline =
+        requests
+            .filter((request) => {
+                return !["completed", "canceled"].includes(
+                    normalizeStatus(request.status)
+                );
+            })
+            .reduce((total, request) => {
+                return total + Number(
+                    request.estimateMax ??
+                    request.estimateMin ??
+                    0
+                );
+            }, 0);
+
+    byId("pipelineValue").textContent =
+        formatMoney(pipeline);
 }
 
 
@@ -255,6 +534,9 @@ function requestMatchesFilters(request) {
 
     const selectedStatus =
         requestFilter.value;
+
+    const selectedService =
+        serviceFilter.value;
 
     const searchableText = [
         request.fullName,
@@ -273,6 +555,10 @@ function requestMatchesFilters(request) {
         (
             selectedStatus === "all" ||
             normalizeStatus(request.status) === selectedStatus
+        ) &&
+        (
+            selectedService === "all" ||
+            String(request.service || "") === selectedService
         )
     );
 }
@@ -339,8 +625,25 @@ function renderRequests() {
                 const currentStatus =
                     normalizeStatus(request.status);
 
+                const isPriority =
+                    request.priority === "high";
+
+                const isSelected =
+                    selectedRequestIds.has(request.id)
+                        ? "checked"
+                        : "";
+
                 return `
-                    <tr>
+                    <tr class="${isPriority ? "is-priority" : ""}">
+                        <td>
+                            <input
+                                class="request-selector"
+                                data-id="${escapeHtml(request.id)}"
+                                type="checkbox"
+                                aria-label="Select request ${escapeHtml(request.id.slice(0, 8))}"
+                                ${isSelected}
+                            >
+                        </td>
                         <td>
                             <strong>${escapeHtml(request.fullName || request.customerName || "Customer")}</strong>
                             <a class="sub" href="tel:${escapeHtml(request.phone || "")}">${escapeHtml(request.phone || "No phone")}</a>
@@ -362,6 +665,26 @@ function renderRequests() {
                             </select>
                         </td>
                         <td>
+                            <div class="request-priority">
+                                <button
+                                    class="button toggle-priority ${isPriority ? "priority-high" : ""}"
+                                    data-id="${escapeHtml(request.id)}"
+                                    data-priority="${isPriority ? "high" : "normal"}"
+                                    type="button"
+                                >
+                                    ${isPriority ? "High Priority" : "Mark Priority"}
+                                </button>
+                                <label class="sub" for="follow-up-${escapeHtml(request.id)}">Follow-up date</label>
+                                <input
+                                    class="filter-control follow-up-input"
+                                    id="follow-up-${escapeHtml(request.id)}"
+                                    data-id="${escapeHtml(request.id)}"
+                                    type="date"
+                                    value="${escapeHtml(dateInputValue(request.followUpDate))}"
+                                >
+                            </div>
+                        </td>
+                        <td>
                             <div class="row-actions">
                                 <a class="button button-primary" href="request-details.html?id=${encodeURIComponent(request.id)}">View / Quote</a>
                                 <button class="button button-danger delete-request" data-id="${escapeHtml(request.id)}" type="button">Delete</button>
@@ -371,6 +694,25 @@ function renderRequests() {
                 `;
             })
             .join("");
+
+    renderBulkState(shownRequests);
+
+    document
+        .querySelectorAll(".request-selector")
+        .forEach((checkbox) => {
+            checkbox.addEventListener(
+                "change",
+                () => {
+                    if (checkbox.checked) {
+                        selectedRequestIds.add(checkbox.dataset.id);
+                    } else {
+                        selectedRequestIds.delete(checkbox.dataset.id);
+                    }
+
+                    renderBulkState(shownRequests);
+                }
+            );
+        });
 
     document
         .querySelectorAll(".quick-status")
@@ -403,6 +745,81 @@ function renderRequests() {
         });
 
     document
+        .querySelectorAll(".toggle-priority")
+        .forEach((button) => {
+            button.addEventListener(
+                "click",
+                async () => {
+                    button.disabled = true;
+
+                    const priority =
+                        button.dataset.priority === "high"
+                            ? "normal"
+                            : "high";
+
+                    try {
+                        await updateDoc(
+                            doc(
+                                db,
+                                "quoteRequests",
+                                button.dataset.id
+                            ),
+                            {
+                                priority,
+                                updatedAt: serverTimestamp()
+                            }
+                        );
+
+                        showToast(
+                            priority === "high"
+                                ? "Request marked high priority."
+                                : "Priority cleared."
+                        );
+                    } catch (error) {
+                        console.error(error);
+                        showToast(error.code || error.message || "Priority could not be updated.");
+                        button.disabled = false;
+                    }
+                }
+            );
+        });
+
+    document
+        .querySelectorAll(".follow-up-input")
+        .forEach((input) => {
+            input.addEventListener(
+                "change",
+                async () => {
+                    input.disabled = true;
+
+                    try {
+                        await updateDoc(
+                            doc(
+                                db,
+                                "quoteRequests",
+                                input.dataset.id
+                            ),
+                            {
+                                followUpDate: input.value || null,
+                                updatedAt: serverTimestamp()
+                            }
+                        );
+
+                        showToast(
+                            input.value
+                                ? "Follow-up date saved."
+                                : "Follow-up date cleared."
+                        );
+                    } catch (error) {
+                        console.error(error);
+                        showToast(error.code || error.message || "Follow-up date could not be saved.");
+                        input.disabled = false;
+                    }
+                }
+            );
+        });
+
+    document
         .querySelectorAll(".delete-request")
         .forEach((button) => {
             button.addEventListener(
@@ -426,6 +843,7 @@ function renderRequests() {
 
                     try {
                         await deleteRequestData(request);
+                        selectedRequestIds.delete(request.id);
                         showToast("Request deleted.");
                     } catch (error) {
                         console.error(error);
@@ -646,6 +1064,148 @@ function renderCustomers() {
 }
 
 
+function exportRequestsCsv() {
+    const shownRequests =
+        requests.filter(requestMatchesFilters);
+
+    downloadCsv(
+        `packaged-comfort-requests-${dateInputValue(new Date().toISOString())}.csv`,
+        [
+            "Request ID",
+            "Customer UID",
+            "Customer",
+            "Email",
+            "Phone",
+            "Service",
+            "Items or load",
+            "Pickup",
+            "Destination",
+            "Preferred date",
+            "Status",
+            "Priority",
+            "Follow-up date",
+            "Estimate minimum",
+            "Estimate maximum",
+            "Scheduled date",
+            "Submitted",
+            "Updated",
+            "Internal notes"
+        ],
+        shownRequests.map((request) => {
+            return [
+                request.id,
+                requestOwnerUid(request),
+                request.fullName || request.customerName || "Customer",
+                request.email || "",
+                request.phone || "",
+                request.service || "",
+                request.amount || "",
+                request.pickup || "",
+                request.destination || "",
+                request.serviceDate || "",
+                normalizeStatus(request.status),
+                request.priority || "normal",
+                request.followUpDate || "",
+                request.estimateMin ?? "",
+                request.estimateMax ?? "",
+                request.scheduledDate || "",
+                timestampForExport(request.createdAt),
+                timestampForExport(request.updatedAt),
+                request.internalNotes || ""
+            ];
+        })
+    );
+
+    showToast(`${shownRequests.length} request(s) exported.`);
+}
+
+
+function exportCustomersCsv() {
+    const shownCustomers =
+        customers.filter(customerMatchesFilters);
+
+    downloadCsv(
+        `packaged-comfort-customers-${dateInputValue(new Date().toISOString())}.csv`,
+        [
+            "Customer UID",
+            "Name",
+            "Email",
+            "Phone",
+            "Joined",
+            "Request count",
+            "Last request",
+            "Account status"
+        ],
+        shownCustomers.map((customer) => {
+            const summary =
+                customerSummary(customer);
+
+            return [
+                customer.id,
+                customer.name || customer.email?.split("@")[0] || "Customer",
+                customer.email || "",
+                summary.phone,
+                timestampForExport(customer.createdAt),
+                summary.requestCount,
+                timestampForExport(summary.lastRequestAt),
+                customer.archived === true
+                    ? "archived"
+                    : "active"
+            ];
+        })
+    );
+
+    showToast(`${shownCustomers.length} customer(s) exported.`);
+}
+
+
+async function applyBulkRequestStatus() {
+    const selectedStatus =
+        bulkStatus.value;
+
+    const ids =
+        [...selectedRequestIds];
+
+    if (!selectedStatus || !ids.length) {
+        return;
+    }
+
+    applyBulkStatus.disabled = true;
+    applyBulkStatus.textContent = "Updating...";
+
+    try {
+        await Promise.all(
+            ids.map((requestId) => {
+                return updateDoc(
+                    doc(
+                        db,
+                        "quoteRequests",
+                        requestId
+                    ),
+                    {
+                        status: selectedStatus,
+                        updatedAt: serverTimestamp()
+                    }
+                );
+            })
+        );
+
+        selectedRequestIds.clear();
+        bulkStatus.value = "";
+        showToast(`${ids.length} request(s) updated.`);
+        renderRequests();
+    } catch (error) {
+        console.error(error);
+        showToast(error.code || error.message || "Bulk status update failed.");
+    } finally {
+        applyBulkStatus.textContent = "Apply Status";
+        renderBulkState(
+            requests.filter(requestMatchesFilters)
+        );
+    }
+}
+
+
 async function getAdministratorRecord(user) {
     if (user.uid === FRANKLIN_ADMIN_UID) {
         return {
@@ -730,7 +1290,18 @@ function startDatabaseListeners() {
                         );
                     });
 
+            const currentRequestIds =
+                new Set(requests.map((request) => request.id));
+
+            selectedRequestIds.forEach((requestId) => {
+                if (!currentRequestIds.has(requestId)) {
+                    selectedRequestIds.delete(requestId);
+                }
+            });
+
+            refreshServiceFilter();
             updateStatistics();
+            renderOperationsQueues();
             renderRequests();
             renderCustomers();
         },
@@ -794,6 +1365,47 @@ requestFilter.addEventListener(
     renderRequests
 );
 
+serviceFilter.addEventListener(
+    "change",
+    renderRequests
+);
+
+selectAllRequests.addEventListener(
+    "change",
+    () => {
+        requests
+            .filter(requestMatchesFilters)
+            .forEach((request) => {
+                if (selectAllRequests.checked) {
+                    selectedRequestIds.add(request.id);
+                } else {
+                    selectedRequestIds.delete(request.id);
+                }
+            });
+
+        renderRequests();
+    }
+);
+
+bulkStatus.addEventListener(
+    "change",
+    () => {
+        renderBulkState(
+            requests.filter(requestMatchesFilters)
+        );
+    }
+);
+
+applyBulkStatus.addEventListener(
+    "click",
+    applyBulkRequestStatus
+);
+
+byId("exportRequests").addEventListener(
+    "click",
+    exportRequestsCsv
+);
+
 customerSearch.addEventListener(
     "input",
     renderCustomers
@@ -802,6 +1414,11 @@ customerSearch.addEventListener(
 customerFilter.addEventListener(
     "change",
     renderCustomers
+);
+
+byId("exportCustomers").addEventListener(
+    "click",
+    exportCustomersCsv
 );
 
 byId("logout").addEventListener(
