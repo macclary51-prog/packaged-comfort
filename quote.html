@@ -9,15 +9,15 @@
 .empty{padding:38px 18px;color:var(--muted);text-align:center}.footer{border-top:1px solid var(--border);padding:24px 0;background:white;color:var(--muted);text-align:center;font-size:.85rem}.toast{position:fixed;right:20px;bottom:20px;z-index:80;max-width:390px;transform:translateY(18px);border-radius:11px;padding:14px 16px;background:var(--navy);color:white;opacity:0;pointer-events:none;transition:.18s}.toast.show{transform:none;opacity:1}
 @media(max-width:900px){.grid-4,.grid-3{grid-template-columns:repeat(2,minmax(0,1fr))}.menu-button{display:block}.main-nav{display:none;position:absolute;top:76px;right:16px;left:16px;flex-direction:column;align-items:stretch;border:1px solid var(--border);border-radius:14px;padding:10px;background:white;box-shadow:0 18px 45px #17233b26}.main-nav.open{display:flex}}
 @media(max-width:650px){.grid-4,.grid-3,.grid-2{grid-template-columns:1fr}.hero{padding:27px 22px}.actions{display:grid}.actions .button{width:100%}.panel-heading{flex-direction:column}.brand>div{display:none}}
-.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.full{grid-column:1/-1}.upload{display:grid;place-items:center;min-height:130px;border:2px dashed #cfd6e0;border-radius:14px;padding:20px;background:#fafbfc;text-align:center;cursor:pointer}.upload:hover{border-color:var(--orange);background:#fff8f3}.upload input{display:none}.previews{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}.preview{overflow:hidden;aspect-ratio:1;border:1px solid var(--border);border-radius:12px;background:#eef1f5}.preview img{width:100%;height:100%;object-fit:cover}.progress{height:10px;overflow:hidden;border-radius:999px;background:#edf0f4}.progress span{display:block;width:0;height:100%;background:var(--orange);transition:.2s}@media(max-width:700px){.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.previews{grid-template-columns:repeat(2,1fr)}}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.full{grid-column:1/-1}.account-option{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:18px 0 0;border:1px solid #cfe0f3;border-radius:13px;padding:13px 15px;background:#f2f7fd;color:#28466d}.account-option a{color:#174f8d;font-weight:850}.upload{display:grid;place-items:center;min-height:130px;border:2px dashed #cfd6e0;border-radius:14px;padding:20px;background:#fafbfc;text-align:center;cursor:pointer}.upload:hover{border-color:var(--orange);background:#fff8f3}.upload[aria-disabled="true"]{border-style:solid;background:#f1f3f6;color:var(--muted);cursor:not-allowed}.upload input{display:none}.previews{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}.preview{overflow:hidden;aspect-ratio:1;border:1px solid var(--border);border-radius:12px;background:#eef1f5}.preview img{width:100%;height:100%;object-fit:cover}.progress{height:10px;overflow:hidden;border-radius:999px;background:#edf0f4}.progress span{display:block;width:0;height:100%;background:var(--orange);transition:.2s}@media(max-width:700px){.form-grid{grid-template-columns:1fr}.full{grid-column:auto}.previews{grid-template-columns:repeat(2,1fr)}}
 </style></head><body>
 <header class="site-header"><div class="container nav-wrap"><a class="brand" href="index.html"><img src="logo.png" alt="Packaged Comfort"><div><strong>Packaged Comfort</strong><span>Move Your Package with Comfort</span></div></a><button class="menu-button" id="menuButton" aria-expanded="false">☰</button><nav class="main-nav" id="mainNav"><a href="index.html">Home</a><a href="services.html">Services</a><a href="dashboard.html">Dashboard</a><a href="contact.html">Contact</a></nav></div></header>
-<main class="page"><div class="container"><div class="status-box" id="accountStatus">Checking your customer account...</div><section class="hero"><span class="eyebrow">Customer quote request</span><h1>Tell us what needs to move</h1><p>Submit the job details and optional photos. Your request will appear in your dashboard, where you can follow its status and see Franklin's quote response.</p></section>
-<section class="panel"><div class="panel-heading"><div><h2>Service details</h2><p>Signing in is required so the request and photos stay connected to your account.</p></div></div><div class="panel-body"><form id="quoteForm" novalidate><div class="form-grid">
-<div class="field"><label for="fullName">Full name</label><input id="fullName" autocomplete="name" required></div><div class="field"><label for="phone">Phone number</label><input id="phone" type="tel" autocomplete="tel" required></div><div class="field"><label for="email">Email address</label><input id="email" type="email" autocomplete="email" required readonly></div><div class="field"><label for="service">Service</label><select id="service" required><option value="">Choose a service</option><option>Junk Removal</option><option>Local Moving Help</option><option>Pickup and Delivery</option><option>Courier Service</option><option>Furniture or Appliance Delivery</option><option>Other</option></select></div><div class="field"><label for="amount">Items or load size</label><input id="amount" placeholder="Example: couch and two chairs" required></div><div class="field"><label for="serviceDate">Preferred date</label><input id="serviceDate" type="date" required></div><div class="field"><label for="pickup">Pickup location</label><input id="pickup" placeholder="City or address" required></div><div class="field"><label for="destination">Destination</label><input id="destination" placeholder="City, address, or disposal site" required></div><div class="field full"><label for="details">Job details</label><textarea id="details" placeholder="Stairs, heavy items, access instructions, preferred time, or anything Franklin should know"></textarea></div><div class="field full"><label>Photos</label><label class="upload" for="photos"><strong>Take or upload photos</strong><span class="help">Up to 8 images. Each image must be under 8 MB.</span><input id="photos" type="file" accept="image/*" multiple></label><div class="previews" id="previews"></div></div></div>
-<div class="progress" id="progress" hidden><span id="progressBar"></span></div><div class="actions"><button class="button button-primary" id="submitButton" type="submit">Submit Quote Request</button><a class="button" href="dashboard.html">Return to Dashboard</a></div><p class="help" id="formMessage" aria-live="polite"></p></form></div></section></div></main><footer class="footer">© <span data-year></span> Packaged Comfort.</footer>
+<main class="page"><div class="container"><div class="status-box" id="accountStatus">Checking whether you are signed in...</div><section class="hero"><span class="eyebrow">Customer quote request</span><h1>Tell us what needs to move</h1><p>No account is required. Submit the job details below and Franklin will contact you with a quote. Signed-in customers can also track the request in their dashboard.</p></section><div class="account-option" id="accountOption"><strong>Account optional.</strong><span>Continue as a guest, or <a href="login.html">sign in</a> / <a href="signup.html">create an account</a> for dashboard tracking.</span></div>
+<section class="panel"><div class="panel-heading"><div><h2>Service details</h2><p>Enter your contact and job information. You can submit this quote request with or without an account.</p></div></div><div class="panel-body"><form id="quoteForm" novalidate><div class="form-grid">
+<div class="field"><label for="fullName">Full name</label><input id="fullName" autocomplete="name" maxlength="120" required></div><div class="field"><label for="phone">Phone number</label><input id="phone" type="tel" autocomplete="tel" maxlength="30" required></div><div class="field"><label for="email">Email address</label><input id="email" type="email" autocomplete="email" maxlength="254" required></div><div class="field"><label for="service">Service</label><select id="service" required><option value="">Choose a service</option><option>Junk Removal</option><option>Local Moving Help</option><option>Pickup and Delivery</option><option>Courier Service</option><option>Furniture or Appliance Delivery</option><option>Other</option></select></div><div class="field"><label for="amount">Items or load size</label><input id="amount" maxlength="500" placeholder="Example: couch and two chairs" required></div><div class="field"><label for="serviceDate">Preferred date</label><input id="serviceDate" type="date" required></div><div class="field"><label for="pickup">Pickup location</label><input id="pickup" maxlength="500" placeholder="City or address" required></div><div class="field"><label for="destination">Destination</label><input id="destination" maxlength="500" placeholder="City, address, or disposal site" required></div><div class="field full"><label for="details">Job details</label><textarea id="details" maxlength="5000" placeholder="Stairs, heavy items, access instructions, preferred time, or anything Franklin should know"></textarea></div><div class="field full"><label>Photos</label><label class="upload" id="photoUpload" for="photos" aria-disabled="true"><strong>Photo uploads unavailable</strong><span class="help" id="photoHelp">You can still submit the quote request without photos.</span><input id="photos" type="file" accept="image/*" multiple disabled></label></div></div>
+<div class="progress" id="progress" hidden><span id="progressBar"></span></div><div class="actions"><button class="button button-primary" id="submitButton" type="submit" disabled>Checking...</button><a class="button" id="dashboardLink" href="dashboard.html" hidden>Return to Dashboard</a></div><p class="help" id="formMessage" aria-live="polite"></p></form></div></section></div></main><footer class="footer">© <span data-year></span> Packaged Comfort.</footer>
 <script>const menuButton=document.getElementById("menuButton");const mainNav=document.getElementById("mainNav");if(menuButton&&mainNav){menuButton.addEventListener("click",()=>{const open=mainNav.classList.toggle("open");menuButton.setAttribute("aria-expanded",String(open));menuButton.textContent=open?"×":"☰"})}document.querySelectorAll("[data-year]").forEach(node=>node.textContent=new Date().getFullYear());</script><script type="module">
-import{initializeApp}from"https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";import{getAuth,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";import{collection,doc,getDoc,getFirestore,serverTimestamp,setDoc}from"https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";import{deleteObject,getStorage,ref,uploadBytes}from"https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
+import{initializeApp}from"https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";import{getAuth,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";import{collection,doc,getDoc,getFirestore,serverTimestamp,setDoc}from"https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 const firebaseConfig = {
     apiKey: "AIzaSyDMWaronfPi0cujdvzGIsieadLss_d4iMQ",
     authDomain: "packaged-comfort-website.firebaseapp.com",
@@ -27,8 +27,153 @@ const firebaseConfig = {
     appId: "1:150317110708:web:dab83f056b04b1e0210ee1"
 };
 const FRANKLIN_ADMIN_UID = "lE77uZp22tbjptd1k9Nt89eOdW12";
-const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),storage=getStorage(app);const form=document.getElementById("quoteForm"),photos=document.getElementById("photos"),previews=document.getElementById("previews"),statusBox=document.getElementById("accountStatus"),submitButton=document.getElementById("submitButton"),formMessage=document.getElementById("formMessage"),progress=document.getElementById("progress"),progressBar=document.getElementById("progressBar");let currentUser=null,selectedFiles=[];const safeName=name=>name.toLowerCase().replace(/[^a-z0-9._-]+/g,"-").replace(/-+/g,"-").slice(-80);function setStatus(message,type=""){statusBox.className=`status-box ${type}`.trim();statusBox.textContent=message}function showFiles(){previews.innerHTML="";selectedFiles.forEach(file=>{const box=document.createElement("div");box.className="preview";const img=document.createElement("img");img.alt=file.name;img.src=URL.createObjectURL(file);box.appendChild(img);previews.appendChild(box)})}
-photos.addEventListener("change",()=>{const files=[...photos.files];if(files.length>8){alert("Choose no more than 8 photos.");photos.value="";selectedFiles=[];showFiles();return}const invalid=files.find(file=>!file.type.startsWith("image/")||file.size>8*1024*1024);if(invalid){alert("Every file must be an image under 8 MB.");photos.value="";selectedFiles=[];showFiles();return}selectedFiles=files;showFiles()});const today=new Date();document.getElementById("serviceDate").min=new Date(today.getTime()-today.getTimezoneOffset()*60000).toISOString().split("T")[0];
-onAuthStateChanged(auth,async user=>{currentUser=user;if(!user){setStatus("Sign in before submitting a quote request.","error");submitButton.textContent="Go to Login";return}if(user.uid===FRANKLIN_ADMIN_UID){location.replace("admin.html");return}setStatus("Signed in. This request will be saved to your customer dashboard.","success");document.getElementById("email").value=user.email||"";try{const snap=await getDoc(doc(db,"customers",user.uid));document.getElementById("fullName").value=snap.exists()?snap.data().name||user.displayName||"":user.displayName||""}catch{document.getElementById("fullName").value=user.displayName||""}});
-form.addEventListener("submit",async event=>{event.preventDefault();if(!currentUser){location.href="login.html";return}if(!form.reportValidity())return;submitButton.disabled=true;submitButton.textContent="Submitting...";formMessage.textContent="";progress.hidden=false;progressBar.style.width="4%";const requestRef=doc(collection(db,"quoteRequests"));const uploaded=[];try{for(let i=0;i<selectedFiles.length;i++){const file=selectedFiles[i],path=`quotePhotos/${currentUser.uid}/${requestRef.id}/${Date.now()}-${i}-${safeName(file.name)}`;await uploadBytes(ref(storage,path),file,{contentType:file.type,customMetadata:{ownerUid:currentUser.uid,requestId:requestRef.id}});uploaded.push(path);progressBar.style.width=`${Math.round(((i+1)/(selectedFiles.length+1))*90)}%`}await setDoc(requestRef,{customerUid:currentUser.uid,customerName:document.getElementById("fullName").value.trim(),fullName:document.getElementById("fullName").value.trim(),phone:document.getElementById("phone").value.trim(),email:currentUser.email||document.getElementById("email").value.trim(),service:document.getElementById("service").value,amount:document.getElementById("amount").value.trim(),pickup:document.getElementById("pickup").value.trim(),destination:document.getElementById("destination").value.trim(),serviceDate:document.getElementById("serviceDate").value,details:document.getElementById("details").value.trim(),status:"submitted",photoPaths:uploaded,estimateMin:null,estimateMax:null,quoteMessage:"",scheduledDate:"",internalNotes:"",createdAt:serverTimestamp(),updatedAt:serverTimestamp()});progressBar.style.width="100%";formMessage.innerHTML=`Request submitted successfully. <a href="request-details.html?id=${requestRef.id}">View this request</a>.`;form.reset();document.getElementById("email").value=currentUser.email||"";selectedFiles=[];showFiles()}catch(error){console.error(error);for(const path of uploaded){try{await deleteObject(ref(storage,path))}catch{}}formMessage.textContent=`Request failed: ${error.code||error.message}`}finally{submitButton.disabled=false;submitButton.textContent="Submit Quote Request";setTimeout(()=>{progress.hidden=true;progressBar.style.width="0"},1200)}});
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const form = document.getElementById("quoteForm");
+const photos = document.getElementById("photos");
+const statusBox = document.getElementById("accountStatus");
+const submitButton = document.getElementById("submitButton");
+const formMessage = document.getElementById("formMessage");
+const progress = document.getElementById("progress");
+const progressBar = document.getElementById("progressBar");
+const photoUpload = document.getElementById("photoUpload");
+const photoHelp = document.getElementById("photoHelp");
+const accountOption = document.getElementById("accountOption");
+const dashboardLink = document.getElementById("dashboardLink");
+const emailField = document.getElementById("email");
+const fullNameField = document.getElementById("fullName");
+
+let currentUser = null;
+let authenticationReady = false;
+
+function setStatus(message, type = "") {
+    statusBox.className = `status-box ${type}`.trim();
+    statusBox.textContent = message;
+}
+
+function setAccountMode(user) {
+    const hasAccount = Boolean(user);
+
+    photos.disabled = true;
+    photos.value = "";
+    photoUpload.setAttribute("aria-disabled", "true");
+    emailField.readOnly = hasAccount;
+    accountOption.hidden = hasAccount;
+    dashboardLink.hidden = !hasAccount;
+    photoHelp.textContent = "Photo uploads are temporarily unavailable. You can still submit the quote request without photos.";
+}
+
+const today = new Date();
+document.getElementById("serviceDate").min = new Date(
+    today.getTime() - today.getTimezoneOffset() * 60000
+).toISOString().split("T")[0];
+
+onAuthStateChanged(auth, async (user) => {
+    currentUser = user || null;
+    authenticationReady = true;
+    submitButton.disabled = false;
+    submitButton.textContent = "Submit Quote Request";
+
+    if (user?.uid === FRANKLIN_ADMIN_UID) {
+        location.replace("admin.html");
+        return;
+    }
+
+    setAccountMode(currentUser);
+
+    if (!currentUser) {
+        setStatus("Guest quote request is ready. No account is required.", "success");
+        return;
+    }
+
+    setStatus("Signed in. This quote request will be saved to your customer dashboard.", "success");
+    emailField.value = currentUser.email || "";
+
+    try {
+        const snapshot = await getDoc(doc(db, "customers", currentUser.uid));
+        fullNameField.value = snapshot.exists()
+            ? snapshot.data().name || currentUser.displayName || ""
+            : currentUser.displayName || "";
+    } catch (error) {
+        console.warn("Customer profile could not be loaded:", error);
+        fullNameField.value = currentUser.displayName || "";
+    }
+});
+
+form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    if (!authenticationReady) {
+        setStatus("Please wait while the quote form finishes loading.", "error");
+        return;
+    }
+
+    if (!form.reportValidity()) {
+        return;
+    }
+
+    const accountUser = currentUser;
+    const requestReference = doc(collection(db, "quoteRequests"));
+
+    submitButton.disabled = true;
+    submitButton.textContent = "Submitting...";
+    formMessage.textContent = "";
+    progress.hidden = false;
+    progressBar.style.width = "4%";
+
+    try {
+        const customerName = fullNameField.value.trim();
+
+        await setDoc(requestReference, {
+            customerUid: accountUser?.uid || null,
+            customerName,
+            fullName: customerName,
+            phone: document.getElementById("phone").value.trim(),
+            email: accountUser?.email || emailField.value.trim(),
+            service: document.getElementById("service").value,
+            amount: document.getElementById("amount").value.trim(),
+            pickup: document.getElementById("pickup").value.trim(),
+            destination: document.getElementById("destination").value.trim(),
+            serviceDate: document.getElementById("serviceDate").value,
+            details: document.getElementById("details").value.trim(),
+            requestSource: accountUser ? "account" : "guest",
+            status: "submitted",
+            photoPaths: [],
+            estimateMin: null,
+            estimateMax: null,
+            quoteMessage: "",
+            scheduledDate: "",
+            internalNotes: "",
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+        });
+
+        progressBar.style.width = "100%";
+
+        if (accountUser) {
+            formMessage.innerHTML = `Quote request submitted successfully. <a href="request-details.html?id=${requestReference.id}">View this request</a>.`;
+        } else {
+            formMessage.textContent = `Quote request submitted successfully. Reference: ${requestReference.id.slice(0, 8).toUpperCase()}. Franklin will contact you using the phone number or email provided.`;
+        }
+
+        form.reset();
+        emailField.value = accountUser?.email || "";
+    } catch (error) {
+        console.error(error);
+
+        const code = String(error.code || "");
+        formMessage.textContent = code.includes("permission-denied")
+            ? "The quote request could not be saved because Firebase permissions are not active yet. Call or text 725-724-0012 for assistance."
+            : `Request failed: ${error.message || code || "Please try again."}`;
+    } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = "Submit Quote Request";
+
+        setTimeout(() => {
+            progress.hidden = true;
+            progressBar.style.width = "0";
+        }, 1200);
+    }
+});
 </script></body></html>

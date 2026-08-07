@@ -1,0 +1,148 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isFranklin() {
+      return isSignedIn() &&
+        request.auth.uid == "lE77uZp22tbjptd1k9Nt89eOdW12";
+    }
+
+    function hasActiveAdminRole() {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/roles/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/roles/$(request.auth.uid)).data.role == "admin" &&
+        get(/databases/$(database)/documents/roles/$(request.auth.uid)).data.active == true;
+    }
+
+    function isAdmin() {
+      return isFranklin() || hasActiveAdminRole();
+    }
+
+    function validString(value, minimum, maximum) {
+      return value is string &&
+        value.size() >= minimum &&
+        value.size() <= maximum;
+    }
+
+    function validRequestOwner(data) {
+      return (
+        isSignedIn() &&
+        data.customerUid == request.auth.uid &&
+        data.requestSource == "account"
+      ) || (
+        !isSignedIn() &&
+        data.customerUid == null &&
+        data.requestSource == "guest"
+      );
+    }
+
+    function validQuoteRequest(data) {
+      return data.keys().hasOnly([
+          "customerUid",
+          "customerName",
+          "fullName",
+          "phone",
+          "email",
+          "service",
+          "amount",
+          "pickup",
+          "destination",
+          "serviceDate",
+          "details",
+          "requestSource",
+          "status",
+          "photoPaths",
+          "estimateMin",
+          "estimateMax",
+          "quoteMessage",
+          "scheduledDate",
+          "internalNotes",
+          "createdAt",
+          "updatedAt"
+        ]) &&
+        validRequestOwner(data) &&
+        validString(data.fullName, 2, 120) &&
+        data.customerName == data.fullName &&
+        validString(data.phone, 7, 30) &&
+        validString(data.email, 5, 254) &&
+        data.email.matches(".*@.*") &&
+        (
+          data["service"] == "Junk Removal" ||
+          data["service"] == "Local Moving Help" ||
+          data["service"] == "Pickup and Delivery" ||
+          data["service"] == "Courier Service" ||
+          data["service"] == "Furniture or Appliance Delivery" ||
+          data["service"] == "Other"
+        ) &&
+        validString(data.amount, 1, 500) &&
+        validString(data.pickup, 1, 500) &&
+        validString(data.destination, 1, 500) &&
+        validString(data.serviceDate, 10, 10) &&
+        validString(data.details, 0, 5000) &&
+        data.status == "submitted" &&
+        data.photoPaths is list &&
+        data.photoPaths.size() == 0 &&
+        data.estimateMin == null &&
+        data.estimateMax == null &&
+        data.quoteMessage == "" &&
+        data.scheduledDate == "" &&
+        data.internalNotes == "" &&
+        data.createdAt == request.time &&
+        data.updatedAt == request.time;
+    }
+
+    match /quoteRequests/{requestId} {
+      allow create: if validQuoteRequest(request.resource.data);
+      allow read: if isAdmin() ||
+        (isSignedIn() && resource.data.customerUid == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+
+    match /customers/{customerUid} {
+      allow read: if isAdmin() ||
+        (isSignedIn() && request.auth.uid == customerUid);
+
+      allow create: if isSignedIn() &&
+        request.auth.uid == customerUid &&
+        request.resource.data.keys().hasOnly([
+          "name",
+          "email",
+          "phone",
+          "createdAt",
+          "updatedAt",
+          "lastLoginAt"
+        ]) &&
+        request.resource.data.email == request.auth.token.email;
+
+      allow update: if isAdmin() || (
+        isSignedIn() &&
+        request.auth.uid == customerUid &&
+        request.resource.data.email == request.auth.token.email &&
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          "name",
+          "email",
+          "phone",
+          "updatedAt",
+          "lastLoginAt"
+        ])
+      );
+
+      allow delete: if isAdmin();
+    }
+
+    match /roles/{userUid} {
+      allow get: if isSignedIn() &&
+        (request.auth.uid == userUid || isAdmin());
+      allow list: if isAdmin();
+      allow create, update, delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
