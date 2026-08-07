@@ -651,6 +651,7 @@ function renderRequests() {
                         </td>
                         <td>
                             <strong>${escapeHtml(request.service || "Service Request")}</strong>
+                            <span class="sub">${request.requestSource === "guest" ? "Guest quote · no account" : "Customer account quote"}</span>
                             <span class="sub">${escapeHtml(request.amount || "No item summary")}</span>
                             <span class="sub">${Array.isArray(request.photoPaths) ? request.photoPaths.length : 0} photo(s)</span>
                         </td>
@@ -1073,6 +1074,7 @@ function exportRequestsCsv() {
         [
             "Request ID",
             "Customer UID",
+            "Request source",
             "Customer",
             "Email",
             "Phone",
@@ -1095,6 +1097,7 @@ function exportRequestsCsv() {
             return [
                 request.id,
                 requestOwnerUid(request),
+                request.requestSource || "account",
                 request.fullName || request.customerName || "Customer",
                 request.email || "",
                 request.phone || "",
