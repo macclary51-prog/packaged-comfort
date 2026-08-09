@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Customer Profile | Packaged Comfort</title>
+    <link rel="icon" href="logo.png">
+    <link rel="stylesheet" href="admin.css?v=1">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container nav-wrap">
+            <a class="brand" href="admin.html">
+                <img src="logo.png" alt="Packaged Comfort">
+                <div>
+                    <strong>Packaged Comfort</strong>
+                    <span>Customer Management</span>
+                </div>
+            </a>
+
+            <div class="header-actions">
+                <a class="button" href="admin.html#customers">Back to Customers</a>
+                <button class="button" id="logout" type="button">Log Out</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="page">
+        <div class="container">
+            <div class="status-box" id="pageStatus">
+                Loading customer profile...
+            </div>
+
+            <div class="status-box success" id="removalResult" hidden></div>
+
+            <div id="profileContent" hidden>
+                <section class="hero">
+                    <span class="eyebrow">Customer profile</span>
+                    <h1 id="customerName">Customer</h1>
+                    <p id="customerSummary">Loading account and request information...</p>
+
+                    <div class="actions">
+                        <a class="button button-light" id="callCustomer" href="#">Call Customer</a>
+                        <a class="button button-light" id="emailCustomer" href="#">Email Customer</a>
+                        <button class="button button-light" id="archiveCustomer" type="button">Archive Customer</button>
+                        <button class="button button-danger" id="removeCustomer" type="button">Remove Customer</button>
+                    </div>
+                </section>
+
+                <div class="stats">
+                    <article class="card stat">
+                        <strong id="totalRequests">0</strong>
+                        <span>Total requests</span>
+                    </article>
+                    <article class="card stat">
+                        <strong id="activeRequests">0</strong>
+                        <span>Active jobs</span>
+                    </article>
+                    <article class="card stat">
+                        <strong id="completedRequests">0</strong>
+                        <span>Completed jobs</span>
+                    </article>
+                    <article class="card stat">
+                        <strong id="canceledRequests">0</strong>
+                        <span>Canceled jobs</span>
+                    </article>
+                </div>
+
+                <div class="details-grid">
+                    <div>
+                        <section class="panel" style="margin-top: 0;">
+                            <div class="panel-heading">
+                                <div>
+                                    <h2>Request History</h2>
+                                    <p>All jobs, quote details, statuses, and uploaded customer photos.</p>
+                                </div>
+                                <select class="filter-control" id="historyFilter" style="max-width: 190px;">
+                                    <option value="all">All requests</option>
+                                    <option value="active">Active jobs</option>
+                                    <option value="completed">Completed jobs</option>
+                                    <option value="canceled">Canceled jobs</option>
+                                </select>
+                            </div>
+
+                            <div class="panel-body">
+                                <div class="request-list" id="requestHistory"></div>
+                                <div class="empty" id="requestHistoryEmpty">No requests found for this customer.</div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <aside>
+                        <section class="panel" style="margin-top: 0;">
+                            <div class="panel-heading">
+                                <div>
+                                    <h2>Contact Information</h2>
+                                    <p>Account and recent contact details.</p>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="detail-list" id="contactDetails"></div>
+                            </div>
+                        </section>
+
+                        <section class="panel">
+                            <div class="panel-heading">
+                                <div>
+                                    <h2>Private Notes</h2>
+                                    <p>Only administrators can see these customer notes.</p>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <form class="field" id="notesForm">
+                                    <label for="customerNotes">Notes</label>
+                                    <textarea id="customerNotes" placeholder="Add follow-up notes, preferences, access details, or other private information."></textarea>
+                                    <span class="help" id="notesUpdated">No notes saved yet.</span>
+                                    <button class="button button-primary" id="saveNotes" type="submit">Save Private Notes</button>
+                                </form>
+                            </div>
+                        </section>
+
+                        <section class="panel">
+                            <div class="panel-heading">
+                                <div>
+                                    <h2>Account Controls</h2>
+                                    <p>Archiving is reversible. Removal permanently deletes website data.</p>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="status-box" style="margin: 0;">
+                                    Removing a customer deletes their Firestore profile, quote requests, and uploaded photos. Their Firebase Authentication login must then be deleted manually using the UID shown afterward.
+                                </div>
+                            </div>
+                        </section>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="customer-profile.js?v=1"></script>
+</body>
+</html>
