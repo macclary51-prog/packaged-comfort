@@ -172,13 +172,13 @@ async function getAdministratorRecord(user) {
         ||
         String(user.email || "")
             .trim()
-            .toLowerCase() === "pcjunkremoval2026@gmail.com"
+            .toLowerCase() === "pcmovers01@gmail.com"
     ) {
         return {
             role: "admin",
             active: true,
             name: "Franklin",
-            email: "pcjunkremoval2026@gmail.com"
+            email: "pcmovers01@gmail.com"
         };
     }
 

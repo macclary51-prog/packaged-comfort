@@ -289,7 +289,7 @@ async function loadAccountNavigation() {
                     ||
                     String(user.email || "")
                         .trim()
-                        .toLowerCase() === "pcjunkremoval2026@gmail.com";
+                        .toLowerCase() === "pcmovers01@gmail.com";
 
                 let roleName =
                     isAdmin
