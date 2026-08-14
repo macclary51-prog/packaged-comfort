@@ -35,7 +35,7 @@ const FRANKLIN_ADMIN_UID =
     "lE77uZp22tbjptd1k9Nt89eOdW12";
 
 const FRANKLIN_ADMIN_EMAIL =
-    "pcjunkremoval2026@gmail.com";
+    "pcmovers01@gmail.com";
 
 
 function isFranklinAdministrator(user) {
